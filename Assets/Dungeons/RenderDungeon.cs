@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DisplayDungeon : MonoBehaviour
+public class RenderDungeon : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Tilemap dungeonTilemap;
     [SerializeField] Tile grassTile;
     [SerializeField] Tile wallTile;
-    
+    [SerializeField] Tile bonusTile;
+
     void Start(){
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
@@ -17,7 +18,14 @@ public class DisplayDungeon : MonoBehaviour
         for (int i = 0; i < nodeGraph.layout.Count; i++)
         {
             DungeonNode node = nodeGraph.layout[i];
-            dungeonTilemap.SetTile(new Vector3Int(node.xPos*4, node.yPos*4, 0), grassTile);
+            if(node.type == "Start")
+            {
+                dungeonTilemap.SetTile(new Vector3Int(node.xPos * 4, node.yPos * 4, 0), bonusTile);
+            } else
+            {
+                dungeonTilemap.SetTile(new Vector3Int(node.xPos * 4, node.yPos * 4, 0), grassTile);
+            }
+            
             //draw edges
             for (int j = 0; j < node.edges.Count; j++)
             {

@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using UnityEngine.InputSystem.Android;
+
 
 
 
@@ -30,6 +30,7 @@ public class DungeonGraph
             DungeonNode newNode = new DungeonNode();
             availableNodes.Add(newNode);
         }
+        availableNodes[0].type = "Start";
         //start from 0th node and branch until maxDepth is hit
         //node will generate 0-4 'away' edges (1-4 for start)
         //creating an edge will also create the node it goes to
