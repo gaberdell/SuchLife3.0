@@ -56,16 +56,13 @@ public class DungeonGraph
         {
             nodeCreated = createNewEdge(nodeCreated, opts);
         }
-        printNodes(nodesAwaitingEdges);
-        Debug.Log("STARTING BRANCH HAS BEEN PRINTED");
+        //printNodes(nodesAwaitingEdges);
         //now that main branch has been created, start adding branches to 'nodes awaiting edges' starting from index 0
         while( nodesAwaitingEdges.Count > 0  && availableNodes.Count > 0)
         {
             //branch off of the first node in the list; repeat until no more nodes are awaiting edges or max nodes hit
             DungeonNode newNode = createNewEdge(nodesAwaitingEdges[0], opts);
-            Debug.Log("NEW NODE CREATED");
         }
-        Debug.Log(nodesAwaitingEdges.Count);
         //after maxnodes have been placed, move all nodes awaiting edges into the layout
         while(nodesAwaitingEdges.Count > 0)
         {
@@ -73,7 +70,7 @@ public class DungeonGraph
             nodesAwaitingEdges.RemoveAt(0);
             layout.Add(tempNode);
         }
-        printNodes(layout);
+        //printNodes(layout);
     }
 
     private DungeonNode createNewEdge(DungeonNode originNode, DungeonOptions opts)

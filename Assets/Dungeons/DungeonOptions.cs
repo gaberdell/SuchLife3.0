@@ -15,14 +15,17 @@ public class DungeonOptions
     //boss/finish room at longest depth, treasure rooms, ect
 
     //options for dungeon rendering
-
+    public int minRoomDist; //minimum amount of distance between two connected rooms
+    public int maxRoomDist; //maximum amount of distance between two connected rooms
     
     public DungeonOptions()
     {
         //initialize default values
         maxNodes = 14;
         minNodes = 14;
-        maxEdges = 3;
+        maxEdges = 4;
         maxDepth = 3;
+        minRoomDist = 3;
+        maxRoomDist = 5;
     }
 }
