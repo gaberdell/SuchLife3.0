@@ -17,13 +17,7 @@ namespace SuchLife_UI
         SliderDataPair[] sliderDataPairs;
 
         [SerializeField]
-        GameObject[] musicViewObjs;
-
-        [SerializeField]
         AudioMixer audioMixer;
-
-        //Unity cant properly serialize Interfaces I guess hence why unserialized field
-        ISetVal musicView;
 
         //Dont like this but Start gets called after OnEnable so we have to do stuff
         //here unfortunatley
@@ -31,15 +25,14 @@ namespace SuchLife_UI
         {
             for (int i = 0; i < sliderDataPairs.Length; i++)
             {
-                var pair = sliderDataPairs[i];
-                pair.view = musicViewObjs[i].GetComponent<ISetVal>();
+                SliderDataPair pair = sliderDataPairs[i];
                 pair.audioMixer = audioMixer;
             }
         }
 
         void OnEnable()
         {
-            foreach (var sliderDataPair in sliderDataPairs)
+            foreach (SliderDataPair sliderDataPair in sliderDataPairs)
             {
                 sliderDataPair.model.onValueChanged.AddListener(sliderDataPair.setSliderVal);
             }
@@ -47,7 +40,7 @@ namespace SuchLife_UI
 
         void OnDisable()
         {
-            foreach (var sliderDataPair in sliderDataPairs)
+            foreach (SliderDataPair sliderDataPair in sliderDataPairs)
             {
                 sliderDataPair.model.onValueChanged.RemoveListener(sliderDataPair.setSliderVal);
             }
@@ -74,7 +67,7 @@ namespace SuchLife_UI
     {
         //Cant use getter and setter because Serializable system can't recognise it
         public Slider model;
-        public ISetVal view;
+        public VolumeTextView view;
 
         [NonSerialized]
         public AudioMixer audioMixer;

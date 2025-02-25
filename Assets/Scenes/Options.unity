@@ -348,19 +348,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_SizeDelta.x
@@ -400,11 +400,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 490
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 565
+      value: -45
       objectReference: {fileID: 0}
     - target: {fileID: 7737327477361311047, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -420,7 +420,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8503279108374637990, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 3.7
+      value: 3.7000122
       objectReference: {fileID: 0}
     - target: {fileID: 8672990821458371331, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_text
@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1729095469}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.41920763
+  m_Size: 0.6029495
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2334,18 +2334,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sliderDataPairs:
   - model: {fileID: 1064086773}
+    view: {fileID: 8513542440247941922}
     mixerToSet: musicVolume
   - model: {fileID: 1916070484}
+    view: {fileID: 519160475}
     mixerToSet: effectsVolume
   - model: {fileID: 1962757191}
+    view: {fileID: 504585977}
     mixerToSet: enemiesVolume
   - model: {fileID: 1131875000}
+    view: {fileID: 400479708}
     mixerToSet: masterVolume
-  musicViewObjs:
-  - {fileID: 612274511}
-  - {fileID: 519160473}
-  - {fileID: 504585975}
-  - {fileID: 400479706}
   audioMixer: {fileID: 24100000, guid: e4df036ba3b0c4644a775bcc77c17190, type: 2}
 --- !u!114 &1028713816
 MonoBehaviour:

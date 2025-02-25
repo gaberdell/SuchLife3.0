@@ -49,10 +49,6 @@ namespace SuchLife_UI
         void Start()
         {
             LoadKeyBinds();
-            /*foreach (var savableInputAction in savableInputActions)
-            {
-                //savableInputAction.model.onClick.AddListener(savableInputAction.startRebinding);
-            }*/
         }
 
         //Save
@@ -149,16 +145,11 @@ namespace SuchLife_UI
                 wasEnabled = false;
             }
 
-            for (int i = 0; i < inputActionRef.action.bindings.Count; i++)
-            {
-                //Debug.Log($"Index {i} : {inputActionRef.action.bindings[i].path}");
-            }
             for (int i = 0; i < inputActionRef.action.controls.Count; i++)
             {
                 Debug.Log($"Index {i} : {inputActionRef.action.controls[i].path}");
             }
 
-            //PlayerPrefs.SetFloat(saveName, );
         }
 
 
