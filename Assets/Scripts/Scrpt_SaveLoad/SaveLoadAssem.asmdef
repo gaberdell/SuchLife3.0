@@ -1,3 +1,16 @@
 {
-	"name": "SaveLoadAssem"
+    "name": "SaveLoadAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5d97d892966df3148b0b2cf7aef150b6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

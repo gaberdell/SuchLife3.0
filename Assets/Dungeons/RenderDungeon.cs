@@ -15,11 +15,14 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] Tile grassTile;
     [SerializeField] Tile wallTile;
     [SerializeField] Tile bonusTile;
+    
+    // v Jason was here
+    public DungeonGraph nodeGraph;
 
     void Start(){
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
-        DungeonGraph nodeGraph = new DungeonGraph(opts);
+        nodeGraph = new DungeonGraph(opts);
         //for basic testing
         //for each node in the graph, set the tile with the same index to a grasstile
         for (int i = 0; i < nodeGraph.layout.Count; i++)

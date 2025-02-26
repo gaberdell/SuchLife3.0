@@ -7,9 +7,10 @@ using System;
 
 
 
-public class DungeonGraph 
+public class DungeonGraph : Saveable
 {
-    public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
+    // v Jason was here
+    [SerializeField] public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
     private List<DungeonNode> availableNodes = new List<DungeonNode>(); //nodes that can be added to the graph
     private List<DungeonNode> nodesAwaitingEdges = new List<DungeonNode>(); //nodes that have an entrance edge but are elligible for further branches
     public DungeonGraph(DungeonOptions opts)
@@ -193,4 +194,8 @@ public class DungeonGraph
             
         }
     }
+    
+    // Jason was here
+    public bool Save() { return true; }
+    public bool Load() { return true; }
 }

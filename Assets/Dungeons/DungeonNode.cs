@@ -6,19 +6,19 @@ using System.Collections.Generic;
 public class DungeonNode 
 {
     //node has 4 potential edges: top, bottom, left, right
-    public enum EdgeDirection{top, bottom, left, right};
-    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
-    public int xPos;
-    public int yPos;
-    public int depth;
-    public string type;
+    [SerializeField] public enum EdgeDirection{top, bottom, left, right};
+    [SerializeField] public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
+    [SerializeField] public int xPos;
+    [SerializeField] public int yPos;
+    [SerializeField] public int depth;
+    [SerializeField] public string type;
     //vals used in drawing nodes
-    public List<List<string>> layout;
-    public int width;
-    public int height;
-    public int drawXPos;
-    public int drawYPos;
-
+    [SerializeField] public List<List<string>> layout;
+    [SerializeField] public int width;
+    [SerializeField] public int height;
+    [SerializeField] public int drawXPos;
+    [SerializeField] public int drawYPos;
+    // ^ Jason was here
 
     public DungeonNode()
     {
