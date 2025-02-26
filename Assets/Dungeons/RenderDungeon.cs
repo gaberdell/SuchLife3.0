@@ -12,6 +12,7 @@ public class RenderDungeon : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Tilemap dungeonTilemap;
+    [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
     [SerializeField] Tile wallTile;
     [SerializeField] Tile bonusTile;
@@ -242,11 +243,17 @@ public class RenderDungeon : MonoBehaviour
     
     List<List<string>> createRoomLayout(string type)
     {
-        //read in starting room info from json file (right now am creating manually to test)
+        //read in starting room info from json file 
+        List<List<string>> roomLayout = new List<List<string>>();
+        Debug.Log(roomsFile.text);
+        RoomInfo testData = JsonUtility.FromJson<RoomInfo>(roomsFile.text);
+        Debug.Log(testData.normal);
+        //Debug.Log(testData[0]);
+        //Debug.Log(testData.normal);
 
         //create a room layout for testing
         //read in room info based on room type
-        List<List<string>> roomLayout = new List<List<string>>();
+
         List<string> roomRow1 = new List<string>();
         List<string> roomRow2 = new List<string>();
         int roomLength = 5;
