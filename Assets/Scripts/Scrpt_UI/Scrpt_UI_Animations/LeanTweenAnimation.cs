@@ -8,7 +8,7 @@ public class LeanTweenAnimation : MonoBehaviour
     void Start()
     {
      //   LeanTween.moveY(gameObject, -.5f, 2f);
-        LeanTween.scale(gameObject, TitleSize, 2f);
+        LeanTween.scale(gameObject, TitleSize, 1.5f);
     }
 
     // Update is called once per frame
