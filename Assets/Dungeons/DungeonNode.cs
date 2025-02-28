@@ -2,24 +2,23 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-
-public class DungeonNode 
+[System.Serializable]
+public class DungeonNode : Saveable
 {
     //node has 4 potential edges: top, bottom, left, right
-    [SerializeField] public enum EdgeDirection{top, bottom, left, right};
-    [SerializeField] public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
-    [SerializeField] public int xPos;
-    [SerializeField] public int yPos;
-    [SerializeField] public int depth;
-    [SerializeField] public string type;
+    public enum EdgeDirection{top, bottom, left, right};
+    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
+    public int xPos;
+    public int yPos;
+    public int depth;
+    public string type;
     //vals used in drawing nodes
-    [SerializeField] public List<List<string>> layout;
-    [SerializeField] public int width;
-    [SerializeField] public int height;
-    [SerializeField] public int drawXPos;
-    [SerializeField] public int drawYPos;
-    // ^ Jason was here
-
+    public List<List<string>> layout;
+    public int width;
+    public int height;
+    public int drawXPos;
+    public int drawYPos;
+    
     public DungeonNode()
     {
         //default vals
@@ -52,6 +51,14 @@ public class DungeonNode
         string dir = Available[(int)UnityEngine.Random.Range(0,  Available.Count)];
         return dir;
     }
-
-
+    
+    public string Save() {
+        string json = JsonUtility.ToJson(this);
+        Debug.Log("Debug: json: " + json);
+        return json;
+    }
+    
+    public void Load(string json) {
+        JsonUtility.FromJsonOverwrite(json, this);
+    }
 }

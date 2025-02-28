@@ -8,7 +8,7 @@ using UnityEngine.UIElements.Experimental;
 
 public class DataService : MonoBehaviour {
 
-  // TOFIX
+  // TODO: implement multiple saves
   private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\save";
   private static bool saving = false;
   private static bool loading = false;

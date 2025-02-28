@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class RenderDungeon : MonoBehaviour
+public class RenderDungeon : MonoBehaviour, Saveable
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Tilemap dungeonTilemap;
@@ -313,5 +313,6 @@ public class RenderDungeon : MonoBehaviour
         return roomLayout;
     }
     
-
+    public string Save() { return nodeGraph.Save(); }
+    public void Load(string json) { nodeGraph.Load(json); }
 }

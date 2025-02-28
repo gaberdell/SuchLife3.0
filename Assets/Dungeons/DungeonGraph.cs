@@ -9,8 +9,7 @@ using System;
 
 public class DungeonGraph : Saveable
 {
-    // v Jason was here
-    [SerializeField] public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
+    public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
     private List<DungeonNode> availableNodes = new List<DungeonNode>(); //nodes that can be added to the graph
     private List<DungeonNode> nodesAwaitingEdges = new List<DungeonNode>(); //nodes that have an entrance edge but are elligible for further branches
     public DungeonGraph(DungeonOptions opts)
@@ -195,7 +194,14 @@ public class DungeonGraph : Saveable
         }
     }
     
-    // Jason was here
-    public bool Save() { return true; }
-    public bool Load() { return true; }
+    public string Save() {
+        string json = "";
+        foreach(DungeonNode node in layout) { // TOFIX: json format
+            json += node.Save() + "\n";
+        }
+        return json;
+    }
+    public void Load(string json) { // TODO
+        // layout.Load(json);
+    }
 }
