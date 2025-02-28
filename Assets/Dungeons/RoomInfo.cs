@@ -1,12 +1,23 @@
-using NUnit.Framework;
+
 using UnityEngine;
 using System.Collections.Generic;
 
-public class RoomInfo : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public List<List<string>> normal;
-    public List<List<string>> start;
+[System.Serializable]
+public class RoomInfo { 
+
+    public string type;
+    public List<string> tileLayout;
+    public int width;
+    public int height;
+
+    RoomInfo()
+    {
+        //default values, these should never be seen
+        type = "default";
+        tileLayout = new List<string>();
+        width = 0;
+        height = 0;
+    }
 
 
 }

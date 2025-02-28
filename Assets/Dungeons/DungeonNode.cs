@@ -13,9 +13,7 @@ public class DungeonNode
     public int depth;
     public string type;
     //vals used in drawing nodes
-    public List<List<string>> layout;
-    public int width;
-    public int height;
+    public RoomInfo roomInfo;
     public int drawXPos;
     public int drawYPos;
 
@@ -28,9 +26,6 @@ public class DungeonNode
         yPos = 0;
         type = "Default";
         edges = new List<Tuple<DungeonNode, string>>();
-        layout = new List<List<string>>();
-        width = 10;
-        height = 10;
         drawXPos = 0;
         drawYPos = 0;
 }
