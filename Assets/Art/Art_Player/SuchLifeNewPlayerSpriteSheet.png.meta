@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6dbfb1c3f8978dc4ea92cd1bbec4c71f
+guid: 21d34b86b69b3d441b4fa5c14b45b5cd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6701596439569825802
-    second: GrassTiles_0
+      213: 1680966645107147998
+    second: SuchLifeNewPlayerSpriteSheet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GrassTiles_0
+      name: SuchLifePlayerBody
       rect:
         serializedVersion: 2
         x: 0
-        y: 32
-        width: 32
-        height: 32
+        y: 0
+        width: 34
+        height: 34
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,20 +115,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6fffa677b852ff2a0800000000000000
-      internalID: -6701596439569825802
+      spriteID: ed444e0f14ef35710800000000000000
+      internalID: 1680966645107147998
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassTiles_1
+      name: SuchLifePlayerEye
       rect:
         serializedVersion: 2
-        x: 32
-        y: 32
-        width: 32
-        height: 32
+        x: 34
+        y: 25
+        width: 7
+        height: 9
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4aa75f538a9d0414fb6d38d7d83b7879
-      internalID: -1832032038
+      spriteID: 7e9cf2a561f41c9468698f23998544b4
+      internalID: -1949051622
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassTiles_2
+      name: SuchLifePlayerBlink
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 32
-        height: 32
+        x: 34
+        y: 20
+        width: 10
+        height: 5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +159,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d65141f81d494cd4da6000190c61bad8
-      internalID: -1448465647
+      spriteID: e4c27934069faf04c9724c4f6be7dbfc
+      internalID: 664633260
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassTiles_3
+      name: SuchLifePlayerHand
       rect:
         serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
+        x: 34
+        y: 10
+        width: 10
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,8 +181,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 49ae2bae193ae5643a6a736d06071010
-      internalID: -507852822
+      spriteID: 13f5e6a69fccd194aa1870b3061931fc
+      internalID: -772480154
       vertices: []
       indices: 
       edges: []
@@ -191,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 381598756ae41484a92f3c9d51b3f1cf
+    spriteID: 1052b13dbb364254185f93dafa1bc09d
     internalID: 0
     vertices: []
     indices: 
@@ -201,10 +201,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GrassTiles_0: -6701596439569825802
-      GrassTiles_1: -1832032038
-      GrassTiles_2: -1448465647
-      GrassTiles_3: -507852822
+      SuchLifePlayerBlink: 664633260
+      SuchLifePlayerBody: 1680966645107147998
+      SuchLifePlayerEye: -1949051622
+      SuchLifePlayerHand: -772480154
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
