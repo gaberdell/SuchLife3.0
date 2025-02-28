@@ -178,7 +178,7 @@ public class RenderDungeon : MonoBehaviour
         //create rooms edges; 
         for (int i = 0; i < roomNode.edges.Count; i++)
         {
-            //skip if already created (only draw nodes that havent already been placed)
+            //if room already exists, then check if the edge between them has been drawn already
             if (roomNode.edges[i].Item1.drawXPos == 0 && roomNode.edges[i].Item1.drawYPos == 0 && roomNode.edges[i].Item1.type != "Start")
             {;
                 createRoom(roomNode.edges[i], opts, roomNode);
@@ -205,40 +205,63 @@ public class RenderDungeon : MonoBehaviour
                 Hheight = prevNode.drawYPos - (newNode.drawYPos + newNode.roomInfo.height);
                 x = prevNode.drawXPos + 1;
                 y = newNode.drawYPos + newNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, x, y);
+                drawHallway(Hwidth, Hheight, x, y, "vertical");
                 break;
             case "top":
                 Hwidth = 3;
                 Hheight = newNode.drawYPos - (prevNode.drawYPos + prevNode.roomInfo.height);
                 x = newNode.drawXPos + 1;
                 y = prevNode.drawYPos + prevNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, x, y);
+                drawHallway(Hwidth, Hheight, x, y, "vertical");
                 break;
             case "left":
                 Hwidth = prevNode.drawXPos - (newNode.drawXPos + newNode.roomInfo.width);
                 Hheight = 3;
                 x = newNode.drawXPos + newNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, y);
+                drawHallway(Hwidth, Hheight, x, y, "horizontal");
                 break;
             case "right":
                 Hwidth = newNode.drawXPos - (prevNode.drawXPos + prevNode.roomInfo.width);
                 Hheight = 3;
                 x = prevNode.drawXPos + prevNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, y);
+                drawHallway(Hwidth, Hheight, x, y, "horizontal");
                 break;
         }
         
     }
 
-    void drawHallway(int width, int height, int startX, int startY)
+    void drawHallway(int width, int height, int startX, int startY, string type)
     {
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < width; i++) //x
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < height; j++) //y
             {
-                dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                //handle wall placement for vertical and horizontal hallways
+                if(type == "vertical")
+                {
+                    if (i == 0 || i == width - 1)
+                    {
+                        dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                    }
+                    else
+                    {
+                        dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+                    }
+                } else
+                {
+                    if (j == 0 || j == height - 1)
+                    {
+                        dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                    }
+                    else
+                    {
+                        dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+                    }
+                }
+
+                
             }
         }
     }
