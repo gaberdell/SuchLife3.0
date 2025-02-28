@@ -7,7 +7,6 @@ public class RotateLeanTween : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //   LeanTween.moveY(gameObject, -.5f, 2f);
         LeanTween.rotateAroundLocal(gameObject, Vector3.forward, 360f, .5f);
 
       // LeanTween.rotateY(gameObject, 0f, 0.5f);
