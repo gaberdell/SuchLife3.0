@@ -29,6 +29,9 @@ public class PlayerInventory : MonoBehaviour
 
     public Sprite empty; 
 
+    //
+    public GameObject CraftingUI;
+
     
 
     void Start(){
@@ -144,6 +147,21 @@ public class PlayerInventory : MonoBehaviour
                 
                 fullInventory.SetActive(!isActive);
                 gameUI.SetActive(isActive); 
+                
+
+                this.GetComponent<helperFunctions>().togglePause();
+
+            }
+
+        }
+        
+           if(Input.GetKeyDown(KeyCode.Q) ){
+
+            if (CraftingUI != null){
+    
+                bool isActive = CraftingUI.activeSelf;
+                
+                CraftingUI.SetActive(!isActive);
                 
 
                 this.GetComponent<helperFunctions>().togglePause();
