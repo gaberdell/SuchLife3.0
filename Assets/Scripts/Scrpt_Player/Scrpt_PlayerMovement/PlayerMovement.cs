@@ -43,12 +43,8 @@ public class PlayerMovement : MonoBehaviour
     Vector3 previousPosition;
     List<ContactPoint2D> contactPoints;
 
-    bool isDebugOn = false;
-    bool debugHitDeadZone = false;
     void Start()
     {
-        //Time.timeScale = 0.1f;
-
         plrCollider = plrCollider ? plrCollider : GetComponent<CircleCollider2D>();
         rigidBody = rigidBody ? rigidBody : GetComponent<Rigidbody2D>();
 
@@ -59,7 +55,11 @@ public class PlayerMovement : MonoBehaviour
         inputHandler = InputHandler.Instance;
     }
 
-    // Update is called once per frame
+    private void FixedUpdate()
+    {
+        EventManager.SetPlayerAnimSpeedTrue(plrVelocity.magnitude);
+    }
+
     void Update()
     {
         handleMovement();
