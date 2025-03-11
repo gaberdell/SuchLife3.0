@@ -192,41 +192,46 @@ public class RenderDungeon : MonoBehaviour
         //draw a straight hallway between the two rooms
 
         //decide on width of hallway (uniform?)
+        int hallWaySpace = 3; //width/height of hallway
         int Hheight = 0;
         int Hwidth = 0;
         int x = 0; //rect draws from bottom left
         int y = 0;
-        
+
         //decide on where to start the hallway
+        //for vertical hallways, select a width and a 'left' point to start the hallway from
+        int xStart = prevNode.drawXPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.width - hallWaySpace, newNode.roomInfo.width - hallWaySpace));
+        //for horizontal hallways, select a width and a  'bottom' point to start the hallway from
+        int yStart = prevNode.drawYPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.height - hallWaySpace, newNode.roomInfo.width - hallWaySpace));
         switch (prevEdge)
         {
             case "bottom":
-                Hwidth = 3;
+                Hwidth = hallWaySpace;
                 Hheight = prevNode.drawYPos - (newNode.drawYPos + newNode.roomInfo.height);
                 x = prevNode.drawXPos + 1;
                 y = newNode.drawYPos + newNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, x, y, "vertical");
+                drawHallway(Hwidth, Hheight, xStart, y, "vertical");
                 break;
             case "top":
-                Hwidth = 3;
+                Hwidth = hallWaySpace;
                 Hheight = newNode.drawYPos - (prevNode.drawYPos + prevNode.roomInfo.height);
                 x = newNode.drawXPos + 1;
                 y = prevNode.drawYPos + prevNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, x, y, "vertical");
+                drawHallway(Hwidth, Hheight, xStart, y, "vertical");
                 break;
             case "left":
                 Hwidth = prevNode.drawXPos - (newNode.drawXPos + newNode.roomInfo.width);
-                Hheight = 3;
+                Hheight = hallWaySpace;
                 x = newNode.drawXPos + newNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, y, "horizontal");
+                drawHallway(Hwidth, Hheight, x, yStart, "horizontal");
                 break;
             case "right":
                 Hwidth = newNode.drawXPos - (prevNode.drawXPos + prevNode.roomInfo.width);
-                Hheight = 3;
+                Hheight = hallWaySpace;
                 x = prevNode.drawXPos + prevNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, y, "horizontal");
+                drawHallway(Hwidth, Hheight, x, yStart, "horizontal");
                 break;
         }
         
@@ -234,6 +239,7 @@ public class RenderDungeon : MonoBehaviour
 
     void drawHallway(int width, int height, int startX, int startY, string type)
     {
+        List<Tuple<int, int>> hallwayEndPos = new List<Tuple<int, int>>();
         for (int i = 0; i < width; i++) //x
         {
             for (int j = 0; j < height; j++) //y
@@ -247,6 +253,10 @@ public class RenderDungeon : MonoBehaviour
                     }
                     else
                     {
+                        if(j == 0 || j == height - 1)
+                        {
+                            hallwayEndPos.Add(new Tuple<int, int>(i, j));
+                        }
                         dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
                     }
                 } else
@@ -257,11 +267,28 @@ public class RenderDungeon : MonoBehaviour
                     }
                     else
                     {
+                        if (i == 0 || i == width - 1)
+                        {
+                            hallwayEndPos.Add(new Tuple<int, int>(i, j));
+                        }
                         dungeonTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
                     }
                 }
 
                 
+            }
+        }
+        //check if hallway actually reached target destination (neighboring tiles arent background), otherwise draw another hallway
+        //for each final tile
+        for (int i = 0; i < hallwayEndPos.Count; i++) {
+            //check if tile is neighbored by a background tile
+            Tile tile1 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1+1, hallwayEndPos[i].Item2, 0));
+            Tile tile2 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1-1, hallwayEndPos[i].Item2, 0));
+            Tile tile3 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2+1, 0));
+            Tile tile4 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2-1, 0));
+            if (tile1 == null || tile2 == null || tile3 == null || tile4 == null)
+            {
+                print("null neighbor");
             }
         }
     }

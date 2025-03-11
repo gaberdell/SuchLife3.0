@@ -25,6 +25,36 @@
          "height": 5
       },
       {
+         "type": "Default",
+         "tileLayout": [
+         "WWWWWWWWWW",
+         "WFFFFFFFFW",
+         "WFFFFFFFFW",
+         "WFFFFFFFFW",
+         "WFFFFFFFFW",
+         "WFFFFFFFFW",
+         "WFFFFFFFFW",
+         "WWWWWWWWWW"
+         ],
+         "width": 10,
+         "height": 8
+      },
+      {
+         "type": "Default",
+         "tileLayout": [
+         "WWWWWWW",
+         "WFFFFFW",
+         "WFFFFFW",
+         "WFFFFFW",
+         "WFFFFFWWWWW",
+         "WFFFFFFFFFW",
+         "WFFFFFFFFFW",
+         "WWWWWWWWWWW"
+         ],
+         "width": 11,
+         "height": 8
+      },
+      {
          "type": "Start",
          "tileLayout": [
          "WWWWWWW",
