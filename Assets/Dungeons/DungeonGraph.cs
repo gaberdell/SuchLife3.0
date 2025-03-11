@@ -7,7 +7,7 @@ using System;
 
 
 
-public class DungeonGraph : Saveable
+public class DungeonGraph
 {
     public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
     private List<DungeonNode> availableNodes = new List<DungeonNode>(); //nodes that can be added to the graph
@@ -192,16 +192,5 @@ public class DungeonGraph : Saveable
             }
             
         }
-    }
-    
-    public string Save() {
-        string json = "";
-        foreach(DungeonNode node in layout) { // TOFIX: json format
-            json += node.Save() + "\n";
-        }
-        return json;
-    }
-    public void Load(string json) { // TODO
-        // layout.Load(json);
     }
 }

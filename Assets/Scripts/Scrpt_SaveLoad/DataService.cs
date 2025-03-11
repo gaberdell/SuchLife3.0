@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
@@ -26,29 +27,23 @@ public class DataService : MonoBehaviour {
     return info;
   }
 
-  // TODO: saves current game into given path with given name, returns success through a boolean
-  // public bool Save(string path, string name) {
+  // saves current game into savePath, returns success through a boolean
   public bool Save() {
 
-    // Dungeon
+    // dungeon
     GameObject dungeonGrid = GameObject.Find("DungeonGrid");
     if (dungeonGrid == null) {
       Debug.Log("Unable to find dungeon!");
       return false;
     }
     RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
-    DungeonGraph dungeonGraph = dungeonRenderer.nodeGraph;
-    dungeonGraph.Save();
-    string renderDungeonJSON = JsonUtility.ToJson(dungeonRenderer);
-    string dungeonJSON = JsonUtility.ToJson(dungeonGraph);
-    Debug.Log("Debug: dungeonSize: " + dungeonGraph.layout.Count);
-    Debug.Log("Debug: dungeonJSON: " + dungeonJSON);
+    string dungeonJSON = dungeonRenderer.Save();
+    Debug.Log("dungeonJSON: " + dungeonJSON);
 
     // writing to file
     Debug.Log("Saving to \"" + savePath + "\"...");
     FileStream saveFile = new FileStream(savePath, FileMode.Create);
     BinaryWriter writer = new BinaryWriter(saveFile);
-    writer.Write(renderDungeonJSON);
     writer.Write(dungeonJSON);
 
     // cleaning up
@@ -60,8 +55,19 @@ public class DataService : MonoBehaviour {
     return true;
   }
 
-  // TODO: loads game at given path, returns success through a boolean
+  // loads game at savePath, returns success through a boolean
   public bool Load() {
+
+    // reading from file
+    Debug.Log("Loading from \"" + savePath + "\"...");
+    List<string> dungeonJsons = File.ReadLines(savePath).ToList();
+    Debug.Log("dungeonJsons: " + dungeonJsons);
+
+    // dungeon
+    GameObject dungeonGrid = GameObject.Find("DungeonGrid");
+    RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
+    dungeonRenderer.Load(dungeonJsons);
+    
     return true;
   }
 

@@ -16,13 +16,10 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] Tile wallTile;
     [SerializeField] Tile bonusTile;
     
-    // v Jason was here
-    public DungeonGraph nodeGraph;
-
     void Start(){
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
-        nodeGraph = new DungeonGraph(opts);
+        DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
         //for each node in the graph, set the tile with the same index to a grasstile
         for (int i = 0; i < nodeGraph.layout.Count; i++)
@@ -313,6 +310,37 @@ public class RenderDungeon : MonoBehaviour, Saveable
         return roomLayout;
     }
     
-    public string Save() { return nodeGraph.Save(); }
-    public void Load(string json) { nodeGraph.Load(json); }
+    public string Save() {
+        int x_min = dungeonTilemap.cellBounds.min.x;
+        int x_max = dungeonTilemap.cellBounds.max.x;
+        int y_min = dungeonTilemap.cellBounds.min.y;
+        int y_max = dungeonTilemap.cellBounds.max.y;
+
+        string json = "";
+        for (int x = x_min; x < x_max; x++) {
+            for (int y = y_min; y < y_max; y++) {
+                Tile tile = (Tile)dungeonTilemap.GetTile(new Vector3Int(x, y, 0));
+                
+                if (tile != null) {
+                    TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
+                    json += tileCache.Save() + "\n";
+                }
+            }
+        }
+        
+        return json;
+    }
+    
+    public void Load(string json) { } // UNUSED
+
+    public void Load(List<string> jsons) {
+        dungeonTilemap.ClearAllTiles();
+        foreach (string json in jsons) {
+            TileCache tileCache = new TileCache();
+            tileCache.Load(json);
+            
+            if (tileCache.name.Equals("GrassTiles_0"))
+                dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
+        }
+    }
 }

@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
 
-[System.Serializable]
-public class DungeonNode : Saveable
+public class DungeonNode
 {
     //node has 4 potential edges: top, bottom, left, right
     public enum EdgeDirection{top, bottom, left, right};
-    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
+    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to
     public int xPos;
     public int yPos;
     public int depth;
@@ -50,15 +50,5 @@ public class DungeonNode : Saveable
         //get random edge from available directions
         string dir = Available[(int)UnityEngine.Random.Range(0,  Available.Count)];
         return dir;
-    }
-    
-    public string Save() {
-        string json = JsonUtility.ToJson(this);
-        Debug.Log("Debug: json: " + json);
-        return json;
-    }
-    
-    public void Load(string json) {
-        JsonUtility.FromJsonOverwrite(json, this);
     }
 }
