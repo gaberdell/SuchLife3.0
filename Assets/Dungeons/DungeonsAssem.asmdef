@@ -1,0 +1,16 @@
+{
+    "name": "DungeonsAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b64e1cd6cf4443148a42c37fe9bd5c39"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
