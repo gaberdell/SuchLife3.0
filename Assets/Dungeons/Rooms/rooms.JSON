@@ -40,21 +40,6 @@
          "height": 8
       },
       {
-         "type": "Default",
-         "tileLayout": [
-         "WWWWWWW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFWWWWW",
-         "WFFFFFFFFFW",
-         "WFFFFFFFFFW",
-         "WWWWWWWWWWW"
-         ],
-         "width": 11,
-         "height": 8
-      },
-      {
          "type": "Start",
          "tileLayout": [
          "WWWWWWW",
@@ -67,17 +52,6 @@
          ],
          "width": 7,
          "height": 7
-      },
-      {
-         "type": "Start",
-         "tileLayout": [
-         "WWWWWWWWWWW",
-         "WFFFFFFFFFW",
-         "WFFFFFFFFFW",
-         "WWWWWWWWWWW"
-         ],
-         "width": 11,
-         "height": 4
       }
    ]
 }

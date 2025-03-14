@@ -174,11 +174,13 @@ public class RenderDungeon : MonoBehaviour
             }
         }
         //connect rooms
-        connectRooms(prevRoom, roomNode, prevEdge);
+        connectRooms(prevRoom, roomNode, prevEdge, opts);
         //create rooms edges; 
         for (int i = 0; i < roomNode.edges.Count; i++)
         {
             //if room already exists, then check if the edge between them has been drawn already
+            //if (roomNode.edges[i].Item1.drawXPos != 0) { connectRooms(roomNode, roomNode.edges[i].Item1, roomNode.edges[i].Item2); }
+            //draw room if it hasnt been drawn yet
             if (roomNode.edges[i].Item1.drawXPos == 0 && roomNode.edges[i].Item1.drawYPos == 0 && roomNode.edges[i].Item1.type != "Start")
             {;
                 createRoom(roomNode.edges[i], opts, roomNode);
@@ -187,12 +189,12 @@ public class RenderDungeon : MonoBehaviour
         }
     }
 
-    void connectRooms(DungeonNode prevNode, DungeonNode newNode, string prevEdge)
+    void connectRooms(DungeonNode prevNode, DungeonNode newNode, string prevEdge, DungeonOptions opts)
     {
         //draw a straight hallway between the two rooms
 
         //decide on width of hallway (uniform?)
-        int hallWaySpace = 3; //width/height of hallway
+        int hallWaySpace = opts.hallwayOpening; //width/height of hallway
         int Hheight = 0;
         int Hwidth = 0;
         int x = 0; //rect draws from bottom left
@@ -202,7 +204,7 @@ public class RenderDungeon : MonoBehaviour
         //for vertical hallways, select a width and a 'left' point to start the hallway from
         int xStart = prevNode.drawXPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.width - hallWaySpace, newNode.roomInfo.width - hallWaySpace));
         //for horizontal hallways, select a width and a  'bottom' point to start the hallway from
-        int yStart = prevNode.drawYPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.height - hallWaySpace, newNode.roomInfo.width - hallWaySpace));
+        int yStart = prevNode.drawYPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.height - hallWaySpace, newNode.roomInfo.height - hallWaySpace));
         switch (prevEdge)
         {
             case "bottom":
@@ -234,6 +236,7 @@ public class RenderDungeon : MonoBehaviour
                 drawHallway(Hwidth, Hheight, x, yStart, "horizontal");
                 break;
         }
+        
         
     }
 
@@ -280,17 +283,23 @@ public class RenderDungeon : MonoBehaviour
         }
         //check if hallway actually reached target destination (neighboring tiles arent background), otherwise draw another hallway
         //for each final tile
-        for (int i = 0; i < hallwayEndPos.Count; i++) {
-            //check if tile is neighbored by a background tile
-            Tile tile1 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1+1, hallwayEndPos[i].Item2, 0));
-            Tile tile2 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1-1, hallwayEndPos[i].Item2, 0));
-            Tile tile3 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2+1, 0));
-            Tile tile4 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2-1, 0));
-            if (tile1 == null || tile2 == null || tile3 == null || tile4 == null)
-            {
-                print("null neighbor");
-            }
-        }
+        //for (int i = 0; i < hallwayEndPos.Count; i++) {
+        //    //check if tile is neighbored by a background tile
+        //    Tile tile1 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1+1, hallwayEndPos[i].Item2, 0));
+        //    Tile tile2 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1-1, hallwayEndPos[i].Item2, 0));
+        //    Tile tile3 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2+1, 0));
+        //    Tile tile4 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2-1, 0));
+        //    //based on the location of the background tile, redraw the hallway
+        //    if (tile1 == null || tile2 == null || tile3 == null || tile4 == null)
+        //    {
+        //        print("null neighbor");
+        //    }
+
+        //    //if (tile1 == null) { drawHallway(width, height, startX + width, startY, type); return; }
+        //    //if (tile2 == null) { drawHallway(width, height, startX - width, startY, type); return; }
+        //    //if (tile3 == null) { drawHallway(width, height, startX, startY + height, type); return; }
+        //    //if (tile4 == null) { drawHallway(width, height, startX, startY - height, type); return; }
+        //}
     }
     
 }
