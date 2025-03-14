@@ -16,7 +16,11 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] Tile wallTile;
     [SerializeField] Tile bonusTile;
     
-    void Start(){
+    // TOREVIEW: macros for grass and wall tile sprite names
+    string GRASS_SPRITE_NAME;
+    string WALL_SPRITE_NAME;
+
+  void Start(){
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
@@ -70,6 +74,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
         //now branch off of the starting room, following the edges and creating connecting rooms one at a time
         //recursively?
 
+        // TOREVIEW: saving sprite name in a macro for saving/loading
+        GRASS_SPRITE_NAME = grassTile.sprite.name;
+        WALL_SPRITE_NAME = wallTile.sprite.name;
     }
 
     void createStartingRoom(DungeonGraph nodeGraph, DungeonOptions opts)
@@ -309,6 +316,8 @@ public class RenderDungeon : MonoBehaviour, Saveable
         }
         return roomLayout;
     }
+
+    public Tilemap getDungeonTilemap() { return dungeonTilemap; } // TOREVIEW: needed for use by DataService to clear tilemap before loading
     
     public string Save() {
         int x_min = dungeonTilemap.cellBounds.min.x;
@@ -323,6 +332,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 
                 if (tile != null) {
                     TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
+
+                    string spriteName = tileCache.spriteName;
+                    if (spriteName.Equals(GRASS_SPRITE_NAME) || spriteName.Equals(WALL_SPRITE_NAME))
                     json += tileCache.Save() + "\n";
                 }
             }
@@ -331,16 +343,14 @@ public class RenderDungeon : MonoBehaviour, Saveable
         return json;
     }
     
-    public void Load(string json) { } // UNUSED
-
-    public void Load(List<string> jsons) {
-        dungeonTilemap.ClearAllTiles();
-        foreach (string json in jsons) {
-            TileCache tileCache = new TileCache();
-            tileCache.Load(json);
+    public void Load(string json) {
+        TileCache tileCache = new TileCache();
+        tileCache.Load(json);
             
-            if (tileCache.name.Equals("GrassTiles_0"))
-                dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
-        }
+        if (tileCache.spriteName.Equals(GRASS_SPRITE_NAME)) // 
+            dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
+        if (tileCache.spriteName.Equals(WALL_SPRITE_NAME))
+            dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), wallTile);
     }
+    
 }

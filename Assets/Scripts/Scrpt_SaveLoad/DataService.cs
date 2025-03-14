@@ -42,13 +42,7 @@ public class DataService : MonoBehaviour {
 
     // writing to file
     Debug.Log("Saving to \"" + savePath + "\"...");
-    FileStream saveFile = new FileStream(savePath, FileMode.Create);
-    BinaryWriter writer = new BinaryWriter(saveFile);
-    writer.Write(dungeonJSON);
-
-    // cleaning up
-    writer.Close();
-    saveFile.Close();
+    File.WriteAllText(savePath, dungeonJSON);
     
     Debug.Log("Saved!");
 
@@ -66,7 +60,11 @@ public class DataService : MonoBehaviour {
     // dungeon
     GameObject dungeonGrid = GameObject.Find("DungeonGrid");
     RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
-    dungeonRenderer.Load(dungeonJsons);
+    dungeonRenderer.getDungeonTilemap().ClearAllTiles(); // clear current dungeon tilemap
+    foreach (string json in dungeonJsons)
+      dungeonRenderer.Load(json);
+
+    Debug.Log("Loaded!");
     
     return true;
   }
