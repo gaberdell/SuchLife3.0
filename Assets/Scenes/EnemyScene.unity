@@ -9566,10 +9566,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d281e1e96a1c8494c8558a0497228853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destination: {fileID: 2016657164}
+  animator: {fileID: 2016657171}
+  particles: {fileID: 2016657173}
   target: {fileID: 0}
   explodeDistance: 3
   explosionRadius: 4
   explosionDelay: 2
+--- !u!114 &2016657164 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9156809110509579600, guid: f7df4500c32f349a197c2b3190a606df, type: 3}
+  m_PrefabInstance: {fileID: 39612034}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016657156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9679e68a0f1144e79c664d9a11ca121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &2016657171
 Animator:
   serializedVersion: 7
@@ -9686,7 +9700,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
