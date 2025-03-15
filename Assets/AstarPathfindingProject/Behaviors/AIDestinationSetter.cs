@@ -18,6 +18,11 @@ namespace Pathfinding {
 		public Transform target;
 		IAstarAI ai;
 
+		void Start()
+        {
+            target = GameObject.Find("Player").transform;
+        }
+
 		void OnEnable () {
 			ai = GetComponent<IAstarAI>();
 			// Update the destination right before searching for a path as well.
