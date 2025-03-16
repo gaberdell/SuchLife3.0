@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour
 {
-    public AIDestinationSetter destination;
+    public SpriteRenderer renderer;
+    public CircleCollider2D collider;
+    public AIPath path;
     public Animator animator;
     public ParticleSystem particles;
 
     public Transform target;
-    public float explodeDistance = 3f;
-    public float explosionRadius = 4f;
+    public float explodeAtDistance = 3f;
+    public float explosionRadius = 1f;
     public float explosionDelay = 2f;
 
     private float distance;
 
-    public delegate void OnExplode();
+    public delegate void OnExplode(Collider2D explosionCollider);
     public static event OnExplode onExplode;
 
     void Start()
@@ -26,34 +28,26 @@ public class Bomb : MonoBehaviour
     void Update()
     {
         distance = Vector2.Distance(transform.position, target.position);
-        if (distance <= explodeDistance) {
+        if (distance <= explodeAtDistance) {
             StartCoroutine(Explode());
         }
     }
 
     IEnumerator Explode()
     {
-        destination.target = null;
         animator.enabled = true;
         
         yield return new WaitForSeconds(explosionDelay);
 
         particles.Play();
-        onExplode?.Invoke();
+        path.enabled = false;
+        renderer.enabled = false;
+        collider.isTrigger = true;
+        collider.radius = explosionRadius;
 
         yield return new WaitForSeconds(0.5f);
 
-        // Debug.Log("explode");
-
-        // Collider2D collider = Physics2D.OverlapCircle(transform.position, explosionRadius);
-        // I NEED TO CHECK FOR ALL COLLIDERS MOST LIKELY SO THAT OTHER COLLIDERS DON'T GET IN THE WAY AND FOR SURE THE PLAYER IS HIT OR NOT
-        // or make this broadcast an event lowkey that sounds better so this code is not tagged to "Player" specifically
-        // if (collider.gameObject.name == "Player") {
-        //     Debug.Log("player in explosion radius");
-        // } else {
-        //     Debug.Log("player safe");
-        // }
-
+        onExplode?.Invoke(collider);
         Destroy(gameObject);
     }
 }
