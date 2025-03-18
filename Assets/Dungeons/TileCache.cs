@@ -9,29 +9,31 @@ using UnityEngine.Tilemaps;
 public class TileCache: Saveable
 {
 
-	public string name;
+	public string spriteName; // name of the Sprite used in the Tile
   public int x, y;
 
 	public TileCache() {
-		this.name = "";
+		this.spriteName = "";
 		this.x = 0;
 		this.y = 0;
 	}
 
 	public TileCache(string name, int x, int y)
 	{
-		this.name = name;
+		this.spriteName = name;
 		this.x = x;
 		this.y = y;
 	}
 
 	public string Save() {
-			return JsonUtility.ToJson(this);
+		return JsonUtility.ToJson(this);
 	}
 
 	public void Load(string json) {
-			JsonUtility.FromJsonOverwrite(json, this);
+
+		Debug.Log("Loading " + json + " ...");
+
+		JsonUtility.FromJsonOverwrite(json, this);
 	}
 
-	public void Load(List<string> jsons) { } // UNUSED
 }
