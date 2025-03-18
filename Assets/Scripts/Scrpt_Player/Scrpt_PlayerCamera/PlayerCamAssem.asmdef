@@ -1,0 +1,17 @@
+{
+    "name": "PlayerCamAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a124ba4e86fff204aa29f03d87343810",
+        "GUID:f58aa23d71e72b14bab58999d573ff5d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

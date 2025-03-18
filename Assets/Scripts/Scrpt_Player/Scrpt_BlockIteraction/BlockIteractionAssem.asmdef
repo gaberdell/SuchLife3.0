@@ -1,0 +1,17 @@
+{
+    "name": "BlockIteractionAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f58aa23d71e72b14bab58999d573ff5d",
+        "GUID:a124ba4e86fff204aa29f03d87343810"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
