@@ -2,7 +2,8 @@
     "name": "DungeonsAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:b64e1cd6cf4443148a42c37fe9bd5c39"
+        "GUID:b64e1cd6cf4443148a42c37fe9bd5c39",
+        "GUID:f58aa23d71e72b14bab58999d573ff5d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
