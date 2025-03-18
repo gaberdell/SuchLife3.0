@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeonTilemap: {fileID: 883490136}
+  roomsFile: {fileID: 4900000, guid: 0c0870d2e9fca354f93e92dd56793b20, type: 3}
   grassTile: {fileID: 11400000, guid: e88b311d36e01a64ca29e9cc841aa8d8, type: 2}
   wallTile: {fileID: 11400000, guid: c84603f3002b8574f9f965a5a97d8441, type: 2}
   bonusTile: {fileID: 11400000, guid: 57900667e4ddddd4186077d60bf4e88f, type: 2}
