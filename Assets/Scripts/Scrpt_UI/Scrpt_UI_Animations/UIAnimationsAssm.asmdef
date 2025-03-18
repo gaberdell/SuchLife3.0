@@ -1,0 +1,16 @@
+{
+    "name": "UIAnimationsAssm",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a803aa1597b95e64296a6eaa4c947078"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

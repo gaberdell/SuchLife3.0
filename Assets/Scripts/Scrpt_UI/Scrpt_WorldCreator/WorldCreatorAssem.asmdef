@@ -1,0 +1,16 @@
+{
+    "name": "WorldCreatorAssem",
+    "rootNamespace": "",
+    "references": [
+        "SaveLoadAssem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
