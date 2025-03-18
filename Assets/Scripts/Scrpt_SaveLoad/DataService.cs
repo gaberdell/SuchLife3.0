@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using UnityEngine.UIElements.Experimental;
 public class DataService : MonoBehaviour {
 
   // TODO: implement multiple saves
-  private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\save";
+  private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\";
   private static bool saving = false;
   private static bool loading = false;
 
@@ -22,13 +23,15 @@ public class DataService : MonoBehaviour {
   }
 
   // TODO: returns name, date (in that order) on all saves
-  public List<SaveInfo> Fetch() {
+  public static List<SaveInfo> Fetch() {
+    string[] paths = GetFiles(savePath);
+
     List<SaveInfo> info = new List<SaveInfo>();
     return info;
   }
 
-  // saves current game into savePath, returns success through a boolean
-  public bool Save() {
+  // saves current game into savePath, returns success through a boolean (TODO: saves into given path)
+  public static bool Save(string savePath) {
 
     // dungeon
     GameObject dungeonGrid = GameObject.Find("DungeonGrid");
@@ -50,7 +53,7 @@ public class DataService : MonoBehaviour {
   }
 
   // loads game at savePath, returns success through a boolean
-  public bool Load() {
+  public static bool Load(string savePath) {
 
     // reading from file
     Debug.Log("Loading from \"" + savePath + "\"...");
@@ -70,9 +73,11 @@ public class DataService : MonoBehaviour {
   }
 
   // TODO: deletes game at given path, returns success through a boolean
-  public bool Delete(string path) {
+  public static bool Delete(string path) {
     return true;
   }
+
+  public static string GetSavePath() { return savePath; } // retuns the save directory, ended with a \
   
   // TOREMOVE: basic input handling for testing
   void Update() {
