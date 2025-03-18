@@ -133,5 +133,9 @@ public class InputHandler : MonoBehaviour
             IsMouseEnabled = !(change == InputDeviceChange.Disconnected || change == InputDeviceChange.Disabled);
     }
 
+    public Vector2 GetMousePos()
+    {
+        return Mouse.current.position.ReadValue();
+    }
 
 }
