@@ -1,0 +1,36 @@
+{ "normal": [
+   [
+   "WWWWWWWWWW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WWWWWWWWWW"
+   ],
+   [
+   "WWWWWWWWWW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WFFFFFFFFW",
+   "WWWWWWWWWW"
+   ]
+
+],
+   "start": [
+      [
+"WWWWWWWW",
+"WFFFFFFW",
+"WFFFFFFW",
+"WFFFFFFW",
+"WFFFFFFWWWWW",
+"WFFFFFFFFFFW",
+"WFFFFFFFFFFW",
+"WWWWWWWWWWWW"
+]
+
+   ]
+}
