@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
 
-
-public class DungeonNode 
+public class DungeonNode
 {
     //node has 4 potential edges: top, bottom, left, right
     public enum EdgeDirection{top, bottom, left, right};
-    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to 
+    public List<Tuple<DungeonNode, string>> edges; //other nodes that this node is connected to
     public int xPos;
     public int yPos;
     public int depth;
@@ -16,8 +16,7 @@ public class DungeonNode
     public RoomInfo roomInfo;
     public int drawXPos;
     public int drawYPos;
-
-
+    
     public DungeonNode()
     {
         //default vals
@@ -47,6 +46,4 @@ public class DungeonNode
         string dir = Available[(int)UnityEngine.Random.Range(0,  Available.Count)];
         return dir;
     }
-
-
 }

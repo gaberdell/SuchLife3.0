@@ -1,0 +1,16 @@
+{
+    "name": "PlayerAnimAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:81ee7511fd827ae408a2e17d16d4daf4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

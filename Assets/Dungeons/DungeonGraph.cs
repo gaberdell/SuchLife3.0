@@ -7,7 +7,7 @@ using System;
 
 
 
-public class DungeonGraph 
+public class DungeonGraph
 {
     public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
     private List<DungeonNode> availableNodes = new List<DungeonNode>(); //nodes that can be added to the graph
