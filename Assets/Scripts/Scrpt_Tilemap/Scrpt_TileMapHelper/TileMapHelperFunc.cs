@@ -4,11 +4,91 @@ using UnityEngine.Tilemaps;
 
 namespace TileMapHelper
 {
+
+
     public class TileMapHelperFunc
     {
-        
 
-        public Vector3 isTilePartOfRay(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
+        //javi video was very helpful for this https://www.youtube.com/watch?v=NbSee-XM7WA
+        public static Vector3 DDARayCheck(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
+        {
+            //List of points that we can store!
+            listOfStepPoints = new List<Vector3>();
+
+            Vector2 difVec = origin - directionOfVector;
+            Vector2 difNorm = difVec.normalized;
+
+
+            float rayDifYX = (difNorm.y / difNorm.x);
+            float rayDifXY = (difNorm.x / difNorm.y);
+
+            //Essentially we figure out how much the magnitude increases per each unit of one
+            Vector2 vecRayUnitStepSize = new Vector2(Mathf.Sqrt(1 + rayDifYX*rayDifYX), Mathf.Sqrt(1 + rayDifXY * rayDifXY));
+
+            Vector3Int mapCheck = currentTileMap.WorldToCell(origin);
+
+            Vector2 rayLength1D = Vector2Int.zero;
+
+            Vector2Int blockStep = Vector2Int.zero;
+
+            if (difNorm.x < 0)
+            {
+                blockStep.x = -1;
+                rayLength1D.x = (origin.x - (float)mapCheck.x) * vecRayUnitStepSize.x;
+            }
+            else
+            {
+                blockStep.x = 1;
+                rayLength1D.x = ((float)(mapCheck.x + 1) - origin.x) * vecRayUnitStepSize.x;
+            }
+
+            if (difNorm.y < 0)
+            {
+                blockStep.y = -1;
+                rayLength1D.y = (origin.y - (float)mapCheck.y) * vecRayUnitStepSize.y;
+            }
+            else
+            {
+                blockStep.y = 1;
+                rayLength1D.y = ((float)(mapCheck.x + 1) - origin.y) * vecRayUnitStepSize.y;
+            }
+
+            vector3WithNoBlock = origin;
+
+            hitBlock = false;
+            float currentDistance = 0f;
+            float lastFailedDist = 0f;
+            float maxDistance = difVec.magnitude;
+            while (!hitBlock && currentDistance < maxDistance)
+            {
+                if (rayLength1D.x < rayLength1D.y)
+                {
+                    mapCheck.x += blockStep.x;
+                    currentDistance = rayLength1D.x;
+                    rayLength1D.x += vecRayUnitStepSize.x;
+                }
+                else
+                {
+                    mapCheck.y += blockStep.y;
+                    currentDistance = rayLength1D.y;
+                    rayLength1D.y += vecRayUnitStepSize.y;
+                }
+
+                if (currentTileMap.GetTile(mapCheck) == null)
+                {
+                    lastFailedDist = currentDistance;
+                    listOfStepPoints.Add(rayLength1D);
+                }
+                else
+                {
+                    hitBlock = true;
+                }
+            }
+            vector3WithNoBlock = origin + (Vector3)(difNorm * lastFailedDist);
+            return origin + (Vector3)(difNorm * currentDistance);
+        }
+
+        public static Vector3 isTilePartOfRay(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
         {
             listOfStepPoints = new List<Vector3>();
 
@@ -64,7 +144,7 @@ namespace TileMapHelper
 
         }
     
-        public Vector3 isTilePartOfRay(Tilemap[] tileMapsToCheck, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
+        public static Vector3 isTilePartOfRay(Tilemap[] tileMapsToCheck, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
         {
             hitBlock = false;
             listOfStepPoints = new List<Vector3>();
