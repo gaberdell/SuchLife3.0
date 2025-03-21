@@ -9,9 +9,7 @@ public class NewWorldUi : MonoBehaviour
     
     void Start()
     {
-        GameObject datamgnt = GameObject.Find("DataMgnt");
-        DataService dataservice = datamgnt.GetComponent<DataService>(); 
-        List<SaveInfo> info = dataservice.Fetch();
+        List<SaveInfo> info = DataService.Fetch();
         print(info); //debugging print statement
 
     }

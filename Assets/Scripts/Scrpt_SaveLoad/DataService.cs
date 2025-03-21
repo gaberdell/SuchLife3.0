@@ -8,25 +8,39 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
-public class DataService : MonoBehaviour {
+public class DataService {
 
-  // TODO: implement multiple saves
   private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\";
-  private static bool saving = false;
-  private static bool loading = false;
-
+  private static int savePathLen = savePath.Length;
+  
   // used by fetch; simple packet that contains a save's path, name, and last modified date and time
   public struct SaveInfo {
-    string path;
-    string name;
-    DateTime lastModified;
+    public string path;
+    public string name;
+    public DateTime lastModified;
   }
 
-  // TODO: returns name, date (in that order) on all saves
+  // returns name, date (in that order) on all saves
   public static List<SaveInfo> Fetch() {
-    string[] paths = GetFiles(savePath);
-
     List<SaveInfo> info = new List<SaveInfo>();
+    
+    string[] paths = Directory.GetFiles(savePath);
+    foreach (string path in paths) {
+      SaveInfo saveInfo = new SaveInfo();
+      
+      saveInfo.path = path;
+      saveInfo.name = path.Substring(savePathLen);
+      saveInfo.lastModified = Directory.GetLastWriteTime(path);
+
+      Debug.Log("saveInfo.path: " + saveInfo.path);
+      Debug.Log("saveInfo.name: " + saveInfo.name);
+      Debug.Log("saveInfo.lastModified: " + saveInfo.lastModified);
+
+      info.Add(saveInfo);
+    }
+
+    // TODO: sort by time
+
     return info;
   }
 
@@ -77,43 +91,6 @@ public class DataService : MonoBehaviour {
     return true;
   }
 
-  public static string GetSavePath() { return savePath; } // retuns the save directory, ended with a \
-  
-  // TOREMOVE: basic input handling for testing
-  void Update() {
-
-    // saving
-
-    if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.X) && !saving) {
-      Time.timeScale = 0f;
-      saving = true;
-      Save();
-      Time.timeScale = 1f;
-    }
-
-    else if (saving && (Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.X))) {
-      saving = false;
-    }
-
-    // loading
-
-    if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.V) && !loading) {
-      Time.timeScale = 0f;
-      loading = true;
-      Load();
-      Time.timeScale = 1f;
-    }
-
-    else if (loading && (Input.GetKeyUp(KeyCode.LeftControl) || Input.GetKeyUp(KeyCode.V))) {
-      loading = false;
-    }
-
-  }
+  public static string GetSavePath() { return savePath; } // retuns the save directory, which ends with a \
 
 }
-
-/*
- * TODO:
- *  - implement functions
- *  - encrypt saves
-*/
