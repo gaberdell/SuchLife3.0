@@ -28,7 +28,7 @@ namespace BlockIteraction
                 Vector3 mousePos = inputHandler.GetMousePos();
                 mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-                TileMapHelperFunc.
+                //TileMapHelperFunc.
 
                 playerBlockView.SetLookAtObject(mousePos, null);
 
