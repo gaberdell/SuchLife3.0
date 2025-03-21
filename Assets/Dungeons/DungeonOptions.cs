@@ -23,12 +23,12 @@ public class DungeonOptions
     public DungeonOptions()
     {
         //initialize default values
-        maxNodes = 10;
-        minNodes = 10;
+        maxNodes = 18;
+        minNodes = 18;
         maxEdges = 4;
         maxDepth = 3;
         minRoomDist = 4;
-        maxRoomDist = 4;
+        maxRoomDist = 10;
         hallwayOpening = 6;
         branchType = "random";
     }

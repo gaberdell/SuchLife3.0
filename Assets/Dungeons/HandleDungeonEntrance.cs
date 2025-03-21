@@ -11,8 +11,9 @@ public class HandleDungeonEntrance : MonoBehaviour
     private void Update()
     {
         bool interact = inputHandler.InteractTriggered;
+        //Debug.Log(interact);
         if(interact){
-            
+            Debug.Log("eeeee");
         }
     }
 

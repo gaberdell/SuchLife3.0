@@ -31,39 +31,39 @@ public class RenderDungeon : MonoBehaviour, Saveable
         DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
         //for each node in the graph, set the tile with the same index to a grasstile
-        for (int i = 0; i < nodeGraph.layout.Count; i++)
-        {
-            DungeonNode node = nodeGraph.layout[i];
-            if(node.type == "Start")
-            {
-                groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), bonusTile);
-            } else
-            {
-                groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), grassTile);
-            }
+        //for (int i = 0; i < nodeGraph.layout.Count; i++)
+        //{
+        //    DungeonNode node = nodeGraph.layout[i];
+        //    if(node.type == "Start")
+        //    {
+        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), bonusTile);
+        //    } else
+        //    {
+        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), grassTile);
+        //    }
             
-            //draw edges
-            for (int j = 0; j < node.edges.Count; j++)
-            {
-                //draw em somehow
-                switch (node.edges[j].Item2)
-                {
-                    case "top":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 - 2, 0), wallTile);
-                        break;
-                    case "bottom":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 + 2, 0), wallTile);
-                        break;
-                    case "right":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 2 + 50, node.yPos * 4, 0), wallTile);
-                        break;
-                    case "left":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 - 2 + 50, node.yPos * 4, 0), wallTile);
-                        break;
-                }
+        //    //draw edges
+        //    for (int j = 0; j < node.edges.Count; j++)
+        //    {
+        //        //draw em somehow
+        //        switch (node.edges[j].Item2)
+        //        {
+        //            case "top":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 - 2, 0), wallTile);
+        //                break;
+        //            case "bottom":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 + 2, 0), wallTile);
+        //                break;
+        //            case "right":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 2 + 50, node.yPos * 4, 0), wallTile);
+        //                break;
+        //            case "left":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 - 2 + 50, node.yPos * 4, 0), wallTile);
+        //                break;
+        //        }
                 
-            }
-        }
+        //    }
+        //}
         // Render graph one node at a time starting from the start node
         //will draw the room, draw a neighboring node at a random distance away(set in opts), and draw a hallway connecting them(and add the new node to a queue)
         //Rooms are read from static files and chosen randomly, with bias on room layouts not already existing
@@ -158,6 +158,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
             if (entity == "DungeonExit")
             {
                 //create dungeon exit from prefab
+                GameObject exitInstance = Instantiate(dungeonExit);
+                exitInstance.transform.position = groundTilemap.transform.position + new Vector3Int(startingNode.drawXPos + startingNode.roomInfo.width/2, startingNode.drawYPos + startingNode.roomInfo.width/2, 0);
+                exitInstance.GetComponent<HandleDungeonExit>().setEntrance(entrance);
             }
         }
         //for each edge, create the room
