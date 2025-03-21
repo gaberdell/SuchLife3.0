@@ -3,14 +3,21 @@
       {
          "type": "Default",
          "tileLayout": [
-         "WWWWW",
-         "WFFFW",
-         "WFFFW",
-         "WFFFW",
-         "WWWWW"
+         "WWWWWWWWWWWWWWW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WFFFFFFFFFFFFFW",
+         "WWWWWWWWWWWWWWW"
          ],
-         "width": 5,
-         "height": 5
+         "width": 15,
+         "height": 12
       },
       {
          "type": "Default",
@@ -19,16 +26,6 @@
          "WFFFFFFFFW",
          "WFFFFFFFFW",
          "WFFFFFFFFW",
-         "WWWWWWWWWW"
-         ],
-         "width": 10,
-         "height": 5
-      },
-      {
-         "type": "Default",
-         "tileLayout": [
-         "WWWWWWWWWW",
-         "WFFFFFFFFW",
          "WFFFFFFFFW",
          "WFFFFFFFFW",
          "WFFFFFFFFW",
@@ -37,21 +34,26 @@
          "WWWWWWWWWW"
          ],
          "width": 10,
-         "height": 8
+         "height": 10
       },
       {
          "type": "Start",
          "tileLayout": [
-         "WWWWWWW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WWWWWWW"
+         "WWWWWWWWWWWW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WFFFFFFFFFFFW",
+         "WWWWWWWWWWWW"
          ],
-         "width": 7,
-         "height": 7
+         "width": 12,
+         "height": 12
       }
    ]
 }

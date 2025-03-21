@@ -4,24 +4,30 @@ public class HandleDungeonEntrance : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     InputHandler inputHandler;
-    bool interact;
     private void Start()
     {
         inputHandler = InputHandler.Instance;
-        interact = true;
     }
     private void Update()
     {
-        //bool interact = inputHandler.InteractTriggered;
+        bool interact = inputHandler.InteractTriggered;
         if(interact){
-            //load dungeon and disable this object
-            print("interact triggered");
-            //newDungeon.StartRender();
-            gameObject.SetActive(false);
-            interact = false;
+            
         }
     }
-    
-        
-    
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //generate dungeon if none exists 
+        Debug.Log("interact triggered");
+        GameObject dungeonGrid = GameObject.Find("DungeonGrid");
+        dungeonGrid.GetComponent<RenderDungeon>().StartRender();
+        //newDungeon.StartRender();
+        //gameObject.SetActive(false);
+        //move player to starting room in dungeon (0,0 point)
+        GameObject.Find("Player").transform.position = dungeonGrid.transform.position + new Vector3Int(5, 5, 0);
+    }
+
+
+
 }

@@ -271,8 +271,13 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         if(j == 0 || j == height - 1)
                         {
                             hallwayEndPos.Add(new Tuple<int, int>(i, j));
+                            //CLEAR WALLS THAT OVERLAP WITH HALLWAY
+                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY-1, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY+1, 0), null);
                         }
                         groundTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+
                     }
                 } else
                 {
@@ -285,14 +290,24 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         if (i == 0 || i == width - 1)
                         {
                             hallwayEndPos.Add(new Tuple<int, int>(i, j));
+                            //CLEAR WALLS THAT OVERLAP WITH HALLWAY
+                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX+1, j + startY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX-1, j + startY, 0), null);
+
                         }
                         groundTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+                        
                     }
                 }
 
                 
             }
         }
+
+
+
+
         //check if hallway actually reached target destination (neighboring tiles arent background), otherwise draw another hallway
         //for each final tile
         //for (int i = 0; i < hallwayEndPos.Count; i++) {
