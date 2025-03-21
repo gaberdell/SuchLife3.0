@@ -29,7 +29,7 @@ public class DungeonOptions
         maxDepth = 3;
         minRoomDist = 4;
         maxRoomDist = 4;
-        hallwayOpening = 3;
+        hallwayOpening = 6;
         branchType = "random";
     }
 }
