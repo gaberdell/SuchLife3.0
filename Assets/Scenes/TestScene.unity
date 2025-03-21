@@ -920,8 +920,9 @@ MonoBehaviour:
   wallTilemap: {fileID: 1819852078}
   roomsFile: {fileID: 4900000, guid: 0c0870d2e9fca354f93e92dd56793b20, type: 3}
   grassTile: {fileID: 11400000, guid: e88b311d36e01a64ca29e9cc841aa8d8, type: 2}
-  wallTile: {fileID: 11400000, guid: c84603f3002b8574f9f965a5a97d8441, type: 2}
+  wallTile: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
   bonusTile: {fileID: 11400000, guid: 57900667e4ddddd4186077d60bf4e88f, type: 2}
+  dungeonExit: {fileID: 0}
 --- !u!156049354 &640504264
 Grid:
   m_ObjectHideFlags: 0
@@ -6389,6 +6390,63 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1603908336961683802, guid: d474fd319c63eff428594b9a5f57a5bd, type: 3}
   m_PrefabInstance: {fileID: 5969361633885108826}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5048403660457284511
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.32358897
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.3526938
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4161278732624028214, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131490398547023997, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
+      propertyPath: m_Name
+      value: DungeonExit
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
 --- !u!1001 &5969361633885108826
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6502,3 +6560,4 @@ SceneRoots:
   - {fileID: 1849983035}
   - {fileID: 2080336487}
   - {fileID: 82973852}
+  - {fileID: 5048403660457284511}

@@ -21,7 +21,7 @@ public class HandleDungeonEntrance : MonoBehaviour
         //generate dungeon if none exists 
         Debug.Log("interact triggered");
         GameObject dungeonGrid = GameObject.Find("DungeonGrid");
-        dungeonGrid.GetComponent<RenderDungeon>().StartRender();
+        dungeonGrid.GetComponent<RenderDungeon>().StartRender(gameObject);
         //newDungeon.StartRender();
         //gameObject.SetActive(false);
         //move player to starting room in dungeon (0,0 point)

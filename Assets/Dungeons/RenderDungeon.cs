@@ -15,8 +15,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] Tilemap wallTilemap;
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
-    [SerializeField] Tile wallTile;
+    [SerializeField] RuleTile wallTile;
     [SerializeField] Tile bonusTile;
+    [SerializeField] GameObject dungeonExit;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     
@@ -24,7 +25,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
     string GRASS_SPRITE_NAME;
     string WALL_SPRITE_NAME;
     
-    public void StartRender(){
+    public void StartRender(GameObject dungeonEntrance){
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
@@ -79,17 +80,44 @@ public class RenderDungeon : MonoBehaviour, Saveable
         }
         rooms.createIndexes();
         //start by drawing the starting room, which will always be at the 0th index(?)
-        createStartingRoom(nodeGraph, opts);
+        createStartingRoom(nodeGraph, opts, dungeonEntrance);
         
         //now branch off of the starting room, following the edges and creating connecting rooms one at a time
         //recursively?
 
         // TOREVIEW: saving sprite name in a macro for saving/loading
         GRASS_SPRITE_NAME = grassTile.sprite.name;
-        WALL_SPRITE_NAME = wallTile.sprite.name;
+        //WALL_SPRITE_NAME = wallTile.sprite.name;
+        WALL_SPRITE_NAME = "blueBricks";
+
+        //after dungeon is generated
+        fillBackground();
     }
 
-    void createStartingRoom(DungeonGraph nodeGraph, DungeonOptions opts)
+    void fillBackground()
+    {
+        
+        int x_min = groundTilemap.cellBounds.min.x-10;
+        int x_max = groundTilemap.cellBounds.max.x+10;
+        int y_min = groundTilemap.cellBounds.min.y-10;
+        int y_max = groundTilemap.cellBounds.max.y+10;
+
+        for (int x = x_min; x < x_max; x++)
+        {
+            for (int y = y_min; y < y_max; y++)
+            {
+                Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+
+                if (tile == null)
+                {
+                    //place a wall if theres no ground tile
+                    wallTilemap.SetTile(new Vector3Int(x, y, 0), wallTile);
+                }
+            }
+        }
+    }
+
+    void createStartingRoom(DungeonGraph nodeGraph, DungeonOptions opts, GameObject entrance)
     {
         DungeonNode startingNode = new DungeonNode();
         //find starting room in nodegraph
@@ -121,6 +149,15 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         groundTilemap.SetTile(new Vector3Int(j, i, 0), grassTile);
                         break;
                 }
+            }
+        }
+        //handle entities
+        for(int i = 0; i < startingNode.roomInfo.entities.Count; i++)
+        {
+            string entity = startingNode.roomInfo.entities[i];
+            if (entity == "DungeonExit")
+            {
+                //create dungeon exit from prefab
             }
         }
         //for each edge, create the room
