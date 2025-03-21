@@ -24,7 +24,7 @@ public class DataService : MonoBehaviour {
 
   // TODO: returns name, date (in that order) on all saves
   public static List<SaveInfo> Fetch() {
-    string[] paths = GetFiles(savePath);
+   // string[] paths = GetFiles(savePath);
 
     List<SaveInfo> info = new List<SaveInfo>();
     return info;
@@ -80,7 +80,7 @@ public class DataService : MonoBehaviour {
   public static string GetSavePath() { return savePath; } // retuns the save directory, ended with a \
   
   // TOREMOVE: basic input handling for testing
-  void Update() {
+ /* void Update() {
 
     // saving
 
@@ -108,7 +108,7 @@ public class DataService : MonoBehaviour {
       loading = false;
     }
 
-  }
+  }*/
 
 }
 
