@@ -10,12 +10,12 @@ namespace TileMapHelper
     {
 
         //javi video was very helpful for this https://www.youtube.com/watch?v=NbSee-XM7WA
-        public static Vector3 DDARayCheck(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
+        public static Vector3 DDARayCheck(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float maxDistance, out Vector3 vector3WithNoBlock, out bool hitBlock, out List<Vector3> listOfStepPoints)
         {
             //List of points that we can store!
             listOfStepPoints = new List<Vector3>();
 
-            Vector2 difVec = origin - directionOfVector;
+            Vector2 difVec =  directionOfVector - origin;
             Vector2 difNorm = difVec.normalized;
 
 
@@ -50,7 +50,7 @@ namespace TileMapHelper
             else
             {
                 blockStep.y = 1;
-                rayLength1D.y = ((float)(mapCheck.x + 1) - origin.y) * vecRayUnitStepSize.y;
+                rayLength1D.y = ((float)(mapCheck.y + 1) - origin.y) * vecRayUnitStepSize.y;
             }
 
             vector3WithNoBlock = origin;
@@ -58,7 +58,7 @@ namespace TileMapHelper
             hitBlock = false;
             float currentDistance = 0f;
             float lastFailedDist = 0f;
-            float maxDistance = difVec.magnitude;
+            maxDistance = Mathf.Min(difVec.magnitude, maxDistance);
             while (!hitBlock && currentDistance < maxDistance)
             {
                 if (rayLength1D.x < rayLength1D.y)
@@ -77,7 +77,7 @@ namespace TileMapHelper
                 if (currentTileMap.GetTile(mapCheck) == null)
                 {
                     lastFailedDist = currentDistance;
-                    listOfStepPoints.Add(rayLength1D);
+                    listOfStepPoints.Add(origin + (Vector3)(difNorm * lastFailedDist));
                 }
                 else
                 {
