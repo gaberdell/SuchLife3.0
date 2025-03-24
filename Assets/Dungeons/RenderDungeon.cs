@@ -20,12 +20,18 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] GameObject dungeonExit;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
-    
+    EventManager eventManager;
+
     // TOREVIEW: macros for grass and wall tile sprite names
     string GRASS_SPRITE_NAME;
     string WALL_SPRITE_NAME;
-    
+
+    private void Start()
+    {
+        eventManager = EventManager.Instance;
+    }
     public void StartRender(GameObject dungeonEntrance){
+        
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
@@ -72,12 +78,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
         //Randomize position of hallway on the sides
 
         //load rooms
-        Debug.Log(roomsFile.text);
         rooms = JsonUtility.FromJson<RoomContainer>(roomsFile.text);
-        foreach(RoomInfo room in rooms.rooms)
-        {
-            Debug.Log("Found room " + room.type);
-        }
         rooms.createIndexes();
         //start by drawing the starting room, which will always be at the 0th index(?)
         createStartingRoom(nodeGraph, opts, dungeonEntrance);
@@ -92,6 +93,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
 
         //after dungeon is generated
         fillBackground();
+        //trigger player enter dungeon after dungeon is generated
+        EventManager.SetPlayerEnterDungeon();
+
     }
 
     void fillBackground()
@@ -304,7 +308,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 {
                     if (i == 0 || i == width - 1)
                     {
-                        wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
                     }
                     else
                     {
@@ -323,7 +327,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 {
                     if (j == 0 || j == height - 1)
                     {
-                        wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
                     }
                     else
                     {
