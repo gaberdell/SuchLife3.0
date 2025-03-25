@@ -10,7 +10,7 @@ namespace TileMapHelper
     {
 
         //javi video was very helpful for this https://www.youtube.com/watch?v=NbSee-XM7WA
-        public static Vector3 DDARayCheck(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float maxDistance, out Vector3 vector3WithNoBlock, out bool hitBlock, out List<Vector3> listOfStepPoints)
+        public static Vector3Int DDARayCheck(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float maxDistance, out Vector3Int vector3WithNoBlock, out bool hitBlock, out List<Vector3> listOfStepPoints)
         {
             //List of points that we can store!
             listOfStepPoints = new List<Vector3>();
@@ -53,12 +53,15 @@ namespace TileMapHelper
                 rayLength1D.y = ((float)(mapCheck.y + 1) - origin.y) * vecRayUnitStepSize.y;
             }
 
-            vector3WithNoBlock = origin;
+            vector3WithNoBlock = mapCheck;
 
             hitBlock = false;
             float currentDistance = 0f;
             float lastFailedDist = 0f;
-            maxDistance = Mathf.Min(difVec.magnitude, maxDistance);
+            maxDistance = Mathf.Clamp(difVec.magnitude, 0f, maxDistance);
+            Debug.Log(maxDistance);
+            //Rollback one? Solution?
+            //If brushes up against max distance then rollback by one?
             while (!hitBlock && currentDistance < maxDistance)
             {
                 if (rayLength1D.x < rayLength1D.y)
@@ -77,6 +80,7 @@ namespace TileMapHelper
                 if (currentTileMap.GetTile(mapCheck) == null)
                 {
                     lastFailedDist = currentDistance;
+                    vector3WithNoBlock = mapCheck;
                     listOfStepPoints.Add(origin + (Vector3)(difNorm * lastFailedDist));
                 }
                 else
@@ -84,8 +88,8 @@ namespace TileMapHelper
                     hitBlock = true;
                 }
             }
-            vector3WithNoBlock = origin + (Vector3)(difNorm * lastFailedDist);
-            return origin + (Vector3)(difNorm * currentDistance);
+            //vector3WithNoBlock = origin + (Vector3)(difNorm * lastFailedDist);
+            return mapCheck;
         }
 
         public static Vector3 isTilePartOfRay(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
