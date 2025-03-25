@@ -9436,6 +9436,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46b127703d45e943905b310a8080106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 187161259}
+  inventory: []
+  inv_panel: {fileID: 663404641}
+  craftinggrid: {fileID: 969303923}
+  inv: []
 --- !u!1 &400355469
 GameObject:
   m_ObjectHideFlags: 0
