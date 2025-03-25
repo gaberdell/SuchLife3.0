@@ -505,7 +505,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.10351724, g: 0.17004617, b: 0.81886786, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -921,8 +921,9 @@ MonoBehaviour:
   wallTilemap: {fileID: 1819852078}
   roomsFile: {fileID: 4900000, guid: 0c0870d2e9fca354f93e92dd56793b20, type: 3}
   grassTile: {fileID: 11400000, guid: e88b311d36e01a64ca29e9cc841aa8d8, type: 2}
-  wallTile: {fileID: 11400000, guid: c84603f3002b8574f9f965a5a97d8441, type: 2}
+  wallTile: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
   bonusTile: {fileID: 11400000, guid: 57900667e4ddddd4186077d60bf4e88f, type: 2}
+  dungeonExit: {fileID: 9131490398547023997, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
 --- !u!156049354 &640504264
 Grid:
   m_ObjectHideFlags: 0
