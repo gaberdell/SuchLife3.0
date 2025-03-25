@@ -33,10 +33,10 @@ public class RenderDungeon : MonoBehaviour, Saveable
     {
         eventManager = EventManager.Instance;
     }
-    public void StartRender(GameObject dungeonEntrance, int offsetX, int offsetY){
+    public void StartRender(GameObject dungeonEntrance, int offsetX, int offsetY, DungeonOptions opts){
         dungeonOffsetX = offsetX;
         dungeonOffsetY = offsetY;
-        DungeonOptions opts = new DungeonOptions();
+        
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
@@ -105,9 +105,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     void fillBackground()
     {
         
-        int x_min = groundTilemap.cellBounds.min.x-10 + dungeonOffsetX/2;
+        int x_min = groundTilemap.cellBounds.min.x-10 + dungeonOffsetX/4;
         int x_max = groundTilemap.cellBounds.max.x + 10;
-        int y_min = groundTilemap.cellBounds.min.y-10 + dungeonOffsetY/2;
+        int y_min = groundTilemap.cellBounds.min.y-10 + dungeonOffsetY/4;
         int y_max = groundTilemap.cellBounds.max.y+10;
 
         for (int x = x_min; x < x_max; x++)

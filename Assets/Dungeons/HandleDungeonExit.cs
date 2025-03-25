@@ -25,6 +25,7 @@ public class HandleDungeonExit : MonoBehaviour
             //newDungeon.StartRender();
             //gameObject.SetActive(false);
             GameObject.Find("Player").transform.position = entrance.transform.position;
+            EventManager.SetPlayerExitDungeon();
         }
         interact = inputHandler.InteractTriggered;
     }

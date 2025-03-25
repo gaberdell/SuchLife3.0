@@ -34,7 +34,7 @@ namespace BlockIteraction
 
         List<Vector3> listOfStepPoints;
 
-        Vector3 drawWhereHit;
+        Vector3Int drawWhereHit;
 
         void Start()
         {
@@ -47,13 +47,13 @@ namespace BlockIteraction
             {
                 foreach (var item in listOfStepPoints)
                 {
-                    Gizmos.DrawSphere(item, 0.5f);
+                    Gizmos.DrawSphere(item, 0.05f);
                 }
             }
 
             if (drawWhereHit != null)
             {
-                Gizmos.DrawCube(drawWhereHit, Vector3.one);
+                Gizmos.DrawCube(drawWhereHit, Vector3.one*0.1f);
             }
         }
 
@@ -65,25 +65,28 @@ namespace BlockIteraction
                 Vector3 mousePos = inputHandler.GetMousePos();
                 mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-                Vector3 hitVal;
+                Vector3Int hitVal;
                 bool boolHitBlock;
 
 
                 drawWhereHit = TileMapHelperFunc.DDARayCheck(placeTileMap, transform.position, mousePos, maxRange, out hitVal, out boolHitBlock, out listOfStepPoints);
 
 
-                playerBlockView.SetLookAtObject(placeTileMap.WorldToCell(drawWhereHit), placeTileMap.WorldToCell(hitVal), null);
+                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, null);
+
+                Debug.Log(drawWhereHit);
 
                 if (inputHandler.IsPlacing && placingCoolDown <= 0)
                 {
                     placingCoolDown = placingMinCoolDown;
-                    placeTileMap.SetTile(placeTileMap.WorldToCell(hitVal), tileToPlace);
+                    
+                    placeTileMap.SetTile(hitVal, tileToPlace);
                 }
 
                 if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
                 {
                     destroyingCoolDown = destroyingMinCoolDown;
-                    placeTileMap.SetTile(placeTileMap.WorldToCell(drawWhereHit), null);
+                    placeTileMap.SetTile(drawWhereHit, null);
                 }
 
                 placingCoolDown = Mathf.Max(placingCoolDown - Time.deltaTime, 0);
