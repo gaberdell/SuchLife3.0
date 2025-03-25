@@ -6,9 +6,12 @@ public class HandleDungeonEntrance : MonoBehaviour
     InputHandler inputHandler;
     bool interact;
     bool playerInRange;
+    bool rendered;
     GameObject dungeonGrid;
     int dungeonOffsetX = 100;
     int dungeonOffsetY = 100;
+    DungeonOptions opts;
+
     private void Start()
     {
         inputHandler = InputHandler.Instance;
@@ -16,6 +19,9 @@ public class HandleDungeonEntrance : MonoBehaviour
         playerInRange = false;
         //subscribe to enter dungeon event
         EventManager.PlayerEnterDungeon += enterDungeon;
+        opts = new DungeonOptions();
+        rendered = false;
+        Debug.Log("start");
 
     }
     private void Update()
@@ -25,7 +31,15 @@ public class HandleDungeonEntrance : MonoBehaviour
         if(interact == true && inputHandler.InteractTriggered == false && playerInRange == true){
             //generate dungeon if none exists 
             GameObject dungeonGrid = GameObject.Find("DungeonGrid");
-            dungeonGrid.GetComponent<RenderDungeon>().StartRender(gameObject, dungeonOffsetX, dungeonOffsetY);
+            if (!rendered)
+            {
+                dungeonGrid.GetComponent<RenderDungeon>().StartRender(gameObject, dungeonOffsetX, dungeonOffsetY, opts);
+                rendered = true;
+            } else
+            {
+                EventManager.SetPlayerEnterDungeon();
+            }
+
         }
         interact = inputHandler.InteractTriggered;
     }

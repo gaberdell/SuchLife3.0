@@ -33,7 +33,7 @@ public class DungeonOptions
         maxRoomDist = 10;
         hallwayOpening = 6;
         branchType = "random";
-        seed = 1222;
+        seed = Random.Range(0, 1000);
         UnityEngine.Random.InitState(seed);
     }
 }
