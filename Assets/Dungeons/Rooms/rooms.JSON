@@ -3,55 +3,38 @@
       {
          "type": "Default",
          "tileLayout": [
-         "WWWWW",
-         "WFFFW",
-         "WFFFW",
-         "WFFFW",
-         "WWWWW"
-         ],
-         "width": 5,
-         "height": 5
-      },
-      {
-         "type": "Default",
-         "tileLayout": [
-         "WWWWWWWWWW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WWWWWWWWWW"
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF"
          ],
          "width": 10,
-         "height": 5
-      },
-      {
-         "type": "Default",
-         "tileLayout": [
-         "WWWWWWWWWW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WFFFFFFFFW",
-         "WWWWWWWWWW"
-         ],
-         "width": 10,
-         "height": 8
+         "height": 10
       },
       {
          "type": "Start",
          "tileLayout": [
-         "WWWWWWW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WFFFFFW",
-         "WWWWWWW"
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF"
+         
          ],
-         "width": 7,
-         "height": 7
+         "entities": ["DungeonExit"],
+         "width": 12,
+         "height": 10
       }
    ]
 }

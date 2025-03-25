@@ -8,24 +8,34 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
+
+// used by fetch; simple packet that contains a save's path, name, and last modified date and time
+public struct SaveInfo {
+  public string path;
+  public string name;
+  public DateTime lastModified;
+}
 public class DataService {
 
   private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\";
   private static int savePathLen = savePath.Length;
-  
-  // used by fetch; simple packet that contains a save's path, name, and last modified date and time
-  public struct SaveInfo {
-    public string path;
-    public string name;
-    public DateTime lastModified;
-  }
+
+
 
   // returns name, date (in that order) on all saves
   public static List<SaveInfo> Fetch() {
+    Directory.CreateDirectory(savePath); // automatically create Saves\ directory if it doesn't exist
+
 
     List<SaveInfo> info = new List<SaveInfo>();
     
     string[] paths = Directory.GetFiles(savePath);
+
+    
+    Debug.Log("Fetched:");
+    if (paths.Length == 0)
+      Debug.Log("(none)"); // nothing in the Saves\ directory
+    
     foreach (string path in paths) {
       SaveInfo saveInfo = new SaveInfo();
       
@@ -46,12 +56,13 @@ public class DataService {
   }
 
   // saves current game into savePath, returns success through a boolean (TODO: saves into given path)
-  public static bool Save(string savePath) {
+  public static bool Save(string namedSavePath) {
+    Directory.CreateDirectory(savePath);
 
     // dungeon
     GameObject dungeonGrid = GameObject.Find("DungeonGrid");
     if (dungeonGrid == null) {
-      Debug.Log("Unable to find dungeon!");
+      Debug.Log("ERROR: Unable to find dungeon!");
       return false;
     }
     RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
@@ -59,8 +70,8 @@ public class DataService {
     Debug.Log("dungeonJSON: " + dungeonJSON);
 
     // writing to file
-    Debug.Log("Saving to \"" + savePath + "\"...");
-    File.WriteAllText(savePath, dungeonJSON);
+    Debug.Log("Saving to \"" + namedSavePath + "\"...");
+    File.WriteAllText(namedSavePath, dungeonJSON);
     
     Debug.Log("Saved!");
 
@@ -68,11 +79,16 @@ public class DataService {
   }
 
   // loads game at savePath, returns success through a boolean
-  public static bool Load(string savePath) {
+  public static bool Load(string namedSavePath) {
+
+    if (!File.Exists(namedSavePath)) {
+      Debug.Log("ERROR: \"" + savePath + "\" does not exist!"); 
+      return false;
+    }
 
     // reading from file
-    Debug.Log("Loading from \"" + savePath + "\"...");
-    List<string> dungeonJsons = File.ReadLines(savePath).ToList();
+    Debug.Log("Loading from \"" + namedSavePath + "\"...");
+    List<string> dungeonJsons = File.ReadLines(namedSavePath).ToList();
     Debug.Log("dungeonJsons: " + dungeonJsons);
 
     // dungeon
@@ -91,8 +107,7 @@ public class DataService {
   public static bool Delete(string path) {
     return true;
   }
-
-
   public static string GetSavePath() { return savePath; } // retuns the save directory, which ends with a \
 
 }
+

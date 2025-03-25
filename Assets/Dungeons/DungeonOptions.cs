@@ -4,6 +4,8 @@ public class DungeonOptions
 {
     //class to hold options for dungeon creation
     //has graph (layout) options and generation options
+    public int seed; //seed for aspects of generation that are random
+
 
     public int maxNodes; //max amount of 'rooms'
     public int minNodes; //min amount of 'rooms' 
@@ -23,13 +25,15 @@ public class DungeonOptions
     public DungeonOptions()
     {
         //initialize default values
-        maxNodes = 10;
-        minNodes = 10;
+        maxNodes = 15;
+        minNodes = 15;
         maxEdges = 4;
         maxDepth = 3;
         minRoomDist = 4;
-        maxRoomDist = 4;
-        hallwayOpening = 3;
+        maxRoomDist = 10;
+        hallwayOpening = 6;
         branchType = "random";
+        seed = Random.Range(0, 1000);
+        UnityEngine.Random.InitState(seed);
     }
 }
