@@ -19,6 +19,7 @@ public class DungeonNode
     
     public DungeonNode()
     {
+
         //default vals
         depth = 0;
         xPos = 0;

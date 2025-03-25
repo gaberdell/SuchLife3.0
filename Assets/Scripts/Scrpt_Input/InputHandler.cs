@@ -22,6 +22,8 @@ public class InputHandler : MonoBehaviour
     [SerializeField]
     private string attack = "Attack";
     [SerializeField]
+    private string place = "Place";
+    [SerializeField]
     private string previous = "Previous";
     [SerializeField]
     private string next = "Next";
@@ -34,12 +36,16 @@ public class InputHandler : MonoBehaviour
 
     private InputAction moveAction;
     private InputAction sprintAction;
+    private InputAction attackAction;
+    private InputAction placeAction;
     private InputAction previousAction;
     private InputAction nextAction;
     private InputAction interactAction;
 
     public Vector2 MoveInput { get; private set; }
     public float SprintValue { get; private set; }
+    public bool IsAttacking { get; private set; }
+    public bool IsPlacing { get; private set; }
     public bool PreviousTriggered { get; private set; }
     public bool NextTriggered { get; private set; }
     public bool InteractTriggered { get; private set; }
@@ -60,6 +66,8 @@ public class InputHandler : MonoBehaviour
 
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
+        attackAction = playerControls.FindActionMap(actionMapName).FindAction(attack);
+        placeAction = playerControls.FindActionMap(actionMapName).FindAction(place);
         previousAction = playerControls.FindActionMap(actionMapName).FindAction(previous);
         nextAction = playerControls.FindActionMap(actionMapName).FindAction(next);
         interactAction = playerControls.FindActionMap(actionMapName).FindAction(interact);
@@ -95,6 +103,12 @@ public class InputHandler : MonoBehaviour
         sprintAction.performed += context => SprintValue = context.ReadValue<float>();
         sprintAction.canceled += context => SprintValue = 0f;
 
+        attackAction.performed += context => IsAttacking = true;
+        attackAction.canceled += context => IsAttacking = false;
+
+        placeAction.performed += context => IsPlacing = true;
+        placeAction.canceled += context => IsPlacing = false;
+
         previousAction.performed += context => PreviousTriggered = true;
         previousAction.canceled += context => PreviousTriggered = false;
 
@@ -109,6 +123,8 @@ public class InputHandler : MonoBehaviour
     {
         moveAction.Enable();
         sprintAction.Enable();
+        attackAction.Enable(); 
+        placeAction.Enable();
         previousAction.Enable();
         nextAction.Enable();
         interactAction.Enable();
@@ -120,6 +136,8 @@ public class InputHandler : MonoBehaviour
     {
         moveAction.Disable();
         sprintAction.Disable();
+        attackAction.Disable();
+        placeAction.Disable();
         previousAction.Disable();
         nextAction.Disable();
         interactAction.Disable();
