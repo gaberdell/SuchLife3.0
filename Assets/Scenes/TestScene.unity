@@ -917,8 +917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5b39804330ba3145b356a55dc6421a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundTilemap: {fileID: 959401300}
-  wallTilemap: {fileID: 1819852078}
+  groundTilemap: {fileID: 1990606950}
+  wallTilemap: {fileID: 1713446695}
   roomsFile: {fileID: 4900000, guid: 0c0870d2e9fca354f93e92dd56793b20, type: 3}
   grassTile: {fileID: 11400000, guid: e88b311d36e01a64ca29e9cc841aa8d8, type: 2}
   wallTile: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
