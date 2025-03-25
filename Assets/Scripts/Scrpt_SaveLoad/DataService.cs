@@ -95,7 +95,6 @@ public class DataService {
   public static bool Delete(string path) {
     return true;
   }
-
   public static string GetSavePath() { return savePath; } // retuns the save directory, which ends with a \
 
 }
