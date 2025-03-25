@@ -2,7 +2,8 @@
     "name": "WorldCreatorAssem",
     "rootNamespace": "",
     "references": [
-        "SaveLoadAssem"
+        "SaveLoadAssem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

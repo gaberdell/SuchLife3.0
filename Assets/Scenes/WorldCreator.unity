@@ -578,8 +578,9 @@ GameObject:
   - component: {fileID: 484243194}
   - component: {fileID: 484243193}
   - component: {fileID: 484243192}
+  - component: {fileID: 484243195}
   m_Layer: 5
-  m_Name: WorldNameInput
+  m_Name: WorldInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -744,6 +745,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484243190}
   m_CullTransparentMesh: 1
+--- !u!114 &484243195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484243190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d662582e8a711f34889eebad7c0b4bf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WorldNameInput: {fileID: 0}
 --- !u!1 &540774824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,89 +1254,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685092829}
   m_CullTransparentMesh: 1
---- !u!1 &888976152
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 888976155}
-  - component: {fileID: 888976154}
-  - component: {fileID: 888976153}
-  m_Layer: 0
-  m_Name: Player
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &888976153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888976152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_NotificationBehavior: 3
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &888976154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888976152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 256facdfcc2e21d43a70adf4fa4809ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  input: {fileID: 888976153}
-  deadZone: 0.1
-  maxSpeed: 5
-  accel: 27
-  stopingAccel: 20
-  plrCollider: {fileID: 0}
-  rigidBody: {fileID: 0}
-  rotationSpeed: 360
---- !u!4 &888976155
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888976152}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &894509497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,7 +1482,6 @@ GameObject:
   - component: {fileID: 1025288230}
   - component: {fileID: 1025288233}
   - component: {fileID: 1025288234}
-  - component: {fileID: 1025288236}
   - component: {fileID: 1025288235}
   m_Layer: 0
   m_Name: Main Camera
@@ -1702,18 +1632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d662582e8a711f34889eebad7c0b4bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1025288236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025288229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c51410caab1c494e9ae83147fda22ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  WorldNameInput: {fileID: 0}
 --- !u!1 &1028713810
 GameObject:
   m_ObjectHideFlags: 0
@@ -2365,7 +2284,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1025288235}
         m_TargetAssemblyTypeName: NewWorldUi, WorldCreatorAssem
         m_MethodName: CreateWorldButton
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3824,5 +3743,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1025288232}
   - {fileID: 1028713814}
-  - {fileID: 888976155}
   - {fileID: 1922183587}
