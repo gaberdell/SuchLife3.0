@@ -8,16 +8,21 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
+// used by fetch; simple packet that contains a save's path, name, and last modified date and time
+public struct SaveInfo {
+  public string path;
+  public string name;
+  public DateTime lastModified;
+}
+
 public class DataService {
 
   private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\";
   private static int savePathLen = savePath.Length;
-  
-  // used by fetch; simple packet that contains a save's path, name, and last modified date and time
-  public struct SaveInfo {
-    public string path;
-    public string name;
-    public DateTime lastModified;
+
+  // TODO: automatically create Save/ directory
+  public static void SaveDir() {
+# 
   }
 
   // returns name, date (in that order) on all saves
