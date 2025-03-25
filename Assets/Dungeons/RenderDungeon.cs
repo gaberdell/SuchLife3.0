@@ -15,54 +15,61 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] Tilemap wallTilemap;
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
-    [SerializeField] Tile wallTile;
+    [SerializeField] RuleTile wallTile;
     [SerializeField] Tile bonusTile;
+    [SerializeField] GameObject dungeonExit;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
-    
+    EventManager eventManager;
+
     // TOREVIEW: macros for grass and wall tile sprite names
     string GRASS_SPRITE_NAME;
     string WALL_SPRITE_NAME;
-    
-    public void StartRender(){
+
+    private void Start()
+    {
+        eventManager = EventManager.Instance;
+    }
+    public void StartRender(GameObject dungeonEntrance){
+        
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
         //for each node in the graph, set the tile with the same index to a grasstile
-        for (int i = 0; i < nodeGraph.layout.Count; i++)
-        {
-            DungeonNode node = nodeGraph.layout[i];
-            if(node.type == "Start")
-            {
-                groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), bonusTile);
-            } else
-            {
-                groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), grassTile);
-            }
+        //for (int i = 0; i < nodeGraph.layout.Count; i++)
+        //{
+        //    DungeonNode node = nodeGraph.layout[i];
+        //    if(node.type == "Start")
+        //    {
+        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), bonusTile);
+        //    } else
+        //    {
+        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), grassTile);
+        //    }
             
-            //draw edges
-            for (int j = 0; j < node.edges.Count; j++)
-            {
-                //draw em somehow
-                switch (node.edges[j].Item2)
-                {
-                    case "top":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 - 2, 0), wallTile);
-                        break;
-                    case "bottom":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 + 2, 0), wallTile);
-                        break;
-                    case "right":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 2 + 50, node.yPos * 4, 0), wallTile);
-                        break;
-                    case "left":
-                        wallTilemap.SetTile(new Vector3Int(node.xPos * 4 - 2 + 50, node.yPos * 4, 0), wallTile);
-                        break;
-                }
+        //    //draw edges
+        //    for (int j = 0; j < node.edges.Count; j++)
+        //    {
+        //        //draw em somehow
+        //        switch (node.edges[j].Item2)
+        //        {
+        //            case "top":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 - 2, 0), wallTile);
+        //                break;
+        //            case "bottom":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 + 2, 0), wallTile);
+        //                break;
+        //            case "right":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 2 + 50, node.yPos * 4, 0), wallTile);
+        //                break;
+        //            case "left":
+        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 - 2 + 50, node.yPos * 4, 0), wallTile);
+        //                break;
+        //        }
                 
-            }
-        }
+        //    }
+        //}
         // Render graph one node at a time starting from the start node
         //will draw the room, draw a neighboring node at a random distance away(set in opts), and draw a hallway connecting them(and add the new node to a queue)
         //Rooms are read from static files and chosen randomly, with bias on room layouts not already existing
@@ -71,25 +78,50 @@ public class RenderDungeon : MonoBehaviour, Saveable
         //Randomize position of hallway on the sides
 
         //load rooms
-        Debug.Log(roomsFile.text);
         rooms = JsonUtility.FromJson<RoomContainer>(roomsFile.text);
-        foreach(RoomInfo room in rooms.rooms)
-        {
-            Debug.Log("Found room " + room.type);
-        }
         rooms.createIndexes();
         //start by drawing the starting room, which will always be at the 0th index(?)
-        createStartingRoom(nodeGraph, opts);
+        createStartingRoom(nodeGraph, opts, dungeonEntrance);
         
         //now branch off of the starting room, following the edges and creating connecting rooms one at a time
         //recursively?
 
         // TOREVIEW: saving sprite name in a macro for saving/loading
         GRASS_SPRITE_NAME = grassTile.sprite.name;
-        WALL_SPRITE_NAME = wallTile.sprite.name;
+        //WALL_SPRITE_NAME = wallTile.sprite.name;
+        WALL_SPRITE_NAME = "blueBricks";
+
+        //after dungeon is generated
+        fillBackground();
+        //trigger player enter dungeon after dungeon is generated
+        EventManager.SetPlayerEnterDungeon();
+
     }
 
-    void createStartingRoom(DungeonGraph nodeGraph, DungeonOptions opts)
+    void fillBackground()
+    {
+        
+        int x_min = groundTilemap.cellBounds.min.x-10;
+        int x_max = groundTilemap.cellBounds.max.x+10;
+        int y_min = groundTilemap.cellBounds.min.y-10;
+        int y_max = groundTilemap.cellBounds.max.y+10;
+
+        for (int x = x_min; x < x_max; x++)
+        {
+            for (int y = y_min; y < y_max; y++)
+            {
+                Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+
+                if (tile == null)
+                {
+                    //place a wall if theres no ground tile
+                    wallTilemap.SetTile(new Vector3Int(x, y, 0), wallTile);
+                }
+            }
+        }
+    }
+
+    void createStartingRoom(DungeonGraph nodeGraph, DungeonOptions opts, GameObject entrance)
     {
         DungeonNode startingNode = new DungeonNode();
         //find starting room in nodegraph
@@ -121,6 +153,18 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         groundTilemap.SetTile(new Vector3Int(j, i, 0), grassTile);
                         break;
                 }
+            }
+        }
+        //handle entities
+        for(int i = 0; i < startingNode.roomInfo.entities.Count; i++)
+        {
+            string entity = startingNode.roomInfo.entities[i];
+            if (entity == "DungeonExit")
+            {
+                //create dungeon exit from prefab
+                GameObject exitInstance = Instantiate(dungeonExit);
+                exitInstance.transform.position = groundTilemap.transform.position + new Vector3Int(startingNode.drawXPos + startingNode.roomInfo.width/2, startingNode.drawYPos + startingNode.roomInfo.width/2, 0);
+                exitInstance.GetComponent<HandleDungeonExit>().setEntrance(entrance);
             }
         }
         //for each edge, create the room
@@ -264,7 +308,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 {
                     if (i == 0 || i == width - 1)
                     {
-                        wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
                     }
                     else
                     {
@@ -283,7 +327,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 {
                     if (j == 0 || j == height - 1)
                     {
-                        wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
+                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
                     }
                     else
                     {
