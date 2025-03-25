@@ -22,6 +22,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
 
+    int dungeonOffsetX;
+    int dungeonOffsetY;
+
     // TOREVIEW: macros for grass and wall tile sprite names
     string GRASS_SPRITE_NAME;
     string WALL_SPRITE_NAME;
@@ -30,8 +33,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     {
         eventManager = EventManager.Instance;
     }
-    public void StartRender(GameObject dungeonEntrance){
-        
+    public void StartRender(GameObject dungeonEntrance, int offsetX, int offsetY){
+        dungeonOffsetX = offsetX;
+        dungeonOffsetY = offsetY;
         DungeonOptions opts = new DungeonOptions();
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
@@ -101,9 +105,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     void fillBackground()
     {
         
-        int x_min = groundTilemap.cellBounds.min.x-10;
-        int x_max = groundTilemap.cellBounds.max.x+10;
-        int y_min = groundTilemap.cellBounds.min.y-10;
+        int x_min = groundTilemap.cellBounds.min.x-10 + dungeonOffsetX/2;
+        int x_max = groundTilemap.cellBounds.max.x + 10;
+        int y_min = groundTilemap.cellBounds.min.y-10 + dungeonOffsetY/2;
         int y_max = groundTilemap.cellBounds.max.y+10;
 
         for (int x = x_min; x < x_max; x++)
@@ -146,11 +150,11 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 switch (roomLayout[i][j])
                 {
                     case 'W':
-                        wallTilemap.SetTile(new Vector3Int(j, i, 0), wallTile);
+                        wallTilemap.SetTile(new Vector3Int(j + dungeonOffsetX, i + dungeonOffsetY, 0), wallTile);
                         break;
 
                     case 'F':
-                        groundTilemap.SetTile(new Vector3Int(j, i, 0), grassTile);
+                        groundTilemap.SetTile(new Vector3Int(j + dungeonOffsetX, i + dungeonOffsetY, 0), grassTile);
                         break;
                 }
             }
@@ -163,7 +167,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
             {
                 //create dungeon exit from prefab
                 GameObject exitInstance = Instantiate(dungeonExit);
-                exitInstance.transform.position = groundTilemap.transform.position + new Vector3Int(startingNode.drawXPos + startingNode.roomInfo.width/2, startingNode.drawYPos + startingNode.roomInfo.width/2, 0);
+                exitInstance.transform.position = groundTilemap.transform.position + new Vector3Int(startingNode.drawXPos + startingNode.roomInfo.width/2 + dungeonOffsetX, startingNode.drawYPos + startingNode.roomInfo.width/2 + dungeonOffsetY, 0);
                 exitInstance.GetComponent<HandleDungeonExit>().setEntrance(entrance);
             }
         }
@@ -220,11 +224,11 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 switch (roomLayout[i][j])
                 {
                     case 'W':
-                        wallTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX, prevRoom.drawYPos + i + offsetY, 0), wallTile);
+                        wallTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
                         break;
 
                     case 'F':
-                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX, prevRoom.drawYPos + i + offsetY, 0), grassTile);
+                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
                         break;
                 }
             }
@@ -316,11 +320,11 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         {
                             hallwayEndPos.Add(new Tuple<int, int>(i, j));
                             //CLEAR WALLS THAT OVERLAP WITH HALLWAY
-                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY-1, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY+1, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY - 1 + dungeonOffsetY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY+1 + dungeonOffsetY, 0), null);
                         }
-                        groundTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+                        groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), grassTile);
 
                     }
                 } else
@@ -335,12 +339,12 @@ public class RenderDungeon : MonoBehaviour, Saveable
                         {
                             hallwayEndPos.Add(new Tuple<int, int>(i, j));
                             //CLEAR WALLS THAT OVERLAP WITH HALLWAY
-                            wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX+1, j + startY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX-1, j + startY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX+1 + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
+                            wallTilemap.SetTile(new Vector3Int(i + startX-1 + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
 
                         }
-                        groundTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), grassTile);
+                        groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), grassTile);
                         
                     }
                 }
