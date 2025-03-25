@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using static DataService;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
+using TMPro;
 
 public class NewWorldUi : MonoBehaviour
 {
     private string input;
-    public InputField inputfield;
+    public TMP_InputField WorldInputField;
 
     void Start()
     {
@@ -38,12 +40,13 @@ public class NewWorldUi : MonoBehaviour
 
     public void CreateWorldButton()
     {
-        
+        Debug.Log("Creating world...");
+
         //load into world before saving
         SceneManager.LoadScene("TestScene");
 
         //use inputField text to create world name
-        string name = inputfield.text;
+        string name = WorldInputField.GetComponent<TMP_InputField>().text;
 
 
         Debug.Log("Input text: " + name); //debugging print statement
