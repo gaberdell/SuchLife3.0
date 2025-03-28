@@ -271,6 +271,7 @@ public class CraftingUI : MonoBehaviour
         InventorySlot first; 
         InventorySlot sec; 
 
+
         if (firstButtonPress.type == "inv"){
             first = inventory[firstButtonPress.index]; 
         }
@@ -297,6 +298,7 @@ public class CraftingUI : MonoBehaviour
             sec = null;
         }
     
+   
         //Logic time.
 
         if(first.isEmpty && sec.isEmpty){ // if both empty
@@ -313,13 +315,30 @@ public class CraftingUI : MonoBehaviour
 
         }
         else if(!first.isEmpty && !sec.isEmpty){ // if they both have items, we swap.
-        Debug.Log("Swap!");
-        ///// girl youre dumb. 
-         InventorySlot temp; 
-         temp = sec; 
+            // Debug.Log("The two selected things are:");
+            // Debug.Log("first = " + firstButtonPress.type + ", " + firstButtonPress.index + ": " + first.item.itemName );
+            // Debug.Log("sec = " + secondButtonPress.type + ", " + secondButtonPress.index + ": " + sec.item.itemName );
 
-         sec = first;
-         first = temp; 
+
+            Debug.Log("Swap!");
+            ///// girl youre dumb. 
+            InventorySlot temp; 
+
+            temp = sec; 
+            sec = first;
+            first = temp; 
+
+            inventory[firstButtonPress.index] = first;
+            inventory[secondButtonPress.index] = sec;
+
+
+            // Debug.Log("Now:");
+            // Debug.Log("first : " + first.item.itemName );
+            // Debug.Log("sec : " + sec.item.itemName );
+
+            
+        
+
 
         }
 
