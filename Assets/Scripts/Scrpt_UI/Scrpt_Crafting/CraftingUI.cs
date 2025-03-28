@@ -27,6 +27,8 @@ public class CraftingUI : MonoBehaviour
     public GameObject craftinggrid;  //Crafting Grid Button
 
     public List<GameObject> inv = new List<GameObject>();  //list of all the game objs
+    public List<GameObject> craft = new List<GameObject>();  //list of all the crafting objs oanels
+
 
 
     //This doesn't have to be public, but I wanna see this in inspector when I debug, soooo. Cou
@@ -41,6 +43,10 @@ public class CraftingUI : MonoBehaviour
     void Start()
     {
 
+
+    crafting = new List<InventorySlot>();
+
+
     firstButtonPress.type = null; 
     firstButtonPress.index = -1;
 
@@ -51,15 +57,27 @@ public class CraftingUI : MonoBehaviour
             {
                 inv.Add(inv_panel.transform.GetChild(i).gameObject);
 
-    
-
             }    
+
+            for (int i = 0; i < craftinggrid.transform.childCount; i++) //same thing w crafting
+            {
+                craft.Add(craftinggrid.transform.GetChild(i).gameObject);
+
+            }   
 
 
         inventory =  player.GetComponent<PlayerInventory>().inventory;
    
-        crafting = new List<InventorySlot>(new InventorySlot[9]);  // Initializes with x zeros
+      for(int i = 0; i < 9; i++)
+        {
+            InventorySlot slot = new InventorySlot(); 
+            slot.isEmpty = true;
+            crafting.Add(slot); 
+        }
 
+       // crafting = new List<InventorySlot>(new InventorySlot[9]);  // Initializes with x zeros
+
+ 
         foreach (GameObject panel in inv)
         {
             
@@ -80,7 +98,14 @@ public class CraftingUI : MonoBehaviour
                        Debug.Log("HERE!");
 
 
+        for(int i = 0; i < 9; i++){
+            crafting[i].isEmpty = true;
+                    Debug.Log("empty!");
+
+        }
+
         int count = 0; 
+
         foreach (GameObject panel in inv)
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
@@ -89,6 +114,7 @@ public class CraftingUI : MonoBehaviour
             if(!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
+
                 tmp.color = new Color32(255,255,225,100);
                 inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
                // player.GetComponent<TextMeshProUGUI>();
@@ -100,8 +126,21 @@ public class CraftingUI : MonoBehaviour
            count++; 
 
 
+        }   
+        //Enable Craft Grid.
 
+        
+        foreach (GameObject panel in craft)
+        {
+            
+                Transform textChild = panel.transform.GetChild(0); // Get the first child
+                TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
+
+                tmp.text = ""; 
+                tmp.color = new Color32(255,255,225,100);
+        
         }
+
 
 
 
@@ -117,6 +156,8 @@ public class CraftingUI : MonoBehaviour
 
         //Coudl rewrite to use game events.
          int count = 0; 
+
+
         foreach (GameObject panel in inv)
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
@@ -124,9 +165,20 @@ public class CraftingUI : MonoBehaviour
 
             if(!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
-                tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
+                if((player.GetComponent<PlayerInventory>().inventory)[count].quantity > 1){
+                    tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
+
+                }else {
+                                        tmp.text = "" ;
+
+                }
+
+                
                 tmp.color = new Color32(255,255,225,100);
-                inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
+
+                if(inventory[count].item != null){
+                 inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
+                }
                // player.GetComponent<TextMeshProUGUI>();
 
 
@@ -146,8 +198,58 @@ public class CraftingUI : MonoBehaviour
            count++; 
 
 
+        }
+
+        //the same for crafting.
+
+         count = 0;
+        foreach (GameObject panel in craft)
+        {
+            Transform textChild = panel.transform.GetChild(0); // Get the first child
+            TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
+
+
+            if(!(crafting[count].isEmpty)){ //if we have something in crafting 
+
+                if( crafting[count].quantity > 1){
+                tmp.text = crafting[count].quantity.ToString(); 
+                tmp.color = new Color32(255,255,225,100);
+                }
+                else {
+                                                            tmp.text = "" ;
+
+                }
+               
+
+                //breaking!!
+
+                if(crafting[count].item != null){
+                  craft[count].GetComponent<Image>().sprite = crafting[count].item.icon; 
+
+                }
+               // player.GetComponent<TextMeshProUGUI>();
+
+
+
+            }
+            else {
+
+                craft[count].GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
+                craft[count].GetComponent<Image>().color = new Color32(255,255,225,100);
+                tmp.text = "";
+
+
+
+
+            }
+           
+           count++; 
+
 
         }
+
+
+
         
     }
 
@@ -171,6 +273,7 @@ public class CraftingUI : MonoBehaviour
 
             Debug.Log("Selected second!");
             inv[index].GetComponent<Image>().color = new Color32(255,255,225,100);
+            inv[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
 
 
             //Since we have two things selected , we can swap inventory places now. 
@@ -320,6 +423,34 @@ public class CraftingUI : MonoBehaviour
             // Debug.Log("sec = " + secondButtonPress.type + ", " + secondButtonPress.index + ": " + sec.item.itemName );
 
 
+            //First, check if theyre the same. If they are, we wanna merge first into second.
+
+            if (first.item == sec.item){
+                AddItemInSlot(sec.item, secondButtonPress.type, secondButtonPress.index );
+
+                RemoveItemInSlot(firstButtonPress.type, firstButtonPress.index);
+
+                    if (firstButtonPress.type == "inv"){
+                    inventory[firstButtonPress.index] = first;
+                    }
+                    else if (firstButtonPress.type == "craft"){
+                    crafting[firstButtonPress.index] = first;
+
+                    }
+                
+
+                    /// Do the same for sec.
+                    if (secondButtonPress.type == "inv"){
+                    inventory[secondButtonPress.index] = sec;
+                    }
+                    else if (secondButtonPress.type == "craft"){
+                    crafting[secondButtonPress.index] = sec;
+
+                    }
+                return; 
+            }
+
+
             Debug.Log("Swap!");
             ///// girl youre dumb. 
             InventorySlot temp; 
@@ -328,8 +459,28 @@ public class CraftingUI : MonoBehaviour
             sec = first;
             first = temp; 
 
-            inventory[firstButtonPress.index] = first;
-            inventory[secondButtonPress.index] = sec;
+            if (firstButtonPress.type == "inv"){
+             inventory[firstButtonPress.index] = first;
+            }
+            else if (firstButtonPress.type == "craft"){
+             crafting[firstButtonPress.index] = first;
+
+            }
+        
+
+            /// Do the same for sec.
+             if (secondButtonPress.type == "inv"){
+             inventory[secondButtonPress.index] = sec;
+            }
+            else if (secondButtonPress.type == "craft"){
+             crafting[secondButtonPress.index] = sec;
+
+            }
+
+
+          
+            //inventory[firstButtonPress.index] = first;
+            //inventory[secondButtonPress.index] = sec;
 
 
             // Debug.Log("Now:");
@@ -351,11 +502,18 @@ public class CraftingUI : MonoBehaviour
         if (firstButtonPress.type == null){ //If we've selected nothing. 
             firstButtonPress.type = "craft";
             firstButtonPress.index = index;
+                        craft[index].GetComponent<Image>().color = new Color32(50,255,225,100);
+
 
         }
         else if (secondButtonPress.type == null){
             secondButtonPress.type = "craft";
             secondButtonPress.index = index;
+
+                        craft[index].GetComponent<Image>().color = new Color32(255,255,225,100);
+                        craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
+
+
 
             //Since we have two things selected , we can swap inventory places now. 
 
