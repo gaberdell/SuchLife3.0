@@ -141,13 +141,14 @@ public class PlayerInventory : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.E) ){
 
-            if (fullInventory != null){
+            if (fullInventory != null && !CraftingUI.activeSelf){
     
                 bool isActive = fullInventory.activeSelf;
                 
                 fullInventory.SetActive(!isActive);
                 gameUI.SetActive(isActive); 
-                
+
+
 
                 this.GetComponent<helperFunctions>().togglePause();
 
@@ -157,12 +158,12 @@ public class PlayerInventory : MonoBehaviour
         
            if(Input.GetKeyDown(KeyCode.Q) ){
 
-            if (CraftingUI != null){
-    
-                bool isActive = CraftingUI.activeSelf;
+            if (CraftingUI != null && !fullInventory.activeSelf){
+                 bool isActive = CraftingUI.activeSelf;
                 
                 CraftingUI.SetActive(!isActive);
-                
+                gameUI.SetActive(isActive); 
+
 
                 this.GetComponent<helperFunctions>().togglePause();
 
@@ -176,13 +177,11 @@ public class PlayerInventory : MonoBehaviour
 
 
     public void AddItem(Item item){
-        Debug.Log("Adding Item...");
 
         int isInHotbar = 0;
         foreach (InventorySlot slot in inventory){
 
             if(slot.item == item){
-                Debug.Log("Already exists, increasing quantity!");
 
                 //Item already exists in inventory, therefore, we increment its amount.
                 slot.quantity++; 
@@ -216,7 +215,6 @@ public class PlayerInventory : MonoBehaviour
         
         //If we go through entire loop and havent found a match, we simply add it to next free slot.
          foreach (InventorySlot slot in inventory){
-            Debug.Log("Adding to next free slot!");
 
             if(slot.isEmpty == true){
                 slot.isEmpty = false; 
@@ -245,18 +243,17 @@ public class PlayerInventory : MonoBehaviour
 
     }
 
+
    public void RemoveItem(Item item){
 
         int isInHotbar = 0;
 
         foreach (InventorySlot slot in inventory){
             if(slot.item == item){
-                Debug.Log("Removing Item");
 
                 slot.quantity--;
 
                 if(slot.quantity == 0){
-                     Debug.Log("0 quantity, emptying slot.");
 
                      //Now we also have to remove the image in hotbar.
 
