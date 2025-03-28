@@ -9,8 +9,8 @@ using TMPro;
 
 public class NewWorldUi : MonoBehaviour
 {
-    private string input;
-    public TMP_InputField WorldInputField;
+
+    [SerializeField] private static string inputText;
 
     void Start()
     {
@@ -27,26 +27,27 @@ public class NewWorldUi : MonoBehaviour
         }
 
     }
-    /*  void OnEnable()
-      {
-          EventManager.Clicked += CreateWorldButton;
-      }
 
-      void OnDisable()
-      {
-          EventManager.Clicked -= CreateWorldButton;
+    public void GrabFromInputField(string input)
+    {
+        inputText = input;
+        Debug.Log(inputText);
 
-      }*/
+
+        //DisplayReactionToInput();
+
+    }
+
 
     public void CreateWorldButton()
     {
         Debug.Log("Creating world...");
 
         //load into world before saving
-        SceneManager.LoadScene("TestScene");
+        SceneManager.LoadScene("DungeonScene");
 
         //use inputField text to create world name
-        string name = WorldInputField.GetComponent<TMP_InputField>().text;
+        string name = inputText;
 
 
         Debug.Log("Input text: " + name); //debugging print statement
