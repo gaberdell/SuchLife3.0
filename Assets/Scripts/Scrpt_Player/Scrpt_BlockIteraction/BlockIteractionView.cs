@@ -34,11 +34,13 @@ namespace BlockIteraction
 
         Vector3 offsetVector = new Vector3(0.5f, 0.5f);
 
-        public void SetLookAtObject(Vector3 stayPosition, Vector3 blockPosition, Sprite placeSprite)
+        public void SetLookAtObject(Vector3 stayPosition, Vector3 blockPosition, Quaternion destroyRotation, Sprite placeSprite)
         {
             stayPosition.z = destroyBlockGhost.transform.position.z;
             destroyBlockGhost.transform.position = stayPosition + offsetVector;
+            destroyBlockGhost.transform.rotation = destroyRotation;
             placeBlockGhost.transform.position = blockPosition + offsetVector;
+
         }
 
 

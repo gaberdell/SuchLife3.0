@@ -56,6 +56,7 @@ public class InputHandler : MonoBehaviour
 
     private void Awake()
     {
+
         if (Instance == null)
         {
             Instance = this;
@@ -128,6 +129,8 @@ public class InputHandler : MonoBehaviour
         previousAction.Enable();
         nextAction.Enable();
         interactAction.Enable();
+
+        IsMouseEnabled = true;
 
         InputSystem.onDeviceChange += onDeviceChange;
     }
