@@ -59,7 +59,7 @@ namespace TileMapHelper
             float currentDistance = 0f;
             float lastFailedDist = 0f;
             maxDistance = Mathf.Clamp(difVec.magnitude, 0f, maxDistance);
-            Debug.Log(maxDistance);
+            //Debug.Log(maxDistance);
             //Rollback one? Solution?
             //If brushes up against max distance then rollback by one?
             while (!hitBlock && currentDistance < maxDistance)

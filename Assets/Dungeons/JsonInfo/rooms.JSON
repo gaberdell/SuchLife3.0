@@ -1,0 +1,89 @@
+{
+   "rooms": [
+      {
+         "type": "Default",
+         "tileLayout": [
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF"
+         ],
+         "enemyLayout": [
+         "XXXXXXXXXX",
+         "XBXXXXXXBX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XBXXXXXXBX",
+         "XXXXXXXXXX"
+         ],
+         "width": 10,
+         "height": 10
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "FFFFF",
+         "FFFFF",
+         "FFFFF"
+         ],
+         "width": 5,
+         "height": 3
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF"
+         ],
+         "enemyLayout": [
+         "XXXXXXXXXXXXXXX",
+         "XXBXXXXXXXXXBXX",
+         "XXXXXXXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXX",
+         "XXBXX",
+         "XXXXX",
+         "XXXXX"
+         ],
+         "width": 15,
+         "height": 9
+      },
+      {
+         "type": "Start",
+         "tileLayout": [
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF"
+         
+         ],
+         "entities": ["DungeonExit"],
+         "width": 12,
+         "height": 10
+      }
+   ]
+}
