@@ -1,41 +1,41 @@
 using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class GraphUpdater : MonoBehaviour
 {
-    public bool jankScanGraphEveryTime;
-    bool dungeonCreated = false;
+    // private bool dungeonCreated = false;
 
     void OnEnable()
     {
-        EventManager.PlayerEnterDungeon += OnDungeonCreated;
+        // EventManager.PlayerEnterDungeon += OnDungeonCreated;
         Tilemap.tilemapTileChanged += OnTilemapChanged;
     }
 
     void OnDisable()
     {
-        EventManager.PlayerEnterDungeon -= OnDungeonCreated;
+        // EventManager.PlayerEnterDungeon -= OnDungeonCreated;
         Tilemap.tilemapTileChanged -= OnTilemapChanged;
     }
 
-    void OnDungeonCreated()
-    {
-        Invoke("InitialScan", 1);
-        
-        Debug.Log("TILEMAP CHANGED");
-    }
+    // void OnDungeonCreated()
+    // {
+    //     Invoke("InitialScan", 1);
+    // }
 
-    void InitialScan()
-    {
-        AstarPath.active.Scan();
-        dungeonCreated = true;
-    }
+    // void InitialScan()
+    // {
+    //     AstarPath.active.Scan();
+    //     dungeonCreated = true;
+    // }
 
-    void OnTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] arg2)
+    void OnTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] ts)
     {
-        if (dungeonCreated && jankScanGraphEveryTime)
-            AstarPath.active.Scan();
+        // if (dungeonCreated) {
+        Bounds tileBounds = new Bounds(ts[0].position, new Vector2(1, 1));
+        AstarPath.active.UpdateGraphs(tileBounds);
+        // }
     }
 
 }
