@@ -102,7 +102,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
         //after dungeon is generated
         fillBackground(nodeGraph);
         //trigger player enter dungeon after dungeon is generated
-        EventManager.SetPlayerEnterDungeon();
+        //EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, );
 
     }
 
@@ -160,6 +160,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 }
             }
         }
+        EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
     }
 
     void createStartingRoom(DungeonGraph nodeGraph, GameObject entrance)
