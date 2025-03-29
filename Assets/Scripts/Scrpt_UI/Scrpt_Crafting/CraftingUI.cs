@@ -120,7 +120,6 @@ public class CraftingUI : MonoBehaviour
                // player.GetComponent<TextMeshProUGUI>();
 
 
-
             }
            
            count++; 
@@ -140,9 +139,6 @@ public class CraftingUI : MonoBehaviour
                 tmp.color = new Color32(255,255,225,100);
         
         }
-
-
-
 
 
     }
@@ -216,7 +212,7 @@ public class CraftingUI : MonoBehaviour
                 tmp.color = new Color32(255,255,225,100);
                 }
                 else {
-                                                            tmp.text = "" ;
+                                 tmp.text = "" ;
 
                 }
                
@@ -418,10 +414,6 @@ public class CraftingUI : MonoBehaviour
 
         }
         else if(!first.isEmpty && !sec.isEmpty){ // if they both have items, we swap.
-            // Debug.Log("The two selected things are:");
-            // Debug.Log("first = " + firstButtonPress.type + ", " + firstButtonPress.index + ": " + first.item.itemName );
-            // Debug.Log("sec = " + secondButtonPress.type + ", " + secondButtonPress.index + ": " + sec.item.itemName );
-
 
             //First, check if theyre the same. If they are, we wanna merge first into second.
 
@@ -478,19 +470,6 @@ public class CraftingUI : MonoBehaviour
             }
 
 
-          
-            //inventory[firstButtonPress.index] = first;
-            //inventory[secondButtonPress.index] = sec;
-
-
-            // Debug.Log("Now:");
-            // Debug.Log("first : " + first.item.itemName );
-            // Debug.Log("sec : " + sec.item.itemName );
-
-            
-        
-
-
         }
 
 
@@ -502,7 +481,7 @@ public class CraftingUI : MonoBehaviour
         if (firstButtonPress.type == null){ //If we've selected nothing. 
             firstButtonPress.type = "craft";
             firstButtonPress.index = index;
-                        craft[index].GetComponent<Image>().color = new Color32(50,255,225,100);
+            craft[index].GetComponent<Image>().color = new Color32(50,255,225,100);
 
 
         }
@@ -510,8 +489,8 @@ public class CraftingUI : MonoBehaviour
             secondButtonPress.type = "craft";
             secondButtonPress.index = index;
 
-                        craft[index].GetComponent<Image>().color = new Color32(255,255,225,100);
-                        craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
+            craft[index].GetComponent<Image>().color = new Color32(255,255,225,100);
+            craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
 
 
 
