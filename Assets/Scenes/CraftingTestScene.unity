@@ -8687,6 +8687,7 @@ MonoBehaviour:
   move: Move
   sprint: Sprint
   attack: Attack
+  place: Place
   previous: Previous
   next: Next
   interact: Interact
@@ -10118,6 +10119,11 @@ MonoBehaviour:
   secondButtonPress:
     index: 0
     type: 
+  current_crafting: []
+  emptyitem: {fileID: 11400000, guid: 08bfc371bc663d24f82afb7f61b60a0a, type: 2}
+  allrecipes:
+  - {fileID: 11400000, guid: 7ae0290551022344aaff9d768c237d7d, type: 2}
+  resultbox: {fileID: 1111416323}
 --- !u!1 &400355469
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using System.Collections;
 using TMPro;
 
 
+//Right now, 
 [System.Serializable]
 public struct tuple_struct
 {
@@ -30,19 +31,23 @@ public class CraftingUI : MonoBehaviour
     public List<GameObject> craft = new List<GameObject>();  //list of all the crafting objs oanels
 
 
-
-    //This doesn't have to be public, but I wanna see this in inspector when I debug, soooo. Cou
     public tuple_struct firstButtonPress; 
     public tuple_struct secondButtonPress;
 
-    //TODO:
 
+    public List<Item> current_crafting = new List<Item>();  //The list of items currently in Crafting. All initialized to null initially, and it goes from 0-8 from top left as 0 and bottom right as 8. 
 
+    public Item emptyitem; //Used in comparisons. 
+
+    public List<Recipe> allrecipes; //A list of all recipes. 
+
+    public GameObject resultbox; 
 
 
     void Start()
     {
 
+    
 
     crafting = new List<InventorySlot>();
 
@@ -72,11 +77,10 @@ public class CraftingUI : MonoBehaviour
         {
             InventorySlot slot = new InventorySlot(); 
             slot.isEmpty = true;
-            crafting.Add(slot); 
+            crafting.Add(slot);
+            current_crafting.Add(emptyitem); //Because nothing is in crafting grid, fill it with 'empty' items.
+             
         }
-
-       // crafting = new List<InventorySlot>(new InventorySlot[9]);  // Initializes with x zeros
-
  
         foreach (GameObject panel in inv)
         {
@@ -95,12 +99,10 @@ public class CraftingUI : MonoBehaviour
     }
 
     void onEnable(){
-                       Debug.Log("HERE!");
 
 
         for(int i = 0; i < 9; i++){
             crafting[i].isEmpty = true;
-                    Debug.Log("empty!");
 
         }
 
@@ -118,7 +120,6 @@ public class CraftingUI : MonoBehaviour
                 tmp.color = new Color32(255,255,225,100);
                 inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
                // player.GetComponent<TextMeshProUGUI>();
-
 
             }
            
@@ -150,7 +151,7 @@ public class CraftingUI : MonoBehaviour
     void Update()
     {
 
-        //Coudl rewrite to use game events.
+        //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.
          int count = 0; 
 
 
@@ -165,7 +166,7 @@ public class CraftingUI : MonoBehaviour
                     tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
 
                 }else {
-                                        tmp.text = "" ;
+                    tmp.text = "" ;
 
                 }
 
@@ -175,9 +176,6 @@ public class CraftingUI : MonoBehaviour
                 if(inventory[count].item != null){
                  inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
                 }
-               // player.GetComponent<TextMeshProUGUI>();
-
-
 
             }
             else {
@@ -185,9 +183,6 @@ public class CraftingUI : MonoBehaviour
                 inv[count].GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
                 inv[count].GetComponent<Image>().color = new Color32(255,255,225,100);
                 tmp.text = "";
-
-
-
 
             }
            
@@ -198,7 +193,7 @@ public class CraftingUI : MonoBehaviour
 
         //the same for crafting.
 
-         count = 0;
+        count = 0;
         foreach (GameObject panel in craft)
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
@@ -212,7 +207,7 @@ public class CraftingUI : MonoBehaviour
                 tmp.color = new Color32(255,255,225,100);
                 }
                 else {
-                                 tmp.text = "" ;
+                    tmp.text = "" ;
 
                 }
                
@@ -241,6 +236,22 @@ public class CraftingUI : MonoBehaviour
            
            count++; 
 
+
+        }
+
+
+        //Now we need to update what Results looks like.
+
+        foreach (Recipe recipe in allrecipes){
+            if(recipe.compareRecipes(current_crafting)){ //IF WE'VE FOUND A MATCH
+
+                resultbox.GetComponent<Image>().sprite = recipe.result.icon;
+                Debug.Log("True!!!");
+            }
+            else{
+
+                resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
+            }
 
         }
 
@@ -302,6 +313,7 @@ public class CraftingUI : MonoBehaviour
         else if(type == "craft"){
 
             destination = crafting[index];
+            current_crafting[index] = item; //Changes the current item in this index to the passed in icon.
         }
         else{
             //oops!
@@ -340,6 +352,8 @@ public class CraftingUI : MonoBehaviour
         else if(type == "craft"){
 
             destination = crafting[index];
+            current_crafting[index] = emptyitem; //Changes the current item in this index to empty
+
         }
         else{
             //oops!
