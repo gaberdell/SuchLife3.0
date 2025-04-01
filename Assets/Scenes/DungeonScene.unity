@@ -329,6 +329,8 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+
+
 --- !u!1 &1050453309
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1050453311}
-  - component: {fileID: 1050453310}
+  - component: {fileID: 1050453312}
   m_Layer: 0
   m_Name: DataMgnt
   m_TagString: Untagged
@@ -346,18 +348,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1050453310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1050453309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c51410caab1c494e9ae83147fda22ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1050453311
 Transform:
   m_ObjectHideFlags: 0
@@ -373,6 +363,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1050453312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050453309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1189b0b8a4de644449a5567ab11ed21f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1762617360
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,4 +518,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 1762617363}
   - {fileID: 19462392}
-  - {fileID: 1050453311}

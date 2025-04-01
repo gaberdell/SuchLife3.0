@@ -71,8 +71,10 @@ namespace BlockIteraction
 
                 drawWhereHit = TileMapHelperFunc.DDARayCheck(placeTileMap, transform.position, mousePos, maxRange, out hitVal, out boolHitBlock, out listOfStepPoints);
 
+                Quaternion destroyRotation = Quaternion.Euler(0, 0, Mathf.Round((Mathf.Rad2Deg * Mathf.Atan2(transform.position.y-mousePos.y, transform.position.x - mousePos.x)) / 90f)*90f + 90f);
 
-                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, null);
+
+                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null);
 
                 Debug.Log(drawWhereHit);
 
