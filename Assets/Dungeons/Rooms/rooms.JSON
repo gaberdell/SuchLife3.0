@@ -1,0 +1,40 @@
+{
+   "rooms": [
+      {
+         "type": "Default",
+         "tileLayout": [
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF"
+         ],
+         "width": 10,
+         "height": 10
+      },
+      {
+         "type": "Start",
+         "tileLayout": [
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF"
+         
+         ],
+         "entities": ["DungeonExit"],
+         "width": 12,
+         "height": 10
+      }
+   ]
+}

@@ -3,17 +3,18 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using UnityEngine.InputSystem.Android;
 
 
 
-public class DungeonGraph 
+
+public class DungeonGraph
 {
     public List<DungeonNode> layout = new List<DungeonNode>(); //finalized layout
     private List<DungeonNode> availableNodes = new List<DungeonNode>(); //nodes that can be added to the graph
     private List<DungeonNode> nodesAwaitingEdges = new List<DungeonNode>(); //nodes that have an entrance edge but are elligible for further branches
     public DungeonGraph(DungeonOptions opts)
     {
+        
         createLayout(opts);
     }
 
@@ -30,6 +31,7 @@ public class DungeonGraph
             DungeonNode newNode = new DungeonNode();
             availableNodes.Add(newNode);
         }
+        availableNodes[0].type = "Start";
         //start from 0th node and branch until maxDepth is hit
         //node will generate 0-4 'away' edges (1-4 for start)
         //creating an edge will also create the node it goes to
@@ -55,16 +57,23 @@ public class DungeonGraph
         {
             nodeCreated = createNewEdge(nodeCreated, opts);
         }
-        printNodes(nodesAwaitingEdges);
-        Debug.Log("STARTING BRANCH HAS BEEN PRINTED");
+        //printNodes(nodesAwaitingEdges);
         //now that main branch has been created, start adding branches to 'nodes awaiting edges' starting from index 0
         while( nodesAwaitingEdges.Count > 0  && availableNodes.Count > 0)
         {
-            //branch off of the first node in the list; repeat until no more nodes are awaiting edges or max nodes hit
-            DungeonNode newNode = createNewEdge(nodesAwaitingEdges[0], opts);
-            Debug.Log("NEW NODE CREATED");
+            //depending on setting
+            if(opts.branchType == "0th")
+            {
+                //branch off of the first node in the list; repeat until no more nodes are awaiting edges or max nodes hit
+                DungeonNode newNode = createNewEdge(nodesAwaitingEdges[0], opts);
+            }
+            else if(opts.branchType == "random")
+            {
+                //branch off of a random node in the list; repeat until no more nodes are awaiting edges or max nodes hit
+                DungeonNode newNode = createNewEdge(nodesAwaitingEdges[UnityEngine.Random.Range(0, nodesAwaitingEdges.Count)], opts);
+            }
+            
         }
-        Debug.Log(nodesAwaitingEdges.Count);
         //after maxnodes have been placed, move all nodes awaiting edges into the layout
         while(nodesAwaitingEdges.Count > 0)
         {
@@ -72,7 +81,7 @@ public class DungeonGraph
             nodesAwaitingEdges.RemoveAt(0);
             layout.Add(tempNode);
         }
-        printNodes(layout);
+        //printNodes(layout);
     }
 
     private DungeonNode createNewEdge(DungeonNode originNode, DungeonOptions opts)
