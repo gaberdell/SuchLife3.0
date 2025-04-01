@@ -33,7 +33,7 @@ public class GraphUpdater : MonoBehaviour
     void OnTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] ts)
     {
         // if (dungeonCreated) {
-        Bounds tileBounds = new Bounds(ts[0].position, new Vector2(1, 1));
+        Bounds tileBounds = new Bounds(ts[0].position, new Vector2(3, 3));
         AstarPath.active.UpdateGraphs(tileBounds);
         // }
     }
