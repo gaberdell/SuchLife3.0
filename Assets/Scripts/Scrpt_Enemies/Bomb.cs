@@ -21,7 +21,7 @@ public class Bomb : MonoBehaviour
     private float distance;
     private bool isExploding = false;
 
-    public Tilemap blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
+    public Tilemap blockTilemap;
 
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
@@ -29,6 +29,7 @@ public class Bomb : MonoBehaviour
     void Start()
     {
         target = GameObject.Find("Player").transform;
+        blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
     }
 
     void Update()
@@ -63,6 +64,7 @@ public class Bomb : MonoBehaviour
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
+
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
@@ -71,11 +73,20 @@ public class Bomb : MonoBehaviour
         }
 
         //destroy nearby wall tiles on explosion
-        int explosionBlockRadius = 2;
+        //int explosionBlockRadius = 2;
         //get pos of tile entity is standing on
         int tileX = (int)gameObject.transform.position.x;
         int tileY = (int)gameObject.transform.position.y;
-        //Tile t = blockTilemap.WorldToCell(new Vector3Int(tileX, tileY, 0));
+        Vector3Int bombTilePos = blockTilemap.WorldToCell(new Vector3Int(tileX, tileY, 0));
+        //erase tiles T around P
+        //XXXXTXXXX
+        //XXXTTTXXX
+        //XXTTPTTXX 
+        //XXXTTTXXX
+        //XXXXTXXXX
+        int explosionBlockRadius = (int) Mathf.Ceil(explosionRadius);
+        spreadToNeighbors(blockTilemap, bombTilePos.x, bombTilePos.y, null, explosionBlockRadius);
+        
 
         yield return new WaitForSeconds(0.5f);
 
@@ -83,4 +94,24 @@ public class Bomb : MonoBehaviour
 
         Destroy(gameObject);
     }
+    
+    //ported and modified from renderDungeon
+    void spreadToNeighbors(Tilemap tilemap, int tileX, int tileY, Tile T, int iterations)
+    {
+        //given an xPos, yPos, tilemap, and tile, change all adjacent tiles to match the given tile
+        tilemap.SetTile(new Vector3Int(tileX + 1, tileY, 0), T);
+        tilemap.SetTile(new Vector3Int(tileX - 1, tileY, 0), T);
+        tilemap.SetTile(new Vector3Int(tileX, tileY + 1, 0), T);
+        tilemap.SetTile(new Vector3Int(tileX, tileY - 1, 0), T);
+        //recurse outwards; a little redundant but fine for small scale
+        if(iterations > 0)
+        {
+            spreadToNeighbors(tilemap, tileX + 1, tileY, T, iterations - 1);
+            spreadToNeighbors(tilemap, tileX - 1, tileY, T, iterations - 1);
+            spreadToNeighbors(tilemap, tileX, tileY + 1, T, iterations - 1);
+            spreadToNeighbors(tilemap, tileX, tileY - 1, T, iterations - 1);
+        }
+        
+    }
+
 }
