@@ -7,6 +7,7 @@ public class RoomInfo {
 
     public string type;
     public List<string> tileLayout;
+    public List<string> enemyLayout;
     public List<string> entities;
     public int width;
     public int height;
@@ -17,6 +18,7 @@ public class RoomInfo {
         type = "default";
         tileLayout = new List<string>();
         entities = new List<string>();
+        enemyLayout = new List<string>();
         width = 0;
         height = 0;
     }
