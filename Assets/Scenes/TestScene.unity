@@ -396,7 +396,7 @@ GameObject:
   - component: {fileID: 82973850}
   - component: {fileID: 82973849}
   m_Layer: 0
-  m_Name: DungeonEntrance
+  m_Name: DungeonEntrance1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -460,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e0025143d1506a489cf542778e1d4dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  optionsFile: {fileID: 4900000, guid: 87b987aeff0bcf64a9281316b0e13c3d, type: 3}
 --- !u!212 &82973851
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -649,7 +650,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9375e92ab0014f0e80656534885df80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jankScanGraphEveryTime: 0
 --- !u!114 &197903135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6748,5 +6748,6 @@ SceneRoots:
   - {fileID: 269162950}
   - {fileID: 950402124}
   - {fileID: 82973852}
+  - {fileID: 2087425123}
   - {fileID: 197903136}
   - {fileID: 2781625630959170122}
