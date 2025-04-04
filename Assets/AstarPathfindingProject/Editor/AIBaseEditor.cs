@@ -113,7 +113,7 @@ namespace Pathfinding {
 			mono.TryGetComponent<Rigidbody>(out Rigidbody rigid);
 			mono.TryGetComponent<Rigidbody2D>(out Rigidbody2D rigid2D);
 			mono.TryGetComponent<CharacterController>(out CharacterController controller);
-			var canUseGravity = (controller != null && controller.enabled) || ((rigid == null || rigid.isKinematic) && (rigid2D == null || rigid2D.isKinematic));
+			var canUseGravity = (controller != null && controller.enabled) || ((rigid == null || rigid.isKinematic) && (rigid2D == null || rigid2D.bodyType == RigidbodyType2D.Kinematic));
 
 			var gravity = FindProperty("gravity");
 			var groundMask = FindProperty("groundMask");

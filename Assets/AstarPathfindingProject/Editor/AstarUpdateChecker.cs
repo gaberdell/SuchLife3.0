@@ -159,7 +159,8 @@ namespace Pathfinding {
 		/// Returns: True if an update check is progressing (WWW request)
 		/// </summary>
 		static bool CheckForUpdates () {
-			if (updateCheckDownload != null && updateCheckDownload.isDone) {
+			//Just gonna clip this out pisses unity of and I agree this code is a bit sussy
+			/*if (updateCheckDownload != null && updateCheckDownload.isDone) {
 				if (!string.IsNullOrEmpty(updateCheckDownload.error)) {
 					Debug.LogWarning("There was an error checking for updates to the A* Pathfinding Project\n" +
 						"The error might disappear if you switch build target from Webplayer to Standalone because of the webplayer security emulation\nError: " +
@@ -185,11 +186,12 @@ namespace Pathfinding {
 				DownloadVersionInfo();
 			}
 
-			return updateCheckDownload != null || minutesUntilUpdate < 10;
+			return updateCheckDownload != null || minutesUntilUpdate < 10;*/
+			return false;
 		}
 
 		static void DownloadVersionInfo () {
-			var script = AstarPath.active != null ? AstarPath.active : GameObject.FindObjectOfType(typeof(AstarPath)) as AstarPath;
+			var script = AstarPath.active != null ? AstarPath.active : GameObject.FindFirstObjectByType(typeof(AstarPath)) as AstarPath;
 
 			if (script != null) {
 				script.ConfigureReferencesInternal();
@@ -198,7 +200,7 @@ namespace Pathfinding {
 				}
 			}
 
-			bool mecanim = GameObject.FindObjectOfType(typeof(Animator)) != null;
+			bool mecanim = GameObject.FindFirstObjectByType(typeof(Animator)) != null;
 			string query = updateURL+
 						   "?v="+AstarPath.Version+
 						   "&pro=0"+
