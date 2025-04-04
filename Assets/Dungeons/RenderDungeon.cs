@@ -20,6 +20,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
+    [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
@@ -40,7 +41,25 @@ public class RenderDungeon : MonoBehaviour, Saveable
         dungeonOffsetX = offsetX;
         dungeonOffsetY = offsetY;
         opts = dopts;
-        
+
+        //set colors
+        switch (dopts.generationStyle)
+        {
+            case "cave":
+                foreach (Tile t in groundTiles)
+                {
+                    t.color = Color.gray;
+                }
+                break;
+
+            case "default":
+                foreach (Tile t in groundTiles)
+                {
+                    t.color = Color.white;
+                }
+                break;
+        }
+
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
@@ -127,10 +146,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
         xmax += opts.dungeonOffsetX + 10;
         ymin += opts.dungeonOffsetY - 10;
         ymax += opts.dungeonOffsetY + 10;
-        Debug.Log(xmin);
-        Debug.Log(xmax);
-        Debug.Log(ymin);
-        Debug.Log(ymax);
+
 
 
         for (int x = xmin; x < xmax; x++)
@@ -147,20 +163,42 @@ public class RenderDungeon : MonoBehaviour, Saveable
             }
         }
         //now fill ground tilemap so player doesnt see void when they break walls
+        float scale = .01f;
         for (int x = xmin; x < xmax; x++)
         {
             for (int y = ymin; y < ymax; y++)
             {
-                Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+                //Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
 
-                if (tile == null)
+                //if (tile == null)
+                //{
+                //    //place a ground tile if theres no ground tile
+                //    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
+                //}
+                //use perlin noise to pick ground tiles
+                float perlinNum = Mathf.PerlinNoise(x/(xmax*scale), y/(ymax*scale));
+                Debug.Log(perlinNum);
+                if (perlinNum < .2)
                 {
-                    //place a ground tile if theres no ground tile
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[0]);
+                } else if(perlinNum < .4)
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[1]);
+                } else if (perlinNum < .6)
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[2]);
+                } else
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[3]);
                 }
             }
         }
+        //finish dungeon render
         EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
+        foreach (Tile t in groundTiles)
+        {
+            t.color = Color.white;
+        }
     }
 
     void createStartingRoom(DungeonGraph nodeGraph, GameObject entrance)
@@ -181,10 +219,13 @@ public class RenderDungeon : MonoBehaviour, Saveable
         List<string> roomLayout = startingNode.roomInfo.tileLayout;
         drawRoomOnTilemap(0, 0, startingNode.roomInfo, startingNode);
         //create entities
-        for(int i = 0; i < startingNode.roomInfo.entities.Count; i++)
+        Debug.Log("entities");
+        Debug.Log(startingNode.roomInfo.entities.Length);
+        Debug.Log(startingNode.roomInfo.entities[0]);
+        for(int i = 0; i < startingNode.roomInfo.entities.Length; i++)
         {
-            string entity = startingNode.roomInfo.entities[i];
-            if (entity == "DungeonExit")
+            EntityInfo entity = startingNode.roomInfo.entities[i];
+            if (entity.entityName == "DungeonExit")
             {
                 //create dungeon exit from prefab
                 GameObject exitInstance = Instantiate(dungeonExit);
@@ -214,7 +255,6 @@ public class RenderDungeon : MonoBehaviour, Saveable
         }
         
         List<string> roomLayout = roomNode.roomInfo.tileLayout;
-        List<string> enemyLayout = roomNode.roomInfo.enemyLayout;
 
         //calculate offset based on location of previous room
         int offset  = (int)UnityEngine.Random.Range(opts.minRoomDist, opts.maxRoomDist);
@@ -244,28 +284,19 @@ public class RenderDungeon : MonoBehaviour, Saveable
         drawRoomOnTilemap(offsetX, offsetY, roomNode.roomInfo, prevRoom);
 
 
-
-        //place enemies (should this be moved to after rooms are drawn? or while?)
-        for (int i = 0; i < enemyLayout.Count; i++) //column index
+        //create entities
+        for (int i = 0; i < roomNode.roomInfo.entities.Length; i++)
         {
-            char[] row = enemyLayout[i].ToCharArray();
-            for (int j = 0; j < row.Length; j++) //row index
+            EntityInfo entity = roomNode.roomInfo.entities[i];
+            if (entity.entityName == "Bomb")
             {
-                //draw room
-                switch (enemyLayout[i][j])
-                {
-                    case 'X':
-                        //no ememies
-                        break;
-
-                    case 'B':
-                        Instantiate(bombEnemy, new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), Quaternion.identity);
-                        break;
-                }
+                Instantiate(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+                //create trackable entity info somewhere?
             }
         }
+
         //connect rooms
-        if(opts.createHallways == false)
+        if (opts.createHallways == false)
         {
             //dont connect rooms for noHallways style
         } else

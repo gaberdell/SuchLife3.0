@@ -23,6 +23,7 @@ public class DungeonOptions
     public int hallwayOpening; //width/height of connections between rooms
     public bool createHallways;
     public string generationStyle; //options: default, cave
+    public int hallwayVariance; //causes hallways to shift back and forth. int between 0 - 10 for frequency of shift
     public int dungeonOffsetX;
     public int dungeonOffsetY;
 
@@ -39,6 +40,7 @@ public class DungeonOptions
         branchType = "0th";
         generationStyle = "cave";
         createHallways = false;
+        hallwayVariance = 1;
         seed = Random.Range(0, 1000);
         UnityEngine.Random.InitState(seed);
     }
