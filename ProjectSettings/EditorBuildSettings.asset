@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TestScene.unity
     guid: 7d68186d33624e840a808688f3f7a975
   - enabled: 1
+    path: Assets/Scenes/DungeonScene.unity
+    guid: 4735282fb5c9c6749863d47dd930bedf
+  - enabled: 1
     path: Assets/Scenes/PauseMenu.unity
     guid: 747a46a896233134680a5f44b2d06566
   - enabled: 1

@@ -64,6 +64,7 @@ namespace TileMapHelper
             //If brushes up against max distance then rollback by one?
             while (!hitBlock && currentDistance < maxDistance)
             {
+                vector3WithNoBlock = mapCheck;
                 if (rayLength1D.x < rayLength1D.y)
                 {
                     mapCheck.x += blockStep.x;
@@ -80,7 +81,6 @@ namespace TileMapHelper
                 if (currentTileMap.GetTile(mapCheck) == null)
                 {
                     lastFailedDist = currentDistance;
-                    vector3WithNoBlock = mapCheck;
                     listOfStepPoints.Add(origin + (Vector3)(difNorm * lastFailedDist));
                 }
                 else
@@ -89,7 +89,7 @@ namespace TileMapHelper
                 }
             }
             //vector3WithNoBlock = origin + (Vector3)(difNorm * lastFailedDist);
-            return mapCheck;
+            return !hitBlock ? vector3WithNoBlock : mapCheck;
         }
 
         public static Vector3 isTilePartOfRay(Tilemap currentTileMap, Vector3 origin, Vector3 directionOfVector, float stepSize, out Vector3 vector3WithNoBlock, out List<Vector3> listOfStepPoints, out bool hitBlock)
