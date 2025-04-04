@@ -5,23 +5,23 @@ using UnityEngine.Tilemaps;
 
 public class Bomb : MonoBehaviour
 {
-    public SpriteRenderer renderer;
-    public CircleCollider2D collider;
-    public AIPath path;
-    public Animator animator;
-    public ParticleSystem particles;
+    // [SerializeField] private SpriteRenderer renderer;
+    [SerializeField] private CircleCollider2D collider;
+    [SerializeField] private AIPath path;
+    // [SerializeField] private Animator animator;
+    [SerializeField] private ParticleSystem particles;
 
-    public Transform target;
-    public float aggroDistance;
-    public float explodeAtDistance;
-    public float explosionRadius;
-    public float explosionDelay;
-    public int damage;
+    [SerializeField] private Transform target;
+    [SerializeField] private float aggroDistance;
+    [SerializeField] private float explodeAtDistance;
+    [SerializeField] private float explosionRadius;
+    [SerializeField] private float explosionDelay;
+    [SerializeField] private int damage;
 
     private float distance;
     private bool isExploding = false;
 
-    public Tilemap blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
+    // private Tilemap blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
 
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
@@ -49,12 +49,12 @@ public class Bomb : MonoBehaviour
 
     IEnumerator Explode()
     {
-        animator.enabled = true;
+        // animator.enabled = true;
         yield return new WaitForSeconds(explosionDelay);
 
         particles.Play();
         path.enabled = false;
-        renderer.enabled = false;
+        // renderer.enabled = false;
         collider.isTrigger = true;
         // collider.radius = explosionRadius;
 
@@ -71,7 +71,7 @@ public class Bomb : MonoBehaviour
         }
 
         //destroy nearby wall tiles on explosion
-        int explosionBlockRadius = 2;
+        // int explosionBlockRadius = 2;
         //get pos of tile entity is standing on
         int tileX = (int)gameObject.transform.position.x;
         int tileY = (int)gameObject.transform.position.y;
