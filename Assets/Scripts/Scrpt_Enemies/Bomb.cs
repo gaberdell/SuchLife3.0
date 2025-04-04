@@ -21,13 +21,13 @@ public class Bomb : MonoBehaviour
     private float distance;
     private bool isExploding = false;
 
-    public Tilemap blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
-
+    public Tilemap blockTilemap;
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
 
     void Start()
     {
+        blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
         target = GameObject.Find("Player").transform;
     }
 
