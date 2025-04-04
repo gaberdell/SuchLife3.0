@@ -1,41 +1,54 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PauseGame : MonoBehaviour
 {
-    public GameObject PauseCanvas;
-    public GameObject Camera;
-    public bool IsPaused = false;
+    [SerializeField] 
+    private GameObject pauseCanvas;
+    [SerializeField]
+    private float diffsecs;
+    private bool isPaused = false;
+    private bool switching = false;
+
+    InputHandler inputhandler;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        inputhandler = InputHandler.Instance;
         
     }
-
+    
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("escape"))
+        if (!switching && inputhandler.EscapeTriggered)
         {
+            switching = true;
             togglePause();
 
-            if (IsPaused)
+            if (!isPaused)
             {
-
-                PauseCanvas.SetActive(true);
-                IsPaused = true;
+                
+                pauseCanvas.SetActive(true);
+                isPaused = true;
 
             }
             else
             {
-                PauseCanvas.SetActive(false);
-                IsPaused = false;
+                pauseCanvas.SetActive(false);
+                isPaused = false;
             }
+            
 
 
         }
+        else if (switching && Input.GetKeyUp(KeyCode.Escape))
+        {
+            switching = false;
+        }
 
-    }
+}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public bool togglePause()
