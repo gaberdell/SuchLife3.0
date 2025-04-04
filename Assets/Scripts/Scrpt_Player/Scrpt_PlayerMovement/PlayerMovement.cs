@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+
         handleMovement();
         handleRotation();
         //handleCollision();
