@@ -44,7 +44,7 @@ public class NewWorldUi : MonoBehaviour
         Debug.Log("Creating world...");
 
         //load into world before saving
-        SceneManager.LoadScene("DungeonScene");
+        SceneManager.LoadScene("TestScene");
 
         //use inputField text to create world name
         string name = inputText;
@@ -53,8 +53,7 @@ public class NewWorldUi : MonoBehaviour
         Debug.Log("Input text: " + name); //debugging print statement
 
         //save game after creating world
-        string savePath = DataService.GetSavePath() + name.ToLower();
-        DataService.Save(savePath);
+        DataService.NewSave(name);
     }
 
     
