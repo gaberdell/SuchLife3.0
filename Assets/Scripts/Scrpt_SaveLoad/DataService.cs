@@ -22,7 +22,10 @@ public class DataService {
   private static string savePath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\";
   private static int savePathLen = savePath.Length;
 
+  private static string saveName = null; // name of the current world's save file
   private static string worldName = null; // name of the current world
+
+  private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
   // returns name, date (in that order) on all saves
   public static List<SaveInfo> Fetch() {
@@ -34,9 +37,9 @@ public class DataService {
     string[] paths = Directory.GetFiles(savePath);
 
     
-    Debug.Log("Fetched:");
+    Debug.Log("DataService: Fetched:");
     if (paths.Length == 0)
-      Debug.Log("(none)"); // nothing in the Saves\ directory
+      Debug.Log("DataService: (none)"); // nothing in the Saves\ directory
     
     foreach (string path in paths) {
       SaveInfo saveInfo = new SaveInfo();
@@ -45,9 +48,9 @@ public class DataService {
       saveInfo.name = path.Substring(savePathLen); // TODO: save world name separately
       saveInfo.lastModified = Directory.GetLastWriteTime(path);
 
-      Debug.Log("saveInfo.path: " + saveInfo.path);
-      Debug.Log("saveInfo.name: " + saveInfo.name);
-      Debug.Log("saveInfo.lastModified: " + saveInfo.lastModified);
+      Debug.Log("DataService: saveInfo.path: " + saveInfo.path);
+      Debug.Log("DataService: saveInfo.name: " + saveInfo.name);
+      Debug.Log("DataService: saveInfo.lastModified: " + saveInfo.lastModified);
 
       info.Add(saveInfo);
     }
@@ -59,63 +62,69 @@ public class DataService {
 
   // creates a new save file with the given name, returns new SaveInfo struct representing the new save file
   // NOTE: will overwrite worlds with the same name
-  public static SaveInfo NewSave(string name) {
+  public static SaveInfo NewSave(string worldName) {
     Directory.CreateDirectory(savePath);
 
-    worldName = name;
-    SaveCurr();
+    if (worldName.Length == 0) {
+      saveName = "unnamed";
+      worldName = "Unnamed World";
+    }
+
+    DataService.saveName = worldName.ToLower();
+    DataService.worldName = worldName;
+    bool success = SaveCurr();
+    if (!success)
+      return SAVEINFO_NULL; // returns blank save info
 
     SaveInfo saveInfo = new SaveInfo();
-    saveInfo.path = savePath + worldName;
+    saveInfo.path = savePath + saveName;
     saveInfo.name = worldName;
     saveInfo.lastModified = Directory.GetLastWriteTime(saveInfo.path);
+
+    Debug.Log("DataService: New world saved!");
 
     return saveInfo;
   }
 
-  // saves current game into savePath + name, returns success through a boolean
+  // saves current scene into savePath + name, returns success through a boolean
+  // NOTE: as of 2025-04-04, TestScene is what is saved
   public static bool SaveCurr() {
     Directory.CreateDirectory(savePath);
 
     // checks if a world is currently loaded
     if (worldName == null) {
-      Debug.Log("ERROR: World not loaded!");
+      Debug.LogError("DataService: World not loaded!");
       return false;
     }
 
-    // dungeon
-    GameObject dungeonGrid = GameObject.Find("DungeonGrid");
-    if (dungeonGrid == null) {
-      Debug.Log("ERROR: Unable to find dungeon!");
-      return false;
-    }
-    RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
-    string dungeonJSON = dungeonRenderer.Save();
-    Debug.Log("dungeonJSON: " + dungeonJSON);
+    // world
+    string gridJSON = GridSaveLoad.SaveGrid();
 
     // writing to file
-    string namedSavePath = savePath + worldName;
-    Debug.Log("Saving to \"" + namedSavePath + "\"...");
-    File.WriteAllText(namedSavePath, dungeonJSON);
+    string namedSavePath = savePath + saveName;
+    Debug.Log("DataService: Saving to \"" + namedSavePath + "\"...");
+    File.WriteAllText(namedSavePath, gridJSON);
     
-    Debug.Log("Saved!");
+    Debug.Log("DataService: World saved!");
 
     return true;
   }
 
-  // loads game at savePath, returns success through a boolean
+  // TOFIX: loads game at savePath, returns success through a boolean
   public static bool Load(SaveInfo saveInfo) {
+    // TOFIX
+    /*
     String path = saveInfo.path;
 
     if (!File.Exists(path)) {
-      Debug.Log("ERROR: \"" + savePath + "\" does not exist!"); 
+      Debug.LogError("DataService: \"" + savePath + "\" does not exist!"); 
       return false;
     }
 
     // reading from file
-    Debug.Log("Loading from \"" + path + "\"...");
+    Debug.Log("DataService: Loading from \"" + path + "\"...");
     List<string> dungeonJsons = File.ReadLines(path).ToList();
-    Debug.Log("dungeonJsons: " + dungeonJsons);
+    Debug.Log("DataService: dungeonJsons: " + dungeonJsons);
 
     // dungeon
     GameObject dungeonGrid = GameObject.Find("DungeonGrid");
@@ -125,8 +134,9 @@ public class DataService {
       dungeonRenderer.Load(json);
 
     worldName = saveInfo.name; // currently loaded world name
-    Debug.Log("Loaded!");
-    
+    Debug.Log("DataService: World loaded!");
+    */
+
     return true;
   }
 
