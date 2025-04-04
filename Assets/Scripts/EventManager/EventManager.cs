@@ -9,7 +9,7 @@ public class EventManager : MonoBehaviour
     public delegate void ClickAction();
     public static event ClickAction Clicked;
 
-    public delegate void EnterDungeon();
+    public delegate void EnterDungeon(int offsetX, int offsetY, int dWidth, int dHeight);
     public static event EnterDungeon PlayerEnterDungeon;
 
     public delegate void ExitDungeon();
@@ -21,9 +21,9 @@ public class EventManager : MonoBehaviour
 
     public static EventManager Instance;
 
-    public static void SetPlayerEnterDungeon()
+    public static void SetPlayerEnterDungeon(int offsetX, int offsetY, int dWidth, int dHeight)
     {
-        PlayerEnterDungeon?.Invoke();
+        PlayerEnterDungeon?.Invoke(offsetX, offsetY, dWidth, dHeight);
     }
 
     public static void SetPlayerExitDungeon()
