@@ -76,7 +76,7 @@ namespace BlockIteraction
 
                 playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null);
 
-                Debug.Log(drawWhereHit);
+                //Debug.Log(drawWhereHit);
 
                 if (inputHandler.IsPlacing && placingCoolDown <= 0)
                 {
