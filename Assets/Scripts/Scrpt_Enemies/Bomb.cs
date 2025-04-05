@@ -8,10 +8,10 @@ public class Bomb : MonoBehaviour
     // [SerializeField] private SpriteRenderer renderer;
     [SerializeField] private CircleCollider2D collider;
     [SerializeField] private AIPath path;
-    // [SerializeField] private Animator animator;
+    [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
-    [SerializeField] private Transform target;
+    private Transform target;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
@@ -40,6 +40,10 @@ public class Bomb : MonoBehaviour
             path.enabled = true;
         }
 
+        if (path.desiredVelocity.magnitude > 0) {
+            animator.Play("scrombolo_bombolo_walking");
+        }
+
         if (distance <= explodeAtDistance && !isExploding)
         {
             isExploding = true;  
@@ -50,6 +54,8 @@ public class Bomb : MonoBehaviour
     IEnumerator Explode()
     {
         // animator.enabled = true;
+        animator.SetBool("Explode", true);
+
         yield return new WaitForSeconds(explosionDelay);
 
         particles.Play();

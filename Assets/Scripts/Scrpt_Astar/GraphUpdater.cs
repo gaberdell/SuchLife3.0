@@ -20,8 +20,8 @@ public class GraphUpdater : MonoBehaviour
     {
         //updates Astar when unwalkable tilemap changed, in small box around each changed tile
         if (tilemap.gameObject.layer == 7) {
-            for (int i = 0; i < ts.Length; i++) {
-                Bounds tileBounds = new Bounds(ts[0].position, new Vector2(3, 3));
+            foreach (Tilemap.SyncTile tile in ts) {
+                Bounds tileBounds = new Bounds(tile.position, new Vector2(3, 3));
                 AstarPath.active.UpdateGraphs(tileBounds);
             }
         }
