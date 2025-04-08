@@ -42,11 +42,13 @@ public class DataServiceInput : MonoBehaviour
     // fetch save files
     if (keyPress == F) DataService.Fetch();
 
+    /*
     // save game state
     else if (keyPress == X) DataService.Save(savePath);
 
     // load game state
     else if (keyPress == V) DataService.Load(savePath);
+    */
 
     Time.timeScale = 1f; // unpausing game
   }

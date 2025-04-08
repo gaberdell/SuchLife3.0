@@ -20,8 +20,6 @@ public class Bomb : MonoBehaviour
     private float distance;
     private bool isExploding = false;
 
-    // private Tilemap blockTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
-
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
 
