@@ -898,6 +898,7 @@ MonoBehaviour:
   previous: Previous
   next: Next
   interact: Interact
+  escape: Escape
   mouse: Mouse
 --- !u!4 &269162950
 Transform:
@@ -1057,7 +1058,7 @@ MonoBehaviour:
   wallTile: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
   bonusTile: {fileID: 11400000, guid: 57900667e4ddddd4186077d60bf4e88f, type: 2}
   dungeonExit: {fileID: 9131490398547023997, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
-  bombEnemy: {fileID: 843679319920769187, guid: 6e28442da32ba524e894925bba80cc0c, type: 3}
+  bombEnemy: {fileID: 1131286834450209702, guid: 47bad71797d0445e7b66040922490f3e, type: 3}
   groundTiles:
   - {fileID: 11400000, guid: e88b311d36e01a64ca29e9cc841aa8d8, type: 2}
   - {fileID: 11400000, guid: 187784daf98ea8843bc1fd68bf8a8401, type: 2}

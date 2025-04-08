@@ -23,6 +23,45 @@
          "height": 10
       },
       {
+         "type": "Default",
+         "tileLayout": [
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 5,
+            "relativeY": 5
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 15,
+            "relativeY": 15
+         }],
+         "width": 20,
+         "height": 20
+      },
+      {
          "type": "Cave",
          "tileLayout": [
          "FFFFF",
