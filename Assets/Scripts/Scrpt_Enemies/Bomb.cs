@@ -5,7 +5,6 @@ using UnityEngine.Tilemaps;
 
 public class Bomb : MonoBehaviour
 {
-    // [SerializeField] private SpriteRenderer renderer;
     [SerializeField] private CircleCollider2D collider;
     [SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
@@ -41,7 +40,7 @@ public class Bomb : MonoBehaviour
         }
 
         if (path.desiredVelocity.magnitude > 0) {
-            animator.Play("scrombolo_bombolo_walking");
+            animator.SetBool("Walk", true);
         }
 
         if (distance <= explodeAtDistance && !isExploding)
@@ -53,15 +52,14 @@ public class Bomb : MonoBehaviour
 
     IEnumerator Explode()
     {
-        // animator.enabled = true;
-        animator.SetBool("Explode", true);
+        animator.SetBool("Wick", true);
 
         yield return new WaitForSeconds(explosionDelay);
 
         particles.Play();
-        path.enabled = false;
-        // renderer.enabled = false;
         collider.isTrigger = true;
+        path.enabled = false;
+        animator.Play("scrombolo_bombolo_exploding");
         // collider.radius = explosionRadius;
 
         yield return new WaitForSeconds(0.05f);
@@ -83,7 +81,7 @@ public class Bomb : MonoBehaviour
         int tileY = (int)gameObject.transform.position.y;
         //Tile t = blockTilemap.WorldToCell(new Vector3Int(tileX, tileY, 0));
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         // onExplode?.Invoke(collider);
 
