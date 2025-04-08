@@ -50,7 +50,7 @@ public class Bomb : MonoBehaviour
 
     IEnumerator Explode()
     {
-        animator.SetBool("Wick", true);
+        animator.SetBool("Explode", true);
 
         yield return new WaitForSeconds(explosionDelay);
 
