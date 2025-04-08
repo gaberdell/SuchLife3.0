@@ -47,37 +47,56 @@ public class GridSaveLoad
     int y_min = backTilemap.cellBounds.min.y;
     int y_max = backTilemap.cellBounds.max.y;
 
+    Debug.Log("GridSaveLoad: Processing background tilemap...");
+
     gridJSON += "background\n";
     for (int x = x_min; x < x_max; x++) {
       for (int y = y_min; y < y_max; y++) {
-        Tile tile = (Tile)backTilemap.GetTile(new Vector3Int(x, y, 0));
+        Vector3Int loc = new Vector3Int(x, y, 0);
+        // Debug.Log("GridSaveLoad: loc: " + loc.ToString());
 
-        if (tile != null) {
-          TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
+        Sprite sprite = backTilemap.GetSprite(loc);
+        if (sprite != null) {
+          // Debug.Log("GridSaveLoad: sprite: " + sprite.ToString());
 
-          string spriteName = tileCache.spriteName;
+          string spriteName = sprite.name;
+          Debug.Log("GridSaveLoad: spriteName: " + spriteName);
+
+          TileCache tileCache = new TileCache(spriteName, x, y); // TOFIX: optimize
           gridJSON += tileCache.Save() + "\n";
         }
+
       }
     }
     gridJSON += "END\n";
+
+    // converting foreground into JSON strings
 
     x_min = foreTilemap.cellBounds.min.x;
     x_max = foreTilemap.cellBounds.max.x;
     y_min = foreTilemap.cellBounds.min.y;
     y_max = foreTilemap.cellBounds.max.y;
 
+    Debug.Log("GridSaveLoad: Processing foreground tilemap...");
+
     gridJSON += "foreground\n";
     for (int x = x_min; x < x_max; x++) {
       for (int y = y_min; y < y_max; y++) {
-        Tile tile = (Tile)foreTilemap.GetTile(new Vector3Int(x, y, 0));
 
-        if (tile != null) {
-          TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
+        Vector3Int loc = new Vector3Int(x, y, 0);
+        // Debug.Log("GridSaveLoad: loc: " + loc.ToString());
 
-          string spriteName = tileCache.spriteName;
+        Sprite sprite = foreTilemap.GetSprite(loc);
+        if (sprite != null) {
+          // Debug.Log("GridSaveLoad: sprite: " + sprite.ToString());
+
+          string spriteName = sprite.name;
+          Debug.Log("GridSaveLoad: spriteName: " + spriteName);
+
+          TileCache tileCache = new TileCache(spriteName, x, y); // TOFIX: optimize
           gridJSON += tileCache.Save() + "\n";
         }
+
       }
     }
     gridJSON += "END\n";

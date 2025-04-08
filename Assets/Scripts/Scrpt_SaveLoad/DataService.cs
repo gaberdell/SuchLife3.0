@@ -60,18 +60,44 @@ public class DataService {
     return info;
   }
 
+  // converts and returns the lowercase character of c
+  private static char toLower(char c) {
+    if ('A' <= c && c <= 'Z')
+      return (char)('a' - 'A' + c);
+    
+    return c; // not uppercase letter; just return c
+  }
+
+  // given a world name, converts all characters to lowercase and replaces spaces with underscores
+  private static string toSaveName(string worldName) {
+    string saveName = "";
+    
+    // converting...
+    int len = worldName.Length;
+    for (int i = 0; i < len; i++) {
+      if (worldName[i] == ' ')
+        saveName += '_';
+      else
+        saveName += toLower(worldName[i]);
+    }
+
+    return saveName + ".save";
+  }
+
   // creates a new save file with the given name, returns new SaveInfo struct representing the new save file
   // NOTE: will overwrite worlds with the same name
   public static SaveInfo NewSave(string worldName) {
     Directory.CreateDirectory(savePath);
 
-    if (worldName.Length == 0) {
-      saveName = "unnamed";
-      worldName = "Unnamed World";
+    if (worldName == null || worldName.Length == 0) {
+      DataService.saveName = "unnamed.save";
+      DataService.worldName = "Unnamed World";
+    }
+    else {
+      DataService.saveName = toSaveName(worldName);
+      DataService.worldName = worldName;
     }
 
-    DataService.saveName = worldName.ToLower();
-    DataService.worldName = worldName;
     bool success = SaveCurr();
     if (!success)
       return SAVEINFO_NULL; // returns blank save info
@@ -97,8 +123,12 @@ public class DataService {
       return false;
     }
 
-    // world
+    // saving world grid/tilemap
     string gridJSON = GridSaveLoad.SaveGrid();
+    if (gridJSON == null) {
+      Debug.LogError("DataService: SaveGrid() failed!");
+      return false;
+    }
 
     // writing to file
     string namedSavePath = savePath + saveName;
