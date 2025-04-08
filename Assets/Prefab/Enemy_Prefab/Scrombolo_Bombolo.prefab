@@ -297,18 +297,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d281e1e96a1c8494c8558a0497228853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 7475189089732002758}
   collider: {fileID: 5283234298430202359}
   path: {fileID: 7006902875869644995}
   animator: {fileID: 5940736215880480939}
   particles: {fileID: 1852298218644448698}
-  target: {fileID: 0}
   aggroDistance: 10
   explodeAtDistance: 3
   explosionRadius: 1.5
   explosionDelay: 2
   damage: 100
-  blockTilemap: {fileID: 0}
 --- !u!95 &5940736215880480939
 Animator:
   serializedVersion: 7
@@ -5136,7 +5133,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
