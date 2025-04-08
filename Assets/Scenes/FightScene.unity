@@ -404,6 +404,7 @@ MonoBehaviour:
   previous: Previous
   next: Next
   interact: Interact
+  escape: Escape
   mouse: Mouse
 --- !u!4 &940286570
 Transform:
@@ -446,7 +447,7 @@ Transform:
   m_GameObject: {fileID: 1385033118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.38978103, w: 0.9209077}
-  m_LocalPosition: {x: 0.09, y: -0.55, z: 0}
+  m_LocalPosition: {x: 0.09, y: -0.5, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -569,6 +570,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7718391250072885259, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: showHealthText
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Size.x
+      value: 0.9375
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9375
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -306787472437928336, guid: 7cad9827c0428a6448a5f0fe45af6d7f, type: 3}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

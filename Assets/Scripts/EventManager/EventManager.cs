@@ -15,6 +15,9 @@ public class EventManager : MonoBehaviour
     public delegate void ExitDungeon();
     public static event ExitDungeon PlayerExitDungeon;
 
+    public delegate void CraftingTableUpdated();
+    public static event CraftingTableUpdated CraftingTableUpdate;
+
 
     public static EventManager Instance;
 
@@ -31,6 +34,11 @@ public class EventManager : MonoBehaviour
     public static void SetPlayerAnimSpeedTrue(float playerSpeed)
     {
         setPlayerAnimSpeed?.Invoke(playerSpeed);
+    }
+
+    public static void CheckForCraftTableUpdate()
+    {
+        CraftingTableUpdate?.Invoke();
     }
 
     void Awake()
