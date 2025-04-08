@@ -645,18 +645,18 @@ PrefabInstance:
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1025288234}
+      objectReference: {fileID: 1028713820}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Home
+      value: returnToGame
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PlayButton, TitleScreenAssem
+      value: SettingsToPause, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -3265,6 +3265,7 @@ GameObject:
   - component: {fileID: 1028713818}
   - component: {fileID: 1028713819}
   - component: {fileID: 1028713816}
+  - component: {fileID: 1028713820}
   m_Layer: 5
   m_Name: OptionsCanvas
   m_TagString: Untagged
@@ -3509,6 +3510,7 @@ MonoBehaviour:
     isMultiAction: 1
     multiActionIndex: 1
     saveString: AttackSave
+<<<<<<< Updated upstream
   - model: {fileID: 1896125162}
     resetModel: {fileID: 1751678057}
     view: {fileID: 1896125161}
@@ -3541,6 +3543,20 @@ MonoBehaviour:
     isMultiAction: 1
     multiActionIndex: 0
     saveString: PrevSave
+=======
+--- !u!114 &1028713820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028713810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc1a4df62247e6f43a454aeb9a896a26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+>>>>>>> Stashed changes
 --- !u!114 &1064086773 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2008844457150644029, guid: a2cf6627a5522604a89e3814bbbe243d, type: 3}
