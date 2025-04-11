@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Data;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -105,7 +107,7 @@ public class GridSaveLoad
   }
 
   // loads the world from the save file at the given path
-  public static void LoadGrid(string namedSavePath) {
+  public static void LoadGrid(List<string> gridData) {
   
     // getting tilemaps
 
@@ -135,9 +137,16 @@ public class GridSaveLoad
       return;
     }
 
-    // TODO: loading background
+    // getting tiles
+    Tile[] groundTiles = RenderDungeon.groundTiles;
     RuleTile wallTile = RenderDungeon.wallTile;
-    
+
+    // loading background
+    int i = 1;
+    while (!gridData[i].Equals("END")) {
+
+      dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
+    }
 
     // TODO: loading foreground
 

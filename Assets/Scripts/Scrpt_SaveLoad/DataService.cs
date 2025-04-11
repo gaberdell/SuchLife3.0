@@ -124,8 +124,8 @@ public class DataService {
     }
 
     // saving world grid/tilemap
-    string gridJSON = GridSaveLoad.SaveGrid();
-    if (gridJSON == null) {
+    string gridData = GridSaveLoad.SaveGrid();
+    if (gridData == null) {
       Debug.LogError("DataService: SaveGrid() failed!");
       return false;
     }
@@ -133,7 +133,7 @@ public class DataService {
     // writing to file
     string namedSavePath = savePath + saveName;
     Debug.Log("DataService: Saving to \"" + namedSavePath + "\"...");
-    File.WriteAllText(namedSavePath, gridJSON);
+    File.WriteAllText(namedSavePath, gridData);
     
     Debug.Log("DataService: World saved!");
 
@@ -142,8 +142,6 @@ public class DataService {
 
   // TOFIX: loads game at savePath, returns success through a boolean
   public static bool Load(SaveInfo saveInfo) {
-    // TOFIX
-    /*
     String path = saveInfo.path;
 
     if (!File.Exists(path)) {
@@ -153,19 +151,13 @@ public class DataService {
 
     // reading from file
     Debug.Log("DataService: Loading from \"" + path + "\"...");
-    List<string> dungeonJsons = File.ReadLines(path).ToList();
-    Debug.Log("DataService: dungeonJsons: " + dungeonJsons);
+    List<string> gridData = File.ReadLines(path).ToList();
 
-    // dungeon
-    GameObject dungeonGrid = GameObject.Find("DungeonGrid");
-    RenderDungeon dungeonRenderer = dungeonGrid.GetComponent<RenderDungeon>();
-    dungeonRenderer.getDungeonTilemap().ClearAllTiles(); // clear current dungeon tilemap
-    foreach (string json in dungeonJsons)
-      dungeonRenderer.Load(json);
+    // loading world
+    GridSaveLoad.LoadGrid(gridData);
 
     worldName = saveInfo.name; // currently loaded world name
     Debug.Log("DataService: World loaded!");
-    */
 
     return true;
   }

@@ -1,0 +1,127 @@
+{
+   "rooms": [
+      {
+         "type": "Default",
+         "tileLayout": [
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 3
+         }],
+         "width": 10,
+         "height": 10
+      },
+      {
+         "type": "Default",
+         "tileLayout": [
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 5,
+            "relativeY": 5
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 15,
+            "relativeY": 15
+         }],
+         "width": 20,
+         "height": 20
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "FFFFF",
+         "FFFFF",
+         "FFFFF"
+         ],
+         "entities": [],
+         "width": 5,
+         "height": 3
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 3
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 7
+         }
+         ],
+         "width": 15,
+         "height": 9
+      },
+      {
+         "type": "Start",
+         "tileLayout": [
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF",
+         "FFFFFFFFFFFF"
+         
+         ],
+         "entities": [{
+            "entityName": "DungeonExit",
+            "relativeX": 5,
+            "relativeY": 5
+         },
+      {"entityName": "test"}],
+         "width": 12,
+         "height": 10
+      }
+   ]
+}

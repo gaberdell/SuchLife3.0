@@ -7,7 +7,7 @@ public class RoomInfo {
 
     public string type;
     public List<string> tileLayout;
-    public List<string> entities;
+    public EntityInfo[] entities;
     public int width;
     public int height;
 
@@ -15,8 +15,8 @@ public class RoomInfo {
     {
         //default values, these should never be seen
         type = "default";
+        //entities = new EntityInfo[0];
         tileLayout = new List<string>();
-        entities = new List<string>();
         width = 0;
         height = 0;
     }
