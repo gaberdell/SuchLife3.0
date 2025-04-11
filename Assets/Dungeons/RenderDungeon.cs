@@ -8,14 +8,14 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class RenderDungeon : MonoBehaviour, Saveable
+public class RenderDungeon : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Tilemap groundTilemap;
     [SerializeField] Tilemap wallTilemap;
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
-    [SerializeField] RuleTile wallTile;
+    [SerializeField] public RuleTile wallTile; // TOREVIEW: make public so that GridSaveLoad can access
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     RoomContainer rooms;
@@ -377,10 +377,10 @@ public class RenderDungeon : MonoBehaviour, Saveable
         //}
     }
 
-    public Tilemap getDungeonTilemap() { return dungeonTilemap; } // TOREVIEW: needed for use by DataService to clear tilemap before loading
-    
-    
-    
+    // DEPRECATED
+    /*
+    public Tilemap getDungeonTilemap() { return dungeonTilemap; }
+
     public string Save() {
         int x_min = dungeonTilemap.cellBounds.min.x;
         int x_max = dungeonTilemap.cellBounds.max.x;
@@ -391,7 +391,7 @@ public class RenderDungeon : MonoBehaviour, Saveable
         for (int x = x_min; x < x_max; x++) {
             for (int y = y_min; y < y_max; y++) {
                 Tile tile = (Tile)dungeonTilemap.GetTile(new Vector3Int(x, y, 0));
-                
+
                 if (tile != null) {
                     TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
 
@@ -401,18 +401,19 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 }
             }
         }
-        
+
         return json;
     }
-    
+
     public void Load(string json) {
         TileCache tileCache = new TileCache();
         tileCache.Load(json);
-            
+
         if (tileCache.spriteName.Equals(GRASS_SPRITE_NAME)) // 
             dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
         if (tileCache.spriteName.Equals(WALL_SPRITE_NAME))
             dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), wallTile);
     }
-    
+    */
+
 }
