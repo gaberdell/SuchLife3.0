@@ -17,7 +17,6 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
     [SerializeField] RuleTile wallTile;
-    [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
     [SerializeField] Tile[] groundTiles;
@@ -238,7 +237,6 @@ public class RenderDungeon : MonoBehaviour, Saveable
         {
             createRoom(startingNode.edges[i], startingNode);
         }
-        groundTilemap.SetTile(new Vector3Int(0, 0, 0), bonusTile);
     }
     
     void createRoom(Tuple<DungeonNode, string> roomInfo, DungeonNode prevRoom)
@@ -337,6 +335,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
 
                     case 'F':
                         groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        break;
+                    case 'X':
+                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
                         break;
                 }
             }
