@@ -27,11 +27,14 @@ public class SettingsToPause : MonoBehaviour
         string name = gameScene.name;
         if (name == "RyanBackuptestScene")
         {
-            SceneManager.SetActiveScene(gameScene);
+            Debug.Log("Hello1");
+            SceneManager.UnloadSceneAsync("OptionsCopy");
         }
         else
         {
-            SceneManager.LoadScene("TitleScene");
+            Debug.Log("Hello2");
+
+            SceneManager.LoadScene("TitleScreenCopy");
         }
     }
 }

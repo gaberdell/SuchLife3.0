@@ -17,7 +17,7 @@ public class SettingsFromPause : MonoBehaviour
 
     public void Options()
     { 
-        SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+        SceneManager.LoadScene("OptionsCopy", LoadSceneMode.Additive);
     }
     
 }
