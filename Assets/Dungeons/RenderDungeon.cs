@@ -17,9 +17,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
     [SerializeField] RuleTile wallTile;
-    [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
+    [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
@@ -40,7 +40,25 @@ public class RenderDungeon : MonoBehaviour, Saveable
         dungeonOffsetX = offsetX;
         dungeonOffsetY = offsetY;
         opts = dopts;
-        
+
+        //set colors
+        switch (dopts.generationStyle)
+        {
+            case "cave":
+                foreach (Tile t in groundTiles)
+                {
+                    t.color = Color.gray;
+                }
+                break;
+
+            case "default":
+                foreach (Tile t in groundTiles)
+                {
+                    t.color = Color.white;
+                }
+                break;
+        }
+
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
         //for basic testing
@@ -119,18 +137,15 @@ public class RenderDungeon : MonoBehaviour, Saveable
         {
             DungeonNode node = nodeGraph.layout[i];
             if (node.drawXPos < xmin) xmin = node.drawXPos;
-            if (node.drawXPos > xmax) xmax = node.drawXPos + node.roomInfo.width;
+            if (node.drawXPos + node.roomInfo.width > xmax) xmax = node.drawXPos + node.roomInfo.width;
             if (node.drawYPos < ymin) ymin = node.drawYPos;
-            if (node.drawYPos > ymax) ymax = node.drawYPos + node.roomInfo.height;
+            if (node.drawYPos + node.roomInfo.height > ymax) ymax = node.drawYPos + node.roomInfo.height;
         }
         xmin += opts.dungeonOffsetX - 10;
         xmax += opts.dungeonOffsetX + 10;
         ymin += opts.dungeonOffsetY - 10;
         ymax += opts.dungeonOffsetY + 10;
-        Debug.Log(xmin);
-        Debug.Log(xmax);
-        Debug.Log(ymin);
-        Debug.Log(ymax);
+
 
 
         for (int x = xmin; x < xmax; x++)
@@ -147,20 +162,42 @@ public class RenderDungeon : MonoBehaviour, Saveable
             }
         }
         //now fill ground tilemap so player doesnt see void when they break walls
+        float scale = .01f;
         for (int x = xmin; x < xmax; x++)
         {
             for (int y = ymin; y < ymax; y++)
             {
-                Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+                //Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
 
-                if (tile == null)
+                //if (tile == null)
+                //{
+                //    //place a ground tile if theres no ground tile
+                //    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
+                //}
+                //use perlin noise to pick ground tiles
+                float perlinNum = Mathf.PerlinNoise(x/(xmax*scale), y/(ymax*scale));
+                Debug.Log(perlinNum);
+                if (perlinNum < .2)
                 {
-                    //place a ground tile if theres no ground tile
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[0]);
+                } else if(perlinNum < .4)
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[1]);
+                } else if (perlinNum < .6)
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[2]);
+                } else
+                {
+                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[3]);
                 }
             }
         }
+        //finish dungeon render
         EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
+        foreach (Tile t in groundTiles)
+        {
+            t.color = Color.white;
+        }
     }
 
     void createStartingRoom(DungeonGraph nodeGraph, GameObject entrance)
@@ -181,10 +218,13 @@ public class RenderDungeon : MonoBehaviour, Saveable
         List<string> roomLayout = startingNode.roomInfo.tileLayout;
         drawRoomOnTilemap(0, 0, startingNode.roomInfo, startingNode);
         //create entities
-        for(int i = 0; i < startingNode.roomInfo.entities.Count; i++)
+        Debug.Log("entities");
+        Debug.Log(startingNode.roomInfo.entities.Length);
+        Debug.Log(startingNode.roomInfo.entities[0]);
+        for(int i = 0; i < startingNode.roomInfo.entities.Length; i++)
         {
-            string entity = startingNode.roomInfo.entities[i];
-            if (entity == "DungeonExit")
+            EntityInfo entity = startingNode.roomInfo.entities[i];
+            if (entity.entityName == "DungeonExit")
             {
                 //create dungeon exit from prefab
                 GameObject exitInstance = Instantiate(dungeonExit);
@@ -197,7 +237,6 @@ public class RenderDungeon : MonoBehaviour, Saveable
         {
             createRoom(startingNode.edges[i], startingNode);
         }
-        groundTilemap.SetTile(new Vector3Int(0, 0, 0), bonusTile);
     }
     
     void createRoom(Tuple<DungeonNode, string> roomInfo, DungeonNode prevRoom)
@@ -214,7 +253,6 @@ public class RenderDungeon : MonoBehaviour, Saveable
         }
         
         List<string> roomLayout = roomNode.roomInfo.tileLayout;
-        List<string> enemyLayout = roomNode.roomInfo.enemyLayout;
 
         //calculate offset based on location of previous room
         int offset  = (int)UnityEngine.Random.Range(opts.minRoomDist, opts.maxRoomDist);
@@ -244,28 +282,19 @@ public class RenderDungeon : MonoBehaviour, Saveable
         drawRoomOnTilemap(offsetX, offsetY, roomNode.roomInfo, prevRoom);
 
 
-
-        //place enemies (should this be moved to after rooms are drawn? or while?)
-        for (int i = 0; i < enemyLayout.Count; i++) //column index
+        //create entities
+        for (int i = 0; i < roomNode.roomInfo.entities.Length; i++)
         {
-            char[] row = enemyLayout[i].ToCharArray();
-            for (int j = 0; j < row.Length; j++) //row index
+            EntityInfo entity = roomNode.roomInfo.entities[i];
+            if (entity.entityName == "Bomb")
             {
-                //draw room
-                switch (enemyLayout[i][j])
-                {
-                    case 'X':
-                        //no ememies
-                        break;
-
-                    case 'B':
-                        Instantiate(bombEnemy, new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), Quaternion.identity);
-                        break;
-                }
+                Instantiate(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+                //create trackable entity info somewhere?
             }
         }
+
         //connect rooms
-        if(opts.createHallways == false)
+        if (opts.createHallways == false)
         {
             //dont connect rooms for noHallways style
         } else
@@ -306,6 +335,9 @@ public class RenderDungeon : MonoBehaviour, Saveable
 
                     case 'F':
                         groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        break;
+                    case 'X':
+                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
                         break;
                 }
             }
@@ -374,6 +406,10 @@ public class RenderDungeon : MonoBehaviour, Saveable
         int xStart = prevNode.drawXPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.width - hallWaySpace, newNode.roomInfo.width - hallWaySpace));
         //for horizontal hallways, select a width and a  'bottom' point to start the hallway from
         int yStart = prevNode.drawYPos + (int)UnityEngine.Random.Range(0, Math.Min(prevNode.roomInfo.height - hallWaySpace, newNode.roomInfo.height - hallWaySpace));
+        int roomLeftBounds = newNode.drawXPos;
+        int roomRightBounds = newNode.drawXPos + newNode.roomInfo.width;
+        int roomTopBounds = newNode.drawYPos + newNode.roomInfo.height;
+        int roomBottomBounds = newNode.drawYPos;
         switch (prevEdge)
         {
             case "bottom":
@@ -381,98 +417,118 @@ public class RenderDungeon : MonoBehaviour, Saveable
                 Hheight = prevNode.drawYPos - (newNode.drawYPos + newNode.roomInfo.height);
                 x = prevNode.drawXPos + 1;
                 y = newNode.drawYPos + newNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, xStart, y, "vertical");
+                drawHallway(Hwidth, Hheight, xStart, y, "vertical", roomLeftBounds, roomRightBounds, roomBottomBounds, roomTopBounds);
                 break;
             case "top":
                 Hwidth = hallWaySpace;
                 Hheight = newNode.drawYPos - (prevNode.drawYPos + prevNode.roomInfo.height);
                 x = newNode.drawXPos + 1;
                 y = prevNode.drawYPos + prevNode.roomInfo.height;
-                drawHallway(Hwidth, Hheight, xStart, y, "vertical");
+                drawHallway(Hwidth, Hheight, xStart, y, "vertical", roomLeftBounds, roomRightBounds, roomBottomBounds, roomTopBounds);
                 break;
             case "left":
                 Hwidth = prevNode.drawXPos - (newNode.drawXPos + newNode.roomInfo.width);
                 Hheight = hallWaySpace;
                 x = newNode.drawXPos + newNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, yStart, "horizontal");
+                drawHallway(Hwidth, Hheight, x, yStart, "horizontal", roomLeftBounds, roomRightBounds, roomBottomBounds, roomTopBounds);
                 break;
             case "right":
                 Hwidth = newNode.drawXPos - (prevNode.drawXPos + prevNode.roomInfo.width);
                 Hheight = hallWaySpace;
                 x = prevNode.drawXPos + prevNode.roomInfo.width;
                 y = prevNode.drawYPos + 1;
-                drawHallway(Hwidth, Hheight, x, yStart, "horizontal");
+                drawHallway(Hwidth, Hheight, x, yStart, "horizontal", roomLeftBounds, roomRightBounds, roomBottomBounds, roomTopBounds);
                 break;
         }
         
         
     }
 
-    void drawHallway(int width, int height, int startX, int startY, string type)
+    void drawHallway(int width, int height, int startX, int startY, string type, int leftBounds, int rightBounds, int bottomBounds, int topBounds)
     {
+        int varianceOffset = 0;
+        int varianceIncrementer = 3;
+        int shiftInterval = opts.hallwayVariance;
+        List<Tuple<int, int>> hallwayTiles = new List<Tuple<int, int>>();
         List<Tuple<int, int>> hallwayEndPos = new List<Tuple<int, int>>();
-        for (int i = 0; i < width; i++) //x
+        if(type == "vertical")
         {
-            for (int j = 0; j < height; j++) //y
+ 
+            //vertical hallways; draw one row at a time
+            for(int i = 0; i < height; i++) //y
             {
-                //handle wall placement for vertical and horizontal hallways
-                if(type == "vertical")
-                {
-                    if (i == 0 || i == width - 1)
-                    {
-                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
-                    }
-                    else
-                    {
-                        if(j == 0 || j == height - 1)
-                        {
-                            hallwayEndPos.Add(new Tuple<int, int>(i, j));
-                            //CLEAR WALLS THAT OVERLAP WITH HALLWAY
-                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY - 1 + dungeonOffsetY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY+1 + dungeonOffsetY, 0), null);
-                        }
-                        groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), grassTile);
+                //draw row
 
-                    }
-                } else
+                //before row is drawn, decide whether to increment variance offset
+                float rand = UnityEngine.Random.Range(0f, 1f); //0 - 1
+                //check hallway bounds before moving offset
+                if (rand < .333 && varianceIncrementer % shiftInterval == 0)
                 {
-                    if (j == 0 || j == height - 1)
-                    {
-                        //wallTilemap.SetTile(new Vector3Int(i + startX, j + startY, 0), wallTile);
-                    }
-                    else
-                    {
-                        if (i == 0 || i == width - 1)
-                        {
-                            hallwayEndPos.Add(new Tuple<int, int>(i, j));
-                            //CLEAR WALLS THAT OVERLAP WITH HALLWAY
-                            wallTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX+1 + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
-                            wallTilemap.SetTile(new Vector3Int(i + startX-1 + dungeonOffsetX, j + startY + dungeonOffsetY, 0), null);
+                    if (startX + varianceOffset + width >= rightBounds) { }//dont
+                    else varianceOffset += 1;
+                }
+                else if (rand < .666 && varianceIncrementer % shiftInterval == 0)
+                {
+                    if (startX + varianceOffset <= leftBounds) { }//dont
+                    else varianceOffset -= 1;
+                }
+                else
+                {
+                    //dont change
+                }
+                varianceIncrementer++;
 
-                        }
-                        groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY, 0), grassTile);
-                        
-                    }
+                for (int j = 0; j < width; j++) //x
+                {
+                    groundTilemap.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
                 }
 
-                
+            }
+        } else
+        {
+            //horizontal hallways
+            for (int i = 0; i < width; i++) //x
+            {
+                //draw row
+
+                //before row is drawn, decide whether to increment variance offset
+                float rand = UnityEngine.Random.Range(0f, 1f); //0 - 1
+                //check hallway bounds before moving offset
+                if (rand < .333 && varianceIncrementer % shiftInterval == 0)
+                {
+                    if (startY + varianceOffset + height >= topBounds) { }//dont
+                    else varianceOffset += 1;
+                }
+                else if (rand < .666 && varianceIncrementer % shiftInterval == 0)
+                {
+                    if (startY + varianceOffset <= bottomBounds) { }//dont
+                    else varianceOffset -= 1;
+                }
+                else
+                {
+                    //dont change
+                }
+                varianceIncrementer++;
+
+                for (int j = 0; j < height; j++) //y
+                {
+                    groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
+                }
+
             }
         }
-
-
-
+     
 
         //check if hallway actually reached target destination (neighboring tiles arent background), otherwise draw another hallway
         //for each final tile
-        //for (int i = 0; i < hallwayEndPos.Count; i++) {
+        //for (int i = 0; i < hallwayEndPos.Count; i++)
+        //{
         //    //check if tile is neighbored by a background tile
-        //    Tile tile1 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1+1, hallwayEndPos[i].Item2, 0));
-        //    Tile tile2 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1-1, hallwayEndPos[i].Item2, 0));
-        //    Tile tile3 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2+1, 0));
-        //    Tile tile4 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2-1, 0));
+        //    Tile tile1 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1 + 1, hallwayEndPos[i].Item2, 0));
+        //    Tile tile2 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1 - 1, hallwayEndPos[i].Item2, 0));
+        //    Tile tile3 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2 + 1, 0));
+        //    Tile tile4 = (Tile)dungeonTilemap.GetTile(new Vector3Int(hallwayEndPos[i].Item1, hallwayEndPos[i].Item2 - 1, 0));
         //    //based on the location of the background tile, redraw the hallway
         //    if (tile1 == null || tile2 == null || tile3 == null || tile4 == null)
         //    {

@@ -14,20 +14,46 @@
          "FFFFFFFFFF",
          "FFFFFFFFFF"
          ],
-         "enemyLayout": [
-         "XXXXXXXXXX",
-         "XBXXXXXXBX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XBXXXXXXBX",
-         "XXXXXXXXXX"
-         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 3
+         }],
          "width": 10,
          "height": 10
+      },
+      {
+         "type": "Default",
+         "tileLayout": [
+
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF",
+         "FFFFFFFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 3
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 12,
+            "relativeY": 12
+         }],
+         "width": 15,
+         "height": 15
       },
       {
          "type": "Cave",
@@ -36,36 +62,70 @@
          "FFFFF",
          "FFFFF"
          ],
+         "entities": [],
          "width": 5,
          "height": 3
       },
       {
          "type": "Cave",
          "tileLayout": [
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
          "FFFFFFFFFFFFFFF",
          "FFFFFFFFFFFFFFF",
          "FFFFFFFFFFFFFFF",
-         "FFFFF",
-         "FFFFF",
-         "FFFFF",
-         "FFFFF",
-         "FFFFF",
-         "FFFFF"
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX",
+         "XXXXXFFFFFXXXXX"
          ],
-         "enemyLayout": [
-         "XXXXXXXXXXXXXXX",
-         "XXBXXXXXXXXXBXX",
-         "XXXXXXXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXXXXXXX",
-         "XXXXX",
-         "XXBXX",
-         "XXXXX",
-         "XXXXX"
+         "entities": [
+         {
+            "entityName": "Bomb",
+            "relativeX": 7,
+            "relativeY": 7
+         }
          ],
          "width": 15,
-         "height": 9
+         "height": 15
       },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "FFFFFFFFFF",
+         "FFFFFFFFFF",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXFXXXXXX",
+         "XXXXXFXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "XXXXXXXXXX",
+         "FFFFFFFFFF",
+         "FFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 2,
+            "relativeY": 2
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 8,
+            "relativeY": 10
+         }
+         ],
+         "width": 10,
+         "height": 12
+      },
+      
       {
          "type": "Start",
          "tileLayout": [
@@ -81,7 +141,12 @@
          "FFFFFFFFFFFF"
          
          ],
-         "entities": ["DungeonExit"],
+         "entities": [{
+            "entityName": "DungeonExit",
+            "relativeX": 5,
+            "relativeY": 5
+         },
+      {"entityName": "test"}],
          "width": 12,
          "height": 10
       }
