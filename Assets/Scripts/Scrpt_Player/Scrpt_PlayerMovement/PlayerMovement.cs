@@ -62,9 +62,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+
         handleMovement();
         handleRotation();
         //handleCollision();
+
+        /*if (inputHandler.InteractTriggered)
+        {
+            Debug.Log("Oh my oh my");
+        }*/
     }
 
     private void handleMovement()

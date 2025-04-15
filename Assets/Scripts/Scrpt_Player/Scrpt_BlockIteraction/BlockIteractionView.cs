@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TileMapHelper;
 
 namespace BlockIteraction
 {
@@ -8,7 +9,10 @@ namespace BlockIteraction
 
         [Header("Config")]
         [SerializeField]
-        GameObject lookAtObject;
+        GameObject destroyBlockGhost;
+
+        [SerializeField]
+        GameObject placeBlockGhost;
 
         [SerializeField]
         GameObject player;
@@ -24,20 +28,27 @@ namespace BlockIteraction
 
         SpriteRenderer lookAtObjectSprite;
 
+        SpriteRenderer placeBlockGhostSprite;
+
         InputHandler inputHandler;
 
         Vector3 offsetVector = new Vector3(0.5f, 0.5f);
 
-        public void SetLookAtObject(Vector3 stayPosition, Sprite placeSprite)
+        public void SetLookAtObject(Vector3 stayPosition, Vector3 blockPosition, Quaternion destroyRotation, Sprite placeSprite)
         {
-            stayPosition.z = lookAtObject.transform.position.z;
-            lookAtObject.transform.position = stayPosition + offsetVector;
+            stayPosition.z = destroyBlockGhost.transform.position.z;
+            destroyBlockGhost.transform.position = stayPosition + offsetVector;
+            destroyBlockGhost.transform.rotation = destroyRotation;
+            placeBlockGhost.transform.position = blockPosition + offsetVector;
+
         }
 
 
         void Start()
         {
-            lookAtObjectSprite = lookAtObject.GetComponent<SpriteRenderer>();
+            lookAtObjectSprite = destroyBlockGhost.GetComponent<SpriteRenderer>();
+
+            placeBlockGhostSprite = placeBlockGhost.GetComponent<SpriteRenderer>();
 
             inputHandler = InputHandler.Instance;
         }
@@ -52,7 +63,7 @@ namespace BlockIteraction
 
             }
 
-            if (lookAtObject.transform.localPosition.magnitude <= 2f)
+            if (destroyBlockGhost.transform.localPosition.magnitude <= 2f)
             {
                 trnsGoal = 0.0f;
             }
@@ -62,6 +73,7 @@ namespace BlockIteraction
             }
 
             lookAtObjectSprite.color = new Color(1f, 1f, 1f, MathHelper.Damp(lookAtObjectSprite.color.a, trnsGoal, 0.5f, Time.deltaTime));
+            placeBlockGhostSprite.color = new Color(1f, 1f, 1f, lookAtObjectSprite.color.a);
         }
     }
 }

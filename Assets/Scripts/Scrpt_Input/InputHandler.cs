@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
+using UnityEngine.iOS;
+using UnityEngine.tvOS;
 
 //Code from this fantastic tutorial by SpeedTutor
 //https://www.youtube.com/watch?v=lclDl-NGUMg
@@ -22,11 +25,15 @@ public class InputHandler : MonoBehaviour
     [SerializeField]
     private string attack = "Attack";
     [SerializeField]
+    private string place = "Place";
+    [SerializeField]
     private string previous = "Previous";
     [SerializeField]
     private string next = "Next";
     [SerializeField]
     private string interact = "Interact";
+    [SerializeField]
+    private string escape = "Escape";
 
     [Header("Devices")]
     [SerializeField]
@@ -34,22 +41,30 @@ public class InputHandler : MonoBehaviour
 
     private InputAction moveAction;
     private InputAction sprintAction;
+    private InputAction attackAction;
+    private InputAction placeAction;
     private InputAction previousAction;
     private InputAction nextAction;
     private InputAction interactAction;
+    private InputAction escapeAction;
 
     public Vector2 MoveInput { get; private set; }
     public float SprintValue { get; private set; }
+    public bool IsAttacking { get; private set; }
+    public bool IsPlacing { get; private set; }
     public bool PreviousTriggered { get; private set; }
     public bool NextTriggered { get; private set; }
     public bool InteractTriggered { get; private set; }
+    public bool EscapeTriggered { get; private set; }
 
     public bool IsMouseEnabled { get; private set; }
+
 
     public static InputHandler Instance { get; private set; }
 
     private void Awake()
     {
+
         if (Instance == null)
         {
             Instance = this;
@@ -60,29 +75,45 @@ public class InputHandler : MonoBehaviour
 
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
+        attackAction = playerControls.FindActionMap(actionMapName).FindAction(attack);
+        placeAction = playerControls.FindActionMap(actionMapName).FindAction(place);
         previousAction = playerControls.FindActionMap(actionMapName).FindAction(previous);
         nextAction = playerControls.FindActionMap(actionMapName).FindAction(next);
         interactAction = playerControls.FindActionMap(actionMapName).FindAction(interact);
+        escapeAction = playerControls.FindActionMap(actionMapName).FindAction(escape);
+
 
         registerInputActions();
 
-        checkIfEnabledDevices();
+        registerAllInitialDevices();
     }
 
-    private void checkIfEnabledDevices()
+    private void OnEnable()
     {
-        IsMouseEnabled = false;
+        moveAction.Enable();
+        sprintAction.Enable();
+        attackAction.Enable(); 
+        placeAction.Enable();
+        previousAction.Enable();
+        nextAction.Enable();
+        interactAction.Enable();
+        escapeAction.Enable();
 
-        foreach (InputDevice device in InputSystem.devices)
-        {
-            Debug.Log(device.name);
-            if (device.enabled && device.name == mouse)
-            {
-                
-                IsMouseEnabled = true;
-            }
-            break;
-        }
+        InputSystem.onDeviceChange += onDeviceChange;
+    }
+
+    private void OnDisable()
+    {
+        moveAction.Disable();
+        sprintAction.Disable();
+        attackAction.Disable();
+        placeAction.Disable();
+        previousAction.Disable();
+        nextAction.Disable();
+        interactAction.Disable();
+        escapeAction.Disable();
+
+        InputSystem.onDeviceChange -= onDeviceChange;
     }
 
     private void registerInputActions()
@@ -95,6 +126,12 @@ public class InputHandler : MonoBehaviour
         sprintAction.performed += context => SprintValue = context.ReadValue<float>();
         sprintAction.canceled += context => SprintValue = 0f;
 
+        attackAction.performed += context => IsAttacking = true;
+        attackAction.canceled += context => IsAttacking = false;
+
+        placeAction.performed += context => IsPlacing = true;
+        placeAction.canceled += context => IsPlacing = false;
+
         previousAction.performed += context => PreviousTriggered = true;
         previousAction.canceled += context => PreviousTriggered = false;
 
@@ -103,28 +140,20 @@ public class InputHandler : MonoBehaviour
 
         interactAction.performed += context => InteractTriggered = true;
         interactAction.canceled += context => InteractTriggered = false;
+
+        escapeAction.performed += context => EscapeTriggered = true;
+        escapeAction.canceled += context => EscapeTriggered = false;
+
     }
 
-    private void OnEnable()
+    private void registerAllInitialDevices()
     {
-        moveAction.Enable();
-        sprintAction.Enable();
-        previousAction.Enable();
-        nextAction.Enable();
-        interactAction.Enable();
+        IsMouseEnabled = false;
 
-        InputSystem.onDeviceChange += onDeviceChange;
-    }
-
-    private void OnDisable()
-    {
-        moveAction.Disable();
-        sprintAction.Disable();
-        previousAction.Disable();
-        nextAction.Disable();
-        interactAction.Disable();
-
-        InputSystem.onDeviceChange -= onDeviceChange;
+        foreach (InputDevice device in InputSystem.devices)
+        {
+            onDeviceChange(device, InputDeviceChange.Added);
+        }
     }
 
     private void onDeviceChange(InputDevice device, InputDeviceChange change)

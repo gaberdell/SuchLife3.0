@@ -1,0 +1,15 @@
+{
+   "maxNodes": 10,
+   "minNodes": 10,
+   "maxEdges": 4,
+   "maxDepth": 3,
+   "branchType": "0th",
+   "minRoomDist": 2,
+   "maxRoomDist": 5,
+   "hallwayOpening": 6,
+   "createHallways": false,
+   "generationStyle": "cave",
+   "seed": 100,
+   "dungeonOffsetX": 200,
+   "dungeonOffsetY": 200
+}
