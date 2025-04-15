@@ -270,6 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53f90a74a237c2844a896a1e3d509330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  optionsSceneMenu: Options
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed694008aa38e2d4dbf5e73a3a6406b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  titleScreenName: TitleScreen
 --- !u!1 &608253769
 GameObject:
   m_ObjectHideFlags: 0

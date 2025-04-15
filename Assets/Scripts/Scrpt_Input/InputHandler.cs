@@ -64,6 +64,8 @@ public class InputHandler : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("the hell?");
+
 
         if (Instance == null)
         {
@@ -71,8 +73,15 @@ public class InputHandler : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else
+        {
+            Debug.Log("remove me");
             Destroy(gameObject);
+            Instance.moveAction.Enable();
+            return;
+        }
 
+
+        Debug.Log("Change my brain up");
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         attackAction = playerControls.FindActionMap(actionMapName).FindAction(attack);
@@ -90,37 +99,48 @@ public class InputHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        sprintAction.Enable();
-        attackAction.Enable(); 
-        placeAction.Enable();
-        previousAction.Enable();
-        nextAction.Enable();
-        interactAction.Enable();
-        escapeAction.Enable();
+        if (moveAction != null)
+        {
+            moveAction.Enable();
+            sprintAction.Enable();
+            attackAction.Enable();
+            placeAction.Enable();
+            previousAction.Enable();
+            nextAction.Enable();
+            interactAction.Enable();
+            escapeAction.Enable();
 
-        InputSystem.onDeviceChange += onDeviceChange;
+            InputSystem.onDeviceChange += onDeviceChange;
+        }
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        sprintAction.Disable();
-        attackAction.Disable();
-        placeAction.Disable();
-        previousAction.Disable();
-        nextAction.Disable();
-        interactAction.Disable();
-        escapeAction.Disable();
+        if (moveAction != null)
+        {
+            Debug.Log("Sus burger 23");
+            moveAction.Disable();
+            sprintAction.Disable();
+            attackAction.Disable();
+            placeAction.Disable();
+            previousAction.Disable();
+            nextAction.Disable();
+            interactAction.Disable();
+            escapeAction.Disable();
 
-        InputSystem.onDeviceChange -= onDeviceChange;
+            InputSystem.onDeviceChange -= onDeviceChange;
+        }
     }
 
     private void registerInputActions()
     {
         //Tricky bit of syntax but events need a function which the context is a lambda
         //function that take a InputAction.CallbackContext and returns whatever variable type it stored
-        moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
+        moveAction.performed += context =>
+        {
+            Debug.Log("HELLO");
+            MoveInput = context.ReadValue<Vector2>();
+        };
         moveAction.canceled += context => MoveInput = Vector2.zero;
 
         sprintAction.performed += context => SprintValue = context.ReadValue<float>();

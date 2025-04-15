@@ -3,17 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayButton : MonoBehaviour
 {
-
-    void OnEnable()
-    {
-        EventManager.Clicked += PlayGame;
-    }
-
-    void OnDisable()
-    {
-        EventManager.Clicked -= PlayGame;
-
-    }
+    [SerializeField]
+    private string titleScreenName = "TitleScreen";
 
     public void PlayGame()
     {
@@ -22,6 +13,6 @@ public class PlayButton : MonoBehaviour
 
     public void Home()
     {
-        SceneManager.LoadScene("TitleScreen");
+        SceneManager.LoadScene(titleScreenName);
     }
 }

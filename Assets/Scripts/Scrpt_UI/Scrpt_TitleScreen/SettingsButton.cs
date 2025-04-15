@@ -3,20 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class Settings : MonoBehaviour
 {
-
-    void OnEnable()
-    {
-        EventManager.Clicked += OpenSettings;
-    }
-
-    void OnDisable()
-    {
-        EventManager.Clicked -= OpenSettings;
-
-    }
+    [SerializeField]
+    private string optionsSceneMenu = "Options";
 
     public void OpenSettings()
     {
-        SceneManager.LoadSceneAsync(1);
+        SceneManager.LoadScene(optionsSceneMenu, LoadSceneMode.Additive);
     }
 }
