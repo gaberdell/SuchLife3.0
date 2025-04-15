@@ -3,39 +3,28 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
+//attached to Astar, to update the graph in real time
 public class GraphUpdater : MonoBehaviour
 {
-    // private bool dungeonCreated = false;
-
     void OnEnable()
     {
-        // EventManager.PlayerEnterDungeon += OnDungeonCreated;
         Tilemap.tilemapTileChanged += OnTilemapChanged;
     }
 
     void OnDisable()
     {
-        // EventManager.PlayerEnterDungeon -= OnDungeonCreated;
         Tilemap.tilemapTileChanged -= OnTilemapChanged;
     }
 
-    // void OnDungeonCreated()
-    // {
-    //     Invoke("InitialScan", 1);
-    // }
-
-    // void InitialScan()
-    // {
-    //     AstarPath.active.Scan();
-    //     dungeonCreated = true;
-    // }
-
     void OnTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] ts)
     {
-        // if (dungeonCreated) {
-        Bounds tileBounds = new Bounds(ts[0].position, new Vector2(3, 3));
-        AstarPath.active.UpdateGraphs(tileBounds);
-        // }
+        //updates Astar when unwalkable tilemap changed, in small box around each changed tile
+        if (tilemap.gameObject.layer == 7) {
+            foreach (Tilemap.SyncTile tile in ts) {
+                Bounds tileBounds = new Bounds(tile.position, new Vector2(3, 3));
+                AstarPath.active.UpdateGraphs(tileBounds);
+            }
+        }
     }
 
 }
