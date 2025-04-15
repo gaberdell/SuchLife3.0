@@ -5,7 +5,7 @@
    "maxDepth": 3,
    "branchType": "0th",
    "minRoomDist": 2,
-   "maxRoomDist": 10,
+   "maxRoomDist": 5,
    "hallwayOpening": 6,
    "createHallways": false,
    "generationStyle": "cave",

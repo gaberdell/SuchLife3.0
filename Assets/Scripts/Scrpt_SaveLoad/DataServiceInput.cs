@@ -52,7 +52,6 @@ public class DataServiceInput : MonoBehaviour
         Debug.LogError("DataServiceInput: No save files found!");
         return;
       }
-
       DataService.Load(list[0]);
     }
     

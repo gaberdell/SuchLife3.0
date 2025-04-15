@@ -1667,10 +1667,6 @@ GameObject:
   - component: {fileID: 1028713813}
   - component: {fileID: 1028713812}
   - component: {fileID: 1028713811}
-  - component: {fileID: 1028713815}
-  - component: {fileID: 1028713817}
-  - component: {fileID: 1028713818}
-  - component: {fileID: 1028713819}
   - component: {fileID: 1028713816}
   m_Layer: 5
   m_Name: WorldCreatorCanvas
@@ -1762,32 +1758,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1028713815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028713810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54084e4c89b69e34a9e66fd44175ac57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sliderDataPairs:
-  - model: {fileID: 0}
-    view: {fileID: 0}
-    mixerToSet: musicVolume
-  - model: {fileID: 0}
-    view: {fileID: 0}
-    mixerToSet: effectsVolume
-  - model: {fileID: 0}
-    view: {fileID: 0}
-    mixerToSet: enemiesVolume
-  - model: {fileID: 0}
-    view: {fileID: 0}
-    mixerToSet: masterVolume
-  audioMixer: {fileID: 24100000, guid: e4df036ba3b0c4644a775bcc77c17190, type: 2}
 --- !u!114 &1028713816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1818,48 +1788,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1028713817
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028713810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 008fb7734deb65341b60727ccccfc3d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fullScreenToggle: {fileID: 0}
---- !u!114 &1028713818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028713810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71eae3579b34a33478ff514f073e6e99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resolutionDropdown: {fileID: 0}
---- !u!114 &1028713819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028713810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76b98bf8efecc4241b4654096a34b6a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exitButton: {fileID: 0}
-  mainPlayerInput: {fileID: 1028713816}
-  bigAction: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  savableInputActions: []
 --- !u!1 &1099632850
 GameObject:
   m_ObjectHideFlags: 0

@@ -154,7 +154,7 @@ public class DataService {
     List<string> gridData = File.ReadLines(path).ToList();
 
     // loading world
-    GridSaveLoad.LoadGrid(gridData);
+    // GridSaveLoad.LoadGrid(gridData); // TODO
 
     worldName = saveInfo.name; // currently loaded world name
     Debug.Log("DataService: World loaded!");

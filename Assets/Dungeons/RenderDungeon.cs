@@ -238,7 +238,6 @@ public class RenderDungeon : MonoBehaviour
         {
             createRoom(startingNode.edges[i], startingNode);
         }
-        groundTilemap.SetTile(new Vector3Int(0, 0, 0), bonusTile);
     }
     
     void createRoom(Tuple<DungeonNode, string> roomInfo, DungeonNode prevRoom)
@@ -337,6 +336,9 @@ public class RenderDungeon : MonoBehaviour
 
                     case 'F':
                         groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        break;
+                    case 'X':
+                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
                         break;
                 }
             }
