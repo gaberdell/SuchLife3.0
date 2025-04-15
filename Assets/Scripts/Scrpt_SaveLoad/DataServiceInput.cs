@@ -42,14 +42,19 @@ public class DataServiceInput : MonoBehaviour
     // fetch save files
     if (keyPress == F) DataService.Fetch();
 
-    /*
     // save game state
-    else if (keyPress == X) DataService.Save(savePath);
+    else if (keyPress == X) DataService.SaveCurr();
 
-    // load game state
-    else if (keyPress == V) DataService.Load(savePath);
-    */
-
+    // load game 
+    else if (keyPress == V) {
+      List<SaveInfo> list = DataService.Fetch();
+      if (list.Count == 0) {
+        Debug.LogError("DataServiceInput: No save files found!");
+        return;
+      }
+      DataService.Load(list[0]);
+    }
+    
     Time.timeScale = 1f; // unpausing game
   }
 
