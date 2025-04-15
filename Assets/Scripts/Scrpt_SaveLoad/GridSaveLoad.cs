@@ -141,14 +141,16 @@ public class GridSaveLoad
     Tile[] groundTiles = RenderDungeon.groundTiles;
     RuleTile wallTile = RenderDungeon.wallTile;
 
-    // loading background
+    /*
+    // TODO: loading background
+
     int i = 1;
     while (!gridData[i].Equals("END")) {
-
-      dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
+        dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
     }
+    */
 
     // TODO: loading foreground
 
-  }
+    }
 }
