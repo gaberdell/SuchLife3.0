@@ -137,11 +137,11 @@ public class GridSaveLoad
       return;
     }
 
+    /*
     // getting tiles
     Tile[] groundTiles = RenderDungeon.groundTiles;
     RuleTile wallTile = RenderDungeon.wallTile;
 
-    /*
     // TODO: loading background
 
     int i = 1;
@@ -152,5 +152,5 @@ public class GridSaveLoad
 
     // TODO: loading foreground
 
-    }
+  }
 }

@@ -16,11 +16,11 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] Tilemap wallTilemap;
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
-    [SerializeField] public static RuleTile wallTile; // TOREVIEW: made public/static for GridSaveLoad
+    [SerializeField] RuleTile wallTile;
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
-    [SerializeField] public static Tile[] groundTiles; // TOREVIEW
+    [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
