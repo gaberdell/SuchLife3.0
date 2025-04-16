@@ -18,7 +18,6 @@ public class HandleDungeonEntrance : MonoBehaviour
         playerInRange = false;
         opts = JsonUtility.FromJson<DungeonOptions>(optionsFile.text);
         rendered = false;
-        Debug.Log("start");
 
     }
     private void Update()

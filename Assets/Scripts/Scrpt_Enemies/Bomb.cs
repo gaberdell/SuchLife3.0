@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class Bomb : MonoBehaviour
 {
-    [SerializeField] private CircleCollider2D collider;
+    [SerializeField] private CircleCollider2D enemyCollider;
     [SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
@@ -58,7 +58,7 @@ public class Bomb : MonoBehaviour
         yield return new WaitForSeconds(explosionDelay);
 
         
-        collider.isTrigger = true;
+        enemyCollider.isTrigger = true;
         path.enabled = false;
         animator.Play("scrombolo_bombolo_exploding");
         // collider.radius = explosionRadius;

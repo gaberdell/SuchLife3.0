@@ -1,5 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseGame : MonoBehaviour
 {
@@ -9,8 +11,47 @@ public class PauseGame : MonoBehaviour
     private float diffsecs;
     private bool isPaused = false;
     private bool switching = false;
+    private bool isOptionsMenuLoaded = false;
+
+    [SerializeField]
+    private string titleScreen = "TitleScreen";
+
+    [SerializeField]
+    private string optionsSceneMenu = "Options";
+
+    [SerializeField]
+    private string optionsSceneMenuExitButton = "ExitButtonForOptionsMenu";
 
     InputHandler inputhandler;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += onPauseMenuDoneLoading;
+        SceneManager.sceneUnloaded += onPauseMenuDoneUnloading;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= onPauseMenuDoneLoading;
+        SceneManager.sceneUnloaded -= onPauseMenuDoneUnloading;
+    }
+
+    void onPauseMenuDoneLoading(Scene pauseMenu, LoadSceneMode loadSceneMode)
+    {
+        if (pauseMenu.name == optionsSceneMenu)
+        {
+            isOptionsMenuLoaded = true;
+        }
+    }
+
+    void onPauseMenuDoneUnloading(Scene pauseMenu)
+    {
+        if (pauseMenu.name == optionsSceneMenu)
+        {
+            isOptionsMenuLoaded = false;
+        }
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,19 +78,39 @@ public class PauseGame : MonoBehaviour
             {
                 pauseCanvas.SetActive(false);
                 isPaused = false;
+
+                if (isOptionsMenuLoaded)
+                {
+                    SceneManager.UnloadSceneAsync(optionsSceneMenu);
+                }
             }
             
 
 
         }
-        else if (switching && Input.GetKeyUp(KeyCode.Escape))
+        else if (switching && !inputhandler.EscapeTriggered)
         {
             switching = false;
         }
 
-}
+    }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public void OpenSettings()
+    {
+        SceneManager.LoadScene(optionsSceneMenu, LoadSceneMode.Additive);
+
+    }
+
+    public void ExitToTitle()
+    {
+        if (isPaused)
+        {
+            isPaused = togglePause();
+        }
+
+        SceneManager.LoadScene(titleScreen);
+    }
+
     public bool togglePause()
     {
         if (Time.timeScale == 0f)

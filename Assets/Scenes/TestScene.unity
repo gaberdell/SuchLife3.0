@@ -450,8 +450,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1870878221}
-        m_TargetAssemblyTypeName: Settings, TitleScreenAssem
+      - m_Target: {fileID: 1870878223}
+        m_TargetAssemblyTypeName: PauseGame, Assembly-CSharp
         m_MethodName: OpenSettings
         m_Mode: 1
         m_Arguments:
@@ -2452,6 +2452,68 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1603908336961683802, guid: d474fd319c63eff428594b9a5f57a5bd, type: 3}
   m_PrefabInstance: {fileID: 1265242942}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1330200882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1330200884}
+  - component: {fileID: 1330200883}
+  m_Layer: 0
+  m_Name: TestObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1330200883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330200882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!4 &1330200884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330200882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 980.67255, y: 423.85617, z: 4.7650466}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1400653126
 GameObject:
   m_ObjectHideFlags: 0
@@ -4511,9 +4573,6 @@ GameObject:
   - component: {fileID: 1870878225}
   - component: {fileID: 1870878224}
   - component: {fileID: 1870878223}
-  - component: {fileID: 1870878222}
-  - component: {fileID: 1870878221}
-  - component: {fileID: 1870878220}
   m_Layer: 5
   m_Name: PauseMenuCanvas
   m_TagString: Untagged
@@ -4521,44 +4580,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1870878220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870878218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54517eccc47dbf049bba565244504317, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1870878221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870878218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53f90a74a237c2844a896a1e3d509330, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  optionsSceneMenu: Options
---- !u!114 &1870878222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1870878218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed694008aa38e2d4dbf5e73a3a6406b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  titleScreenName: TitleScreen
 --- !u!114 &1870878223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4573,6 +4594,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseCanvas: {fileID: 74369568}
   diffsecs: 0
+  titleScreen: TitleScreen
+  optionsSceneMenu: Options
+  optionsSceneMenuExitButton: ExitButtonForOptionsMenu
 --- !u!114 &1870878224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4956,9 +4980,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1870878220}
-        m_TargetAssemblyTypeName: ExitToTitle, Assembly-CSharp
-        m_MethodName: Home
+      - m_Target: {fileID: 1870878223}
+        m_TargetAssemblyTypeName: PauseGame, Assembly-CSharp
+        m_MethodName: ExitToTitle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9840,6 +9864,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scrombolo_Bombolo
       objectReference: {fileID: 0}
+    - target: {fileID: 843679319920769187, guid: 6e28442da32ba524e894925bba80cc0c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2880516944685476568, guid: 6e28442da32ba524e894925bba80cc0c, type: 3}
       propertyPath: m_Size.x
       value: 0.8125
@@ -9960,6 +9988,10 @@ PrefabInstance:
     - target: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3652674543495926234, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: tileToPlace
@@ -10100,3 +10132,4 @@ SceneRoots:
   - {fileID: 2781625630959170122}
   - {fileID: 1870878227}
   - {fileID: 1702481521}
+  - {fileID: 1330200884}

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.iOS;
+using UnityEngine.SceneManagement;
 using UnityEngine.tvOS;
 
 //Code from this fantastic tutorial by SpeedTutor
@@ -58,13 +59,10 @@ public class InputHandler : MonoBehaviour
     public bool EscapeTriggered { get; private set; }
 
     public bool IsMouseEnabled { get; private set; }
-
-
     public static InputHandler Instance { get; private set; }
 
     private void Awake()
     {
-        Debug.Log("the hell?");
 
 
         if (Instance == null)
@@ -74,14 +72,16 @@ public class InputHandler : MonoBehaviour
         }
         else
         {
-            Debug.Log("remove me");
             Destroy(gameObject);
-            Instance.moveAction.Enable();
+            //Instance.moveAction.Enable();
             return;
         }
 
+        setUpAllActions();
+    }
 
-        Debug.Log("Change my brain up");
+    private void setUpAllActions()
+    {
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         attackAction = playerControls.FindActionMap(actionMapName).FindAction(attack);
@@ -97,20 +97,26 @@ public class InputHandler : MonoBehaviour
         registerAllInitialDevices();
     }
 
+    private void enableAllActions()
+    {
+        moveAction.Enable();
+        sprintAction.Enable();
+        attackAction.Enable();
+        placeAction.Enable();
+        previousAction.Enable();
+        nextAction.Enable();
+        interactAction.Enable();
+        escapeAction.Enable();
+    }
+
     private void OnEnable()
     {
         if (moveAction != null)
         {
-            moveAction.Enable();
-            sprintAction.Enable();
-            attackAction.Enable();
-            placeAction.Enable();
-            previousAction.Enable();
-            nextAction.Enable();
-            interactAction.Enable();
-            escapeAction.Enable();
+            enableAllActions();
 
             InputSystem.onDeviceChange += onDeviceChange;
+            SceneManager.sceneUnloaded += regenerateActions;
         }
     }
 
@@ -118,7 +124,6 @@ public class InputHandler : MonoBehaviour
     {
         if (moveAction != null)
         {
-            Debug.Log("Sus burger 23");
             moveAction.Disable();
             sprintAction.Disable();
             attackAction.Disable();
@@ -129,6 +134,18 @@ public class InputHandler : MonoBehaviour
             escapeAction.Disable();
 
             InputSystem.onDeviceChange -= onDeviceChange;
+            SceneManager.sceneUnloaded -= regenerateActions;
+        }
+    }
+
+
+    private void LateUpdate()
+    {
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Debug.Log("Is Ui Enabled : " + playerControls.FindActionMap("UI").enabled);
+            Debug.Log("Is Player Map Enabled : " + playerControls.FindActionMap(actionMapName).enabled);
         }
     }
 
@@ -136,11 +153,7 @@ public class InputHandler : MonoBehaviour
     {
         //Tricky bit of syntax but events need a function which the context is a lambda
         //function that take a InputAction.CallbackContext and returns whatever variable type it stored
-        moveAction.performed += context =>
-        {
-            Debug.Log("HELLO");
-            MoveInput = context.ReadValue<Vector2>();
-        };
+        moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
         moveAction.canceled += context => MoveInput = Vector2.zero;
 
         sprintAction.performed += context => SprintValue = context.ReadValue<float>();
@@ -185,6 +198,20 @@ public class InputHandler : MonoBehaviour
     public Vector2 GetMousePos()
     {
         return Mouse.current.position.ReadValue();
+    }
+
+    //Re register things if a PlayerInput was deleted
+    private void regenerateActions(Scene current)
+    {
+        if (!playerControls.FindActionMap(actionMapName).enabled)
+        {
+            playerControls.FindActionMap(actionMapName).Enable();
+            setUpAllActions();
+            enableAllActions();
+
+
+            Debug.Log("OnSceneUnloaded: " + current);
+        }
     }
 
 }

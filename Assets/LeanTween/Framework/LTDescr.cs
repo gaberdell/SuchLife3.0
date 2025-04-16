@@ -842,7 +842,7 @@ public class LTDescr
 	public LTDescr setScale(){
 		this.type = TweenAction.SCALE;
 		this.initInternal = ()=>{ this.from = trans.localScale; };
-		this.easeInternal = ()=>{ 
+		this.easeInternal = ()=>{
 			newVect = easeMethod();
 			trans.localScale = newVect; 
 		};
