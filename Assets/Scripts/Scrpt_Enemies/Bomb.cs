@@ -3,7 +3,7 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Bomb : MonoBehaviour
+public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
     [SerializeField] private AIPath path;
@@ -33,6 +33,8 @@ public class Bomb : MonoBehaviour
 
     void Update()
     {
+        updateKnockback(); //inherited from mob parent
+
         distance = Vector2.Distance(transform.position, target.position);
 
         if (distance <= aggroDistance && !isExploding)

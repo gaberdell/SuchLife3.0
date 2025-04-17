@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -47,10 +48,33 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if (enemy.TryGetComponent<Health>(out var health))
+            //only attack living entities
+            if (enemy.TryGetComponent<Mob>(out var mob))
             {
-                health.TakeDamage(attackDamage);
+                if (enemy.TryGetComponent<Health>(out var health))
+                {
+                    health.TakeDamage(attackDamage);
+                }
+                //apply a knockback force to the mob
+                //read force from some value associated with the attack or weapon
+                float knockbackForce = 5f;
+                //calculate direction to knockback based on player and enemy's position
+                Vector3 enemyPos = enemy.transform.position;
+                Vector3 playerPos = gameObject.transform.position;
+                Vector3 diff = enemyPos - playerPos;
+                Vector3 knockbackVector = new Vector3(diff.x * knockbackForce, diff.y * knockbackForce, 0);
+                //calculate direction to knockback based on player's facing direction
+                float playerFacing = gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+                Vector3 playerFacingVector = new Vector3(Mathf.Sin(playerFacing), Mathf.Cos(playerFacing) * -1, 0);
+                Vector3 newKnockbackVector = playerFacingVector * knockbackForce;
+                Debug.Log(playerFacingVector);
+
+                
+                mob.applyKnockback(newKnockbackVector, knockbackForce);
+                //Debug.Log("push");
+                //Debug.Log(knockbackVector);
             }
+
         }
     }
 

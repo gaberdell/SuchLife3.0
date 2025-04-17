@@ -61,7 +61,9 @@ public class Health : MonoBehaviour
     {
         GameObject textObj = new GameObject("HealthText");
         textObj.transform.SetParent(transform);
-        textObj.transform.localPosition = new Vector3(0, 1.2f, 0); 
+        //move health text away from entity according to its radius
+        float textRadius = gameObject.GetComponent<CircleCollider2D>().radius + 0.5f;
+        textObj.transform.localPosition = new Vector3(0, textRadius, 0); 
 
         healthTextMesh = textObj.AddComponent<TextMesh>();
         healthTextMesh.fontSize = 32;
