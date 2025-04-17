@@ -645,18 +645,18 @@ PrefabInstance:
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1028713820}
+      objectReference: {fileID: 1025288234}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: Home
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SettingsToPause, Assembly-CSharp
+      value: PlayButton, TitleScreenAssem
       objectReference: {fileID: 0}
     - target: {fileID: 7473660825766584859, guid: 241bfbaffc38dc3428b1b97f28d1f01c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

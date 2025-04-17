@@ -5,8 +5,6 @@ public class PauseGame : MonoBehaviour
 {
     [SerializeField] 
     private GameObject pauseCanvas;
-    [SerializeField]
-    private float diffsecs;
     private bool isPaused = false;
     private bool switching = false;
 
@@ -49,6 +47,12 @@ public class PauseGame : MonoBehaviour
         }
 
 }
+    public void clickUnpause()
+    {
+        togglePause();
+        pauseCanvas.SetActive(false);
+        isPaused = false;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public bool togglePause()
