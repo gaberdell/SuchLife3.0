@@ -6,11 +6,19 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using TMPro;
-
+/* Foundation of the UI used for the World Creator scene. Involves the start of saving logic
+ * being implemented into the functionality of the buttons in this scene. Ideally, save will be
+ *  called once a world is created. Also, eventually the script will pull a list of saved worlds to 
+ * populate a list on the scene. Scene utilizes a TMPro input field to get the name of the world
+ * so that it can be properly saved. Create World button currently calls save after loading the test scene.
+*/
 public class NewWorldUi : MonoBehaviour
 {
 
-    [SerializeField] private static string inputText;
+    [SerializeField] 
+    private static string inputText;
+    [SerializeField]
+    private GameObject loadCanvas;
 
     void Start()
     {
@@ -27,21 +35,18 @@ public class NewWorldUi : MonoBehaviour
         }
 
     }
-
+    //Takes the text entered into the TMPro input field
     public void GrabFromInputField(string input)
     {
         inputText = input;
         Debug.Log(inputText);
-
-
-        //DisplayReactionToInput();
 
     }
 
 
     public void CreateWorldButton()
     {
-        Debug.Log("Creating world...");
+        loadCanvas.SetActive(true);
 
         //load into world before saving
         SceneManager.LoadScene("TestScene");
