@@ -177,7 +177,7 @@ public class RenderDungeon : MonoBehaviour
                 //}
                 //use perlin noise to pick ground tiles
                 float perlinNum = Mathf.PerlinNoise(x/(xmax*scale), y/(ymax*scale));
-                Debug.Log(perlinNum);
+                //Debug.Log(perlinNum);
                 if (perlinNum < .2)
                 {
                     groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[0]);
@@ -219,9 +219,9 @@ public class RenderDungeon : MonoBehaviour
         List<string> roomLayout = startingNode.roomInfo.tileLayout;
         drawRoomOnTilemap(0, 0, startingNode.roomInfo, startingNode);
         //create entities
-        Debug.Log("entities");
-        Debug.Log(startingNode.roomInfo.entities.Length);
-        Debug.Log(startingNode.roomInfo.entities[0]);
+        //Debug.Log("entities");
+        //Debug.Log(startingNode.roomInfo.entities.Length);
+        //Debug.Log(startingNode.roomInfo.entities[0]);
         for(int i = 0; i < startingNode.roomInfo.entities.Length; i++)
         {
             EntityInfo entity = startingNode.roomInfo.entities[i];
