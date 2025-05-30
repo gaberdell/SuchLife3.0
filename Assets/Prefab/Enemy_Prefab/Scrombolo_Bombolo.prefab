@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d281e1e96a1c8494c8558a0497228853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyCollider: {fileID: 0}
+  enemyCollider: {fileID: 5283234298430202359}
   path: {fileID: 7006902875869644995}
   animator: {fileID: 5940736215880480939}
   particles: {fileID: 1852298218644448698}
