@@ -45,6 +45,8 @@ public class HandleDungeonEntrance : MonoBehaviour
         //triggered from event manager
         //move player to starting room in dungeon (0,0 point)
         GameObject.Find("Player").transform.position = GameObject.Find("Grid").transform.position + new Vector3Int(opts.dungeonOffsetX + 5, opts.dungeonOffsetY + 5, 0);
+        //ChunkManager.renderChunks(GameObject.Find("Player").transform.position);
+        ChunkManager.renderAll();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

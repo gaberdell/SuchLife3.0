@@ -25,6 +25,7 @@ public class RenderDungeon : MonoBehaviour
     Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
     DungeonOptions opts;
+    
 
     int dungeonOffsetX;
     int dungeonOffsetY;
@@ -62,41 +63,8 @@ public class RenderDungeon : MonoBehaviour
 
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
-        //for basic testing
-        //for each node in the graph, set the tile with the same index to a grasstile
-        //for (int i = 0; i < nodeGraph.layout.Count; i++)
-        //{
-        //    DungeonNode node = nodeGraph.layout[i];
-        //    if(node.type == "Start")
-        //    {
-        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), bonusTile);
-        //    } else
-        //    {
-        //        groundTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4, 0), grassTile);
-        //    }
-            
-        //    //draw edges
-        //    for (int j = 0; j < node.edges.Count; j++)
-        //    {
-        //        //draw em somehow
-        //        switch (node.edges[j].Item2)
-        //        {
-        //            case "top":
-        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 - 2, 0), wallTile);
-        //                break;
-        //            case "bottom":
-        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 50, node.yPos * 4 + 2, 0), wallTile);
-        //                break;
-        //            case "right":
-        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 + 2 + 50, node.yPos * 4, 0), wallTile);
-        //                break;
-        //            case "left":
-        //                wallTilemap.SetTile(new Vector3Int(node.xPos * 4 - 2 + 50, node.yPos * 4, 0), wallTile);
-        //                break;
-        //        }
-                
-        //    }
-        //}
+
+       
         // Render graph one node at a time starting from the start node
         //will draw the room, draw a neighboring node at a random distance away(set in opts), and draw a hallway connecting them(and add the new node to a queue)
         //Rooms are read from static files and chosen randomly, with bias on room layouts not already existing
@@ -120,9 +88,6 @@ public class RenderDungeon : MonoBehaviour
 
         //after dungeon is generated
         fillBackground(nodeGraph);
-        //trigger player enter dungeon after dungeon is generated
-        //EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, );
-
     }
 
     void fillBackground(DungeonGraph nodeGraph)
@@ -146,6 +111,12 @@ public class RenderDungeon : MonoBehaviour
         xmax += opts.dungeonOffsetX + 10;
         ymin += opts.dungeonOffsetY - 10;
         ymax += opts.dungeonOffsetY + 10;
+
+
+
+        //REMOVE
+        EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
+        return;
 
 
 
@@ -195,10 +166,10 @@ public class RenderDungeon : MonoBehaviour
         }
         //finish dungeon render
         EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
-        foreach (Tile t in groundTiles)
-        {
-            t.color = Color.white;
-        }
+        //foreach (Tile t in groundTiles)
+        //{
+        //    t.color = Color.white;
+        //}
     }
 
     void createStartingRoom(DungeonGraph nodeGraph, GameObject entrance)
@@ -331,14 +302,17 @@ public class RenderDungeon : MonoBehaviour
                 switch (roomLayout[i][j])
                 {
                     case 'W':
-                        wallTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
+                        //wallTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
                         break;
 
                     case 'F':
-                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
                         break;
                     case 'X':
-                        groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
+                        //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
                         break;
                 }
             }
@@ -482,7 +456,9 @@ public class RenderDungeon : MonoBehaviour
 
                 for (int j = 0; j < width; j++) //x
                 {
-                    groundTilemap.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
+                    //groundTilemap.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
+                    ChunkManager.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
+
                 }
 
             }
@@ -514,7 +490,9 @@ public class RenderDungeon : MonoBehaviour
 
                 for (int j = 0; j < height; j++) //y
                 {
-                    groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
+                    //groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
+                    ChunkManager.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
+
                 }
 
             }

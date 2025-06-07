@@ -1,16 +1,16 @@
 {
-   "maxNodes": 15,
-   "minNodes": 10,
+   "maxNodes": 50,
+   "minNodes": 40,
    "maxEdges": 4,
    "maxDepth": 4,
    "branchType": "0th",
-   "minRoomDist": 5,
-   "maxRoomDist": 15,
+   "minRoomDist": 10,
+   "maxRoomDist": 25,
    "hallwayOpening": 6,
    "createHallways": true,
    "generationStyle": "default",
    "seed": 10,
    "hallwayVariance": 5,
-   "dungeonOffsetX": 100,
-   "dungeonOffsetY": 100
+   "dungeonOffsetX": 300,
+   "dungeonOffsetY": 300
 }
