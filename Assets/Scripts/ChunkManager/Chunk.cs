@@ -10,42 +10,51 @@ public class Chunk //: MonoBehaviour
     private int chunkX; //location relative to other chunks (in the grid of chunks)
     private int chunkY;
     public int size;
+    bool rendered = false;
     List<List<TileBase>> floorTiles = new List<List<TileBase>>();
     List<List<TileBase>> wallTiles = new List<List<TileBase>>();
 
     public Chunk(int csize)
     {
         size = csize;
-        //fill chunk with null tiles
-        List<TileBase> emptyList = new List<TileBase>();
-        for (int j = 0; j < size; j++)
-        {
-            emptyList.Add(null);
-        }
+
         for (int i = 0; i < size; i++)
         {
-            floorTiles.Add(emptyList);
-            wallTiles.Add(emptyList);
+            //fill chunk with null tiles
+            List<TileBase> emptyList1 = new List<TileBase>();
+            List<TileBase> emptyList2 = new List<TileBase>();
+            for (int j = 0; j < size; j++)
+            {
+                emptyList1.Add(null);
+                emptyList2.Add(null);
+            }
+            floorTiles.Add(emptyList1);
+            wallTiles.Add(emptyList2);
         }
     }
 
     //
 
-    public void insertTile(int x, int y, TileBase tile)
+    public void insertTile(int x, int y, TileBase tile, bool isWall)
     {
-        //determine whether tile is a ruletile or not (add rule tiles to wall grid)
-        //chunkTiles[y][x] = tile;
+        if(isWall)
+        {
+            wallTiles[y][x] = tile;
+        } else
+        {
+            floorTiles[y][x] = tile;
+        }
     }
 
-    public TileBase getTile(int x, int y, bool isFloor)
+    public TileBase getTile(int x, int y, bool isWall)
     {
-        if (isFloor)
+        if (!isWall)
         {
-            return floorTiles[x][y];
+            return floorTiles[y][x];
         }
         else
         {
-            return wallTiles[x][y];
+            return wallTiles[y][x];
         }
     }
 
@@ -59,16 +68,40 @@ public class Chunk //: MonoBehaviour
 
     public void render(Tilemap groundTilemap, Tilemap wallTilemap)
     {
+        //if already rendered, then don't. 
+        if (rendered)
+        {
+            return;
+        }
+        rendered = true;
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
                 TileBase ftile = floorTiles[i][j];
                 TileBase wtile = wallTiles[i][j];
-                groundTilemap.SetTile(new Vector3Int(worldX + i, worldY + j, 0), ftile);
-                wallTilemap.SetTile(new Vector3Int(worldX + i, worldY + j, 0), wtile);
+                groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), ftile);
+                wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), wtile);
             }
         }
+    }
+
+    public void unload(Tilemap groundTilemap, Tilemap wallTilemap)
+    {
+        rendered = false;
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), null);
+                wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), null);
+            }
+        }
+    }
+
+    public Vector2 getPos()
+    {
+        return new Vector2(chunkX, chunkY);
     }
 
 }

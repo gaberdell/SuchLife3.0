@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine.WSA;
+using Codice.CM.Common;
 
 public static class ChunkManager 
 {
@@ -15,13 +16,15 @@ public static class ChunkManager
     // dungeons will be handled as instances with their own chunks
 
     const int chunkSize = 10; //width & height of chunk in tiles;
-    const int renderDistance = 1; //amount of chunks away from player's chunk to render (e.g. if 1, then render 8 chunks around player's chunk)
+    const int renderDistance = 2; //amount of chunks away from player's chunk to render (e.g. if 1, then render 8 chunks around player's chunk)
     static Vector3 worldPos = new Vector3(0, 0, 0); //position of chunk manager in world (should match the tilemaps'
     static List<List<Chunk>> chunkGrid = new List<List<Chunk>>(); //container for world chunks
+    static List<Chunk> loadedChunks; //keep track of loaded chunks to unload them when player renders new chunks.
+
     static Tilemap wallTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
     static Tilemap groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
 
-    static public void SetTile(Vector3Int tilePos, TileBase tile)
+    static public void SetTile(Vector3Int tilePos, TileBase tile, bool isWall)
     {
         //figure out what chunk to place the tile into
         //0th 0th chunk starts at bottom left corner? top left?
@@ -33,23 +36,23 @@ public static class ChunkManager
         int yInChunk = tilePos.y % chunkSize;
 
         //if out of bounds then add empty chunks
-        while(yInChunk+1 > chunkGrid.Count)
+        while(chunkY+1 > chunkGrid.Count)
         {
             chunkGrid.Add(new List<Chunk>());
         }
-        while(xInChunk+1 > chunkGrid[yInChunk].Count)
+        while(chunkX+1 > chunkGrid[chunkY].Count)
         {
-            chunkGrid[yInChunk].Add(new Chunk(chunkSize));
+            chunkGrid[chunkY].Add(new Chunk(chunkSize));
         }
         fillChunkInfo();
 
-        Chunk targetChunk = chunkGrid[yInChunk][xInChunk];
+        Chunk targetChunk = chunkGrid[chunkY][chunkX];
 
         
 
         //place in chunk
 
-        targetChunk.insertTile(chunkX, chunkY, tile);
+        targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
     }
 
     static private void fillChunkInfo()
@@ -74,8 +77,8 @@ public static class ChunkManager
         Chunk targetChunk = getChunkFromWorld(tilePos);
 
         //place in chunk
-
-        return targetChunk.getTile(chunkX, chunkY, isWall);
+        if (targetChunk == null) return null;
+        return targetChunk.getTile(xInChunk, yInChunk, isWall);
     }
 
 
@@ -95,6 +98,13 @@ public static class ChunkManager
         }
     }
 
+    //mainly for player
+    static public Vector2 getChunkPosFromWorld(Vector3 input)
+    {
+        int chunkX = (int)input.x / chunkSize;
+        int chunkY = (int)input.y / chunkSize;
+        return new Vector2(chunkX, chunkY);
+    }
 
     static public Chunk getChunkFromWorld(Vector3 input)
     {
@@ -103,30 +113,71 @@ public static class ChunkManager
         int xInChunk = (int) input.x % chunkSize;
         int yInChunk = (int) input.y % chunkSize;
 
-        return chunkGrid[yInChunk][xInChunk];
+        //if out of bounds return null
+        if(chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
+        {
+            return null;
+        }
+
+        return chunkGrid[chunkY][chunkX];
     }
 
     //call these whenever the player moves into a new chunk
-    static public void renderChunks(Vector3 playerPos)
+    static public void renderPlayerChunks(Vector3 playerPos)
     {
+        
+        //Vector3 playerPos = GameObject.Find("Player").transform.position;
         //get chunk player is on
         Chunk playerChunk = getChunkFromWorld(playerPos);
-        //render chunks
-        if(renderDistance == 1)
+        //render chunks around player
+        if (renderDistance == 1)
         {
+            playerChunk.render(groundTilemap, wallTilemap);
+        }
+        else if (renderDistance == 2)
+        {
+            Vector2 p = playerChunk.getPos();
+            int cx = (int)p.x;
+            int cy = (int)p.y;
+            
+            List<Chunk> chunksToRender = new List<Chunk>();
+            chunksToRender.Add(playerChunk);
+            chunksToRender.Add(chunkGrid[cy][cx+1]);
+            chunksToRender.Add(chunkGrid[cy][cx-1]);
+            chunksToRender.Add(chunkGrid[cy+1][cx]);
+            chunksToRender.Add(chunkGrid[cy-1][cx]);
+            chunksToRender.Add(chunkGrid[cy+1][cx+1]);
+            chunksToRender.Add(chunkGrid[cy-1][cx-1]);
+            chunksToRender.Add(chunkGrid[cy+1][cx-1]);
+            chunksToRender.Add(chunkGrid[cy-1][cx+1]);
+
+            //unload chunks
+            //for (int i = 0; i < loadedChunks.Count; i++)
+            //{
+            //    Chunk currChunk = loadedChunks[i];
+            //    //if already rendered chunk not in list of chunks to load then unload it
+            //    if (chunksToRender.Contains(currChunk))
+            //    {
+                    
+            //    } else
+            //    {
+            //        currChunk.unload(groundTilemap, wallTilemap);
+            //        loadedChunks.Remove(currChunk);
+            //    }
+            //}
+
+            for(int i = 0;i < chunksToRender.Count; i++)
+            {
+                Chunk currChunk = chunksToRender[i];
+                currChunk.render(groundTilemap, wallTilemap);
+                //if (!loadedChunks.Contains(currChunk)){ loadedChunks.Add(currChunk); }
+
+            }
 
         }
 
     }
 
-    static private void renderChunk(Chunk chunk) {
-
-    }
-
-    static public void unloadChunks(Vector3 playerPos)
-    {
-
-    }
 
     
 }

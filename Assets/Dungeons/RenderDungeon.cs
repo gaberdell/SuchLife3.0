@@ -115,8 +115,8 @@ public class RenderDungeon : MonoBehaviour
 
 
         //REMOVE
-        EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
-        return;
+        //EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
+        //return;
 
 
 
@@ -124,46 +124,49 @@ public class RenderDungeon : MonoBehaviour
         {
             for (int y = ymin; y < ymax; y++)
             {
-                Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+                Tile tile = (Tile)ChunkManager.GetTile(new Vector3Int(x, y, 0), false);
 
                 if (tile == null)
                 {
                     //place a wall if theres no ground tile
-                    wallTilemap.SetTile(new Vector3Int(x, y, 0), wallTile);
+                    ChunkManager.SetTile(new Vector3Int(x, y, 0), wallTile, true);
                 }
             }
         }
         //now fill ground tilemap so player doesnt see void when they break walls
-        float scale = .01f;
-        for (int x = xmin; x < xmax; x++)
-        {
-            for (int y = ymin; y < ymax; y++)
-            {
-                //Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
+        //float scale = .01f;
+        //for (int x = xmin; x < xmax; x++)
+        //{
+        //    for (int y = ymin; y < ymax; y++)
+        //    {
+        //        //Tile tile = (Tile)groundTilemap.GetTile(new Vector3Int(x, y, 0));
 
-                //if (tile == null)
-                //{
-                //    //place a ground tile if theres no ground tile
-                //    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
-                //}
-                //use perlin noise to pick ground tiles
-                float perlinNum = Mathf.PerlinNoise(x/(xmax*scale), y/(ymax*scale));
-                //Debug.Log(perlinNum);
-                if (perlinNum < .2)
-                {
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[0]);
-                } else if(perlinNum < .4)
-                {
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[1]);
-                } else if (perlinNum < .6)
-                {
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[2]);
-                } else
-                {
-                    groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[3]);
-                }
-            }
-        }
+        //        //if (tile == null)
+        //        //{
+        //        //    //place a ground tile if theres no ground tile
+        //        //    groundTilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
+        //        //}
+        //        //use perlin noise to pick ground tiles
+        //        float perlinNum = Mathf.PerlinNoise(x / (xmax * scale), y / (ymax * scale));
+        //        //Debug.Log(perlinNum);
+        //        if (perlinNum < .2)
+        //        {
+        //            ChunkManager.SetTile(new Vector3Int(x, y, 0), groundTiles[0], false);
+        //        }
+        //        else if (perlinNum < .4)
+        //        {
+        //            ChunkManager.SetTile(new Vector3Int(x, y, 0), groundTiles[1], false);
+        //        }
+        //        else if (perlinNum < .6)
+        //        {
+        //            ChunkManager.SetTile(new Vector3Int(x, y, 0), groundTiles[2], false);
+        //        }
+        //        else
+        //        {
+        //            ChunkManager.SetTile(new Vector3Int(x, y, 0), groundTiles[3], false);
+        //        }
+        //    }
+        //}
         //finish dungeon render
         EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
         //foreach (Tile t in groundTiles)
@@ -303,16 +306,16 @@ public class RenderDungeon : MonoBehaviour
                 {
                     case 'W':
                         //wallTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
-                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), wallTile, true);
                         break;
 
                     case 'F':
                         //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
-                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile, false);
                         break;
                     case 'X':
                         //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
-                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null, false);
                         break;
                 }
             }
@@ -457,7 +460,7 @@ public class RenderDungeon : MonoBehaviour
                 for (int j = 0; j < width; j++) //x
                 {
                     //groundTilemap.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
-                    ChunkManager.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile);
+                    ChunkManager.SetTile(new Vector3Int(j + startX + dungeonOffsetX + varianceOffset, i + startY + dungeonOffsetY, 0), grassTile, false);
 
                 }
 
@@ -491,7 +494,7 @@ public class RenderDungeon : MonoBehaviour
                 for (int j = 0; j < height; j++) //y
                 {
                     //groundTilemap.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
-                    ChunkManager.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile);
+                    ChunkManager.SetTile(new Vector3Int(i + startX + dungeonOffsetX, j + startY + dungeonOffsetY + varianceOffset, 0), grassTile, false);
 
                 }
 
