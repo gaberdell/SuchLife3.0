@@ -116,27 +116,6 @@ public class RenderDungeon : MonoBehaviour
         //set fill tile for dungeon chunks
         ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile);
 
-         
-
-
-
-
-        //for (int x = xmin; x < xmax; x++)
-        //{
-        //    for (int y = ymin; y < ymax; y++)
-        //    {
-        //        //Tile tile = (Tile)ChunkManager.GetTile(new Vector3Int(x, y, 0), false);
-
-        //        //if (tile == null)
-        //        //{
-        //        //    //place a wall if theres no ground tile
-        //        //    ChunkManager.SetTile(new Vector3Int(x, y, 0), wallTile, true);
-        //        //}
-
-        //        //set fillmethod of chunk on this tile
-
-        //    }
-        //}
         //now fill ground tilemap so player doesnt see void when they break walls
         //float scale = .01f;
         //for (int x = xmin; x < xmax; x++)
@@ -192,14 +171,10 @@ public class RenderDungeon : MonoBehaviour
             }
         }
         //draw starting room
-        //List<List<string>> roomLayout = createRoomLayout("Start");
         startingNode.roomInfo = rooms.getRoom(startingNode.type);
         List<string> roomLayout = startingNode.roomInfo.tileLayout;
         drawRoomOnTilemap(0, 0, startingNode.roomInfo, startingNode);
         //create entities
-        //Debug.Log("entities");
-        //Debug.Log(startingNode.roomInfo.entities.Length);
-        //Debug.Log(startingNode.roomInfo.entities[0]);
         for(int i = 0; i < startingNode.roomInfo.entities.Length; i++)
         {
             EntityInfo entity = startingNode.roomInfo.entities[i];
@@ -267,8 +242,8 @@ public class RenderDungeon : MonoBehaviour
             EntityInfo entity = roomNode.roomInfo.entities[i];
             if (entity.entityName == "Bomb")
             {
+                //ChunkManager.addEntityToChunk(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 Instantiate(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
-                //create trackable entity info somewhere?
             }
         }
 

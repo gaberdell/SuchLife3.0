@@ -67,7 +67,7 @@ public class PlayerAttack : MonoBehaviour
                 float playerFacing = gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
                 Vector3 playerFacingVector = new Vector3(Mathf.Sin(playerFacing), Mathf.Cos(playerFacing) * -1, 0);
                 Vector3 newKnockbackVector = playerFacingVector * knockbackForce;
-                Debug.Log(playerFacingVector);
+                //Debug.Log(playerFacingVector);
 
                 
                 mob.applyKnockback(newKnockbackVector, knockbackForce);

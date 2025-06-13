@@ -25,6 +25,7 @@ public static class ChunkManager
     static Tilemap wallTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
     static Tilemap groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
 
+    // INSTANTIATION METHODS
     static public void SetTile(Vector3Int tilePos, TileBase tile, bool isWall)
     {
         //figure out what chunk to place the tile into
@@ -79,9 +80,16 @@ public static class ChunkManager
 
     }
 
+    static public void addEntityToChunk(Mob entity, Vector3Int worldPos)
+    {
+        //get chunk
+
+        //place entity in chunk
+    }
 
 
-    //helpers
+
+    // HELPERS
     static private void fillChunkInfo()
     {
         for (int i = 0; i < chunkGrid.Count; i++)
@@ -110,22 +118,7 @@ public static class ChunkManager
 
 
 
-    // when the player moves, the manager will check if a chunk needs to be loaded (rendered) or unloaded (unrendered from scene)
-
-
-    //debug function to render every chunk
-    static public void renderAll()
-    {
-        for (int i = 0; i < chunkGrid.Count; i++)
-        {
-            for(int j = 0;j< chunkGrid[i].Count; j++)
-            {
-                chunkGrid[i][j].render(groundTilemap, wallTilemap);
-            }
-        }
-    }
-
-    //mainly for player
+    // RENDERING
     static public Vector2 getChunkPosFromWorld(Vector3 input)
     {
         int chunkX = (int)input.x / chunkSize;
@@ -179,21 +172,6 @@ public static class ChunkManager
                 }
             }
         }
-
-        //render chunks around player
-            
-           //add 8 chunks around player to be rendered
-            //loadedChunks.Add(playerChunk);
-            //loadedChunks.Add(chunkGrid[cy][cx+1]);
-            //loadedChunks.Add(chunkGrid[cy][cx-1]);
-            //loadedChunks.Add(chunkGrid[cy+1][cx]);
-            //loadedChunks.Add(chunkGrid[cy-1][cx]);
-            //loadedChunks.Add(chunkGrid[cy+1][cx+1]);
-            //loadedChunks.Add(chunkGrid[cy-1][cx-1]);
-            //loadedChunks.Add(chunkGrid[cy+1][cx-1]);
-            //loadedChunks.Add(chunkGrid[cy-1][cx+1]);
-
-
         //unload old chunks and render new chunks
         List<Chunk> toRemove = new List<Chunk>();
         foreach(Chunk chunk in loadedChunks){
@@ -202,7 +180,6 @@ public static class ChunkManager
             {
                 //within distance
                 chunk.render(groundTilemap, wallTilemap);
-                Debug.Log("chunk rendered");
             } else
             {
                 //outside distance

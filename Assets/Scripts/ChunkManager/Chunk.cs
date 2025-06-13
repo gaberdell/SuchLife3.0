@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,13 +10,14 @@ public class Chunk //: MonoBehaviour
     private int worldY;
     private int chunkX; //location relative to other chunks (in the grid of chunks)
     private int chunkY;
-    public int size;
-    bool rendered = false;
-    bool hasBeenRenderedOnce = false;
+    public int size; //size of chunk
+    bool rendered = false; //bools for determining whether the chunk has been rendered in the scene or not
+    bool hasBeenRenderedOnce = false; //bool used to determine whether to fill the chunk with walls or not, only needs to be done on initial render
     TileBase wallTile; //tile used to fill walls; leave empty if not needed (not dungeon chunk)
     TileBase[] floorTile; //tiles used to fill floor beneath filled walls; leave empty if not dungeon
-    List<List<TileBase>> floorTiles = new List<List<TileBase>>();
-    List<List<TileBase>> wallTiles = new List<List<TileBase>>();
+    List<List<TileBase>> floorTiles = new List<List<TileBase>>(); //grid of placed tiles for floor tilemap
+    List<List<TileBase>> wallTiles = new List<List<TileBase>>(); //grid of placed tiles for wall tilemap
+    List<Mob> chunkMobs = new List<Mob>();//container for enemies present in this chunk
 
     public Chunk(int csize)
     {
@@ -36,8 +38,8 @@ public class Chunk //: MonoBehaviour
         }
     }
 
-    //
-
+    
+    // INFO METHODS
     public void insertTile(int x, int y, TileBase tile, bool isWall)
     {
         if(isWall)
@@ -69,6 +71,22 @@ public class Chunk //: MonoBehaviour
         worldY = wy;
     }
 
+    // HELPER METHODS
+    public Vector2 getPos()
+    {
+        return new Vector2(chunkX, chunkY);
+    }
+
+    public int distanceFromChunk(Chunk otherChunk)
+    {
+        Vector2 c2pos = otherChunk.getPos();
+        //diagonals are counted as 1 distance; take the max between x and y distance
+        int distance = (int)Mathf.Max(Mathf.Abs(chunkX - c2pos.x), Mathf.Abs(chunkY - c2pos.y));
+        return distance;
+    }
+
+
+    // RENDERING METHODS
     public void render(Tilemap groundTilemap, Tilemap wallTilemap)
     {
         //if already rendered, then don't. 
@@ -130,17 +148,6 @@ public class Chunk //: MonoBehaviour
         }
     }
 
-    public Vector2 getPos()
-    {
-        return new Vector2(chunkX, chunkY);
-    }
-
-    public int distanceFromChunk(Chunk otherChunk)
-    {
-        Vector2 c2pos = otherChunk.getPos();
-        //diagonals are counted as 1 distance; take the max between x and y distance
-        int distance = (int) Mathf.Max(Mathf.Abs(chunkX - c2pos.x), Mathf.Abs(chunkY - c2pos.y));
-        return distance;
-    }
+   
 
 }
