@@ -193,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
     private void handleChunkPosition()
     {
         Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(transform.position);
+        Debug.Log(currChunkPos);
         //if detect a change in chunks
         if(currChunkPos != chunkPos)
         {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -44,22 +45,22 @@ public class RenderDungeon : MonoBehaviour
         opts = dopts;
 
         //set colors
-        switch (dopts.generationStyle)
-        {
-            case "cave":
-                foreach (Tile t in groundTiles)
-                {
-                    t.color = Color.gray;
-                }
-                break;
+        //switch (dopts.generationStyle)
+        //{
+        //    case "cave":
+        //        foreach (Tile t in groundTiles)
+        //        {
+        //            t.color = Color.gray;
+        //        }
+        //        break;
 
-            case "default":
-                foreach (Tile t in groundTiles)
-                {
-                    t.color = Color.white;
-                }
-                break;
-        }
+        //    case "default":
+        //        foreach (Tile t in groundTiles)
+        //        {
+        //            t.color = Color.white;
+        //        }
+        //        break;
+        //}
 
         //create dungeon graph
         DungeonGraph nodeGraph = new DungeonGraph(opts);
@@ -112,27 +113,30 @@ public class RenderDungeon : MonoBehaviour
         ymin += opts.dungeonOffsetY - 10;
         ymax += opts.dungeonOffsetY + 10;
 
+        //set fill tile for dungeon chunks
+        ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile);
+
+         
 
 
-        //REMOVE
-        //EventManager.SetPlayerEnterDungeon(opts.dungeonOffsetX, opts.dungeonOffsetY, xmax - xmin, ymax - ymin);
-        //return;
 
 
+        //for (int x = xmin; x < xmax; x++)
+        //{
+        //    for (int y = ymin; y < ymax; y++)
+        //    {
+        //        //Tile tile = (Tile)ChunkManager.GetTile(new Vector3Int(x, y, 0), false);
 
-        for (int x = xmin; x < xmax; x++)
-        {
-            for (int y = ymin; y < ymax; y++)
-            {
-                Tile tile = (Tile)ChunkManager.GetTile(new Vector3Int(x, y, 0), false);
+        //        //if (tile == null)
+        //        //{
+        //        //    //place a wall if theres no ground tile
+        //        //    ChunkManager.SetTile(new Vector3Int(x, y, 0), wallTile, true);
+        //        //}
 
-                if (tile == null)
-                {
-                    //place a wall if theres no ground tile
-                    ChunkManager.SetTile(new Vector3Int(x, y, 0), wallTile, true);
-                }
-            }
-        }
+        //        //set fillmethod of chunk on this tile
+
+        //    }
+        //}
         //now fill ground tilemap so player doesnt see void when they break walls
         //float scale = .01f;
         //for (int x = xmin; x < xmax; x++)

@@ -11,6 +11,9 @@ public class Chunk //: MonoBehaviour
     private int chunkY;
     public int size;
     bool rendered = false;
+    bool hasBeenRenderedOnce = false;
+    TileBase wallTile; //tile used to fill walls; leave empty if not needed (not dungeon chunk)
+    TileBase[] floorTile; //tiles used to fill floor beneath filled walls; leave empty if not dungeon
     List<List<TileBase>> floorTiles = new List<List<TileBase>>();
     List<List<TileBase>> wallTiles = new List<List<TileBase>>();
 
@@ -73,6 +76,12 @@ public class Chunk //: MonoBehaviour
         {
             return;
         }
+        //if has not been rendered before then perform fill operations
+        if (!hasBeenRenderedOnce && wallTile != null)
+        {
+            fillChunkWalls(wallTilemap);
+            hasBeenRenderedOnce = true;
+        }
         rendered = true;
         for (int i = 0; i < size; i++)
         {
@@ -82,6 +91,28 @@ public class Chunk //: MonoBehaviour
                 TileBase wtile = wallTiles[i][j];
                 groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), ftile);
                 wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), wtile);
+            }
+        }
+    }
+
+
+    public void setFillInfo(TileBase wallT)
+    {
+        wallTile = wallT;
+    }
+
+    //fill walls when rendering chunk (for the first time) so it doesnt have to be done all at once
+    public void fillChunkWalls(Tilemap wallTilemap)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                //if no floor tile then set a wall
+                if (floorTiles[i][j] == null)
+                {
+                    wallTiles[i][j] = wallTile;
+                }
             }
         }
     }
@@ -102,6 +133,14 @@ public class Chunk //: MonoBehaviour
     public Vector2 getPos()
     {
         return new Vector2(chunkX, chunkY);
+    }
+
+    public int distanceFromChunk(Chunk otherChunk)
+    {
+        Vector2 c2pos = otherChunk.getPos();
+        //diagonals are counted as 1 distance; take the max between x and y distance
+        int distance = (int) Mathf.Max(Mathf.Abs(chunkX - c2pos.x), Mathf.Abs(chunkY - c2pos.y));
+        return distance;
     }
 
 }
