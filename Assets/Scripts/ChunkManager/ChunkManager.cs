@@ -53,6 +53,17 @@ public static class ChunkManager
 
         //place in chunk
         if(targetChunk != null) targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
+        //if this chunk is already rendered then make the change directly on the tilemap as well.
+        if (loadedChunks.Contains(targetChunk))
+        {
+            if (isWall)
+            {
+                wallTilemap.SetTile(tilePos, tile);
+            } else
+            {
+                groundTilemap.SetTile(tilePos, tile);
+            }
+        }
     }
 
     //set fill method for chunks
@@ -80,11 +91,22 @@ public static class ChunkManager
 
     }
 
-    static public void addEntityToChunk(Mob entity, Vector3Int worldPos)
+    //
+    static public void addEntityToChunk(GameObject entity, Vector3Int worldPos)
     {
         //get chunk
-
+        Chunk targetChunk = getChunkFromWorld(worldPos);
         //place entity in chunk
+        entity = GameObject.Instantiate(entity, worldPos, Quaternion.identity);
+        entity.SetActive(false);
+        targetChunk.addEntity(entity);
+    }
+
+    static public void updateEntityPos(Vector2 prevChunk, Vector2 currChunk, GameObject entity)
+    {
+        Debug.Log("updating enemy position");
+        chunkGrid[(int)prevChunk.y][(int)prevChunk.x].removeEntity(entity);
+        chunkGrid[(int)currChunk.y][(int)currChunk.x].addEntity(entity);
     }
 
 

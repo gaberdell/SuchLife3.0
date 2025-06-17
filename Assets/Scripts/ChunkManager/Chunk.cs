@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Chunk //: MonoBehaviour
+public class Chunk
 {
     private int worldX; //location in the unity scene
     private int worldY;
@@ -17,7 +17,7 @@ public class Chunk //: MonoBehaviour
     TileBase[] floorTile; //tiles used to fill floor beneath filled walls; leave empty if not dungeon
     List<List<TileBase>> floorTiles = new List<List<TileBase>>(); //grid of placed tiles for floor tilemap
     List<List<TileBase>> wallTiles = new List<List<TileBase>>(); //grid of placed tiles for wall tilemap
-    List<Mob> chunkMobs = new List<Mob>();//container for enemies present in this chunk
+    List<GameObject> chunkMobs = new List<GameObject>();//container for enemies present in this chunk
 
     public Chunk(int csize)
     {
@@ -101,6 +101,7 @@ public class Chunk //: MonoBehaviour
             hasBeenRenderedOnce = true;
         }
         rendered = true;
+        //fill chunk tiles from data
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -110,6 +111,23 @@ public class Chunk //: MonoBehaviour
                 groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), ftile);
                 wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), wtile);
             }
+        }
+        //activate chunk entities 
+        for (int i = 0; i < chunkMobs.Count; i++)
+        {
+            GameObject currMob = chunkMobs[i];
+            
+            if (currMob != null)
+            {
+                currMob.SetActive(true);
+            } else
+            {
+                //enemy is null; remove it 
+                chunkMobs.Remove(currMob);
+                i--;
+            }
+            
+            
         }
     }
 
@@ -138,6 +156,21 @@ public class Chunk //: MonoBehaviour
     public void unload(Tilemap groundTilemap, Tilemap wallTilemap)
     {
         rendered = false;
+        //deactivate chunk entities
+        for (int i = 0; i < chunkMobs.Count; i++)
+        {
+            GameObject currMob = chunkMobs[i];
+            if (currMob != null)
+            {
+                currMob.SetActive(false);
+            }
+            else
+            {
+                //enemy is null; remove it 
+                chunkMobs.Remove(currMob);
+                i--;
+            }
+        }
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -148,6 +181,15 @@ public class Chunk //: MonoBehaviour
         }
     }
 
+    public void addEntity(GameObject mob)
+    {
+        chunkMobs.Add(mob);
+    }
+
+    public void removeEntity(GameObject mob)
+    {
+        chunkMobs.Remove(mob);
+    }
    
 
 }

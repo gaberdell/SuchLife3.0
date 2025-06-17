@@ -1,4 +1,5 @@
 using System.Collections;
+using NUnit.Framework.Constraints;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -25,15 +26,23 @@ public class Bomb : Mob
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
 
+
+    //public Bomb(Vector3 pos)
+    //{
+    //    //
+    //    worldPos = pos;
+    //}
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
         target = GameObject.Find("Player").transform;
+        objectInScene = gameObject;
     }
 
     void Update()
     {
         updateKnockback(); //inherited from mob parent
+        updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
         distance = Vector2.Distance(transform.position, target.position);
 

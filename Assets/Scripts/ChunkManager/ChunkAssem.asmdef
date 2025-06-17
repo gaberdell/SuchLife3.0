@@ -1,9 +1,7 @@
 {
     "name": "ChunkAssem",
     "rootNamespace": "",
-    "references": [
-        "GUID:193207f790613f042b1dda4d3a59de09"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
