@@ -305,7 +305,7 @@ MonoBehaviour:
   aggroDistance: 10
   explodeAtDistance: 3
   explosionRadius: 1.5
-  explosionDelay: 6
+  explosionDelay: 2
   damage: 100
   blockTilemap: {fileID: 0}
   tileMapName: PlaceableTileMap

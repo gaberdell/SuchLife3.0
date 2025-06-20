@@ -37,6 +37,9 @@ public class Bomb : Mob
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
         target = GameObject.Find("Player").transform;
         objectInScene = gameObject;
+        //set starting chunk
+        chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
+
     }
 
     void Update()

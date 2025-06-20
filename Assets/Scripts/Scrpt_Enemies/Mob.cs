@@ -32,6 +32,7 @@ public class Mob : MonoBehaviour //base class for living entities
     //        Instantiate(objectInScene);
     //    }
     //}
+
     public void applyKnockback(Vector3 IknockbackVector, float IknockbackForce)
     {
         //set knockback vars which this mob will update to

@@ -156,7 +156,7 @@ public static class ChunkManager
         int yInChunk = (int) input.y % chunkSize;
 
         //if out of bounds return null
-        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
+        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX || input.x < 0 || input.y < 0)
         {
             return null;
         }
