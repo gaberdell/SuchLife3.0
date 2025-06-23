@@ -10224,6 +10224,10 @@ PrefabInstance:
       propertyPath: playerBlockView
       value: 
       objectReference: {fileID: 1061312020}
+    - target: {fileID: 7718391250072885259, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: showHealthText
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

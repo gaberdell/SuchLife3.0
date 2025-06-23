@@ -10,19 +10,7 @@ public class Mob : MonoBehaviour //base class for living entities
     private Vector3 knockbackPos;
 
     // Update is called once per frame
-    //item drop below
-    public GameObject itemDropPrefab; // Drag your Apple prefab here
-    public float dropChance = 0.5f; // 25% drop chance
 
-    private void Start()
-    {
-        // Hook up the death event from Health to our custom Die function
-        Health health = GetComponent<Health>();
-        if (health != null)
-        {
-            health.onDeath.AddListener(Die);
-        }
-    }
 
     public void applyKnockback(Vector3 IknockbackVector, float IknockbackForce)
     {
@@ -32,7 +20,6 @@ public class Mob : MonoBehaviour //base class for living entities
         knockbackPos = IknockbackVector + gameObject.transform.position;
         knockbackAcceleration = IknockbackForce / 10;
     }
-
 
     public void updateKnockback()
     {
@@ -49,15 +36,6 @@ public class Mob : MonoBehaviour //base class for living entities
             {
                 isInKnockback = false;
             }
-        }
-    }
-    
-    private void Die()
-    {
-        // Roll for item drop
-        if (itemDropPrefab != null && Random.value <= dropChance)
-        {
-            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
         }
     }
 }

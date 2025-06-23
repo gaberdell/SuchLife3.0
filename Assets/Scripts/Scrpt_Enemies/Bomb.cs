@@ -94,9 +94,19 @@ public class Bomb : Mob
         int explosionBlockRadius = (int)Mathf.Ceil(explosionRadius);
         spreadToNeighbors(blockTilemap, bombTilePos.x, bombTilePos.y, null, explosionBlockRadius);
 
+        // Trigger death event manually so any listeners (like MobDrop) react:
+        Health mobHealth = GetComponent<Health>();
+        if (mobHealth != null)
+        {
+            Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
+            mobHealth.onDeath?.Invoke();
+        }
+
         yield return new WaitForSeconds(3f);
 
+
         // onExplode?.Invoke(collider);
+
 
         Destroy(gameObject);
     }

@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 1852298218644448698}
   - component: {fileID: 2534092236976229464}
   - component: {fileID: 2098140509326663582}
+  - component: {fileID: -3013005797857956900}
   m_Layer: 0
   m_Name: Scrombolo_Bombolo
   m_TagString: Enemy
@@ -5210,6 +5211,23 @@ MonoBehaviour:
   onDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-3013005797857956900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843679319920769187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f3f1dc50cd47740a14ee34d8956b80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropItems:
+  - itemPrefab: {fileID: 6294790831666749654, guid: c6a123158aef95f4f80eae9df6c41cbe, type: 3}
+    dropChance: 0.5
+  - itemPrefab: {fileID: 5149180284610993495, guid: 742451511d9b6fa46873d230b9bca20d, type: 3}
+    dropChance: 0.5
 --- !u!1 &946024941618545243
 GameObject:
   m_ObjectHideFlags: 0
