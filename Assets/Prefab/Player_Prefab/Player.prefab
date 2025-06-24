@@ -106,6 +106,8 @@ GameObject:
   - component: {fileID: 1763410591183112899}
   - component: {fileID: 3422614386554052806}
   - component: {fileID: 7718391250072885259}
+  - component: {fileID: 8892674321149298916}
+  - component: {fileID: 7371112895444909941}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -5145,6 +5147,39 @@ MonoBehaviour:
   onDamageTaken:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8892674321149298916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3096622124833139852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02417d5ba773c454aa08edcf139b5e35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventory: []
+  gameUI: {fileID: 0}
+  hotbarPanel: {fileID: 0}
+  fullInventory: {fileID: 0}
+  hotbar: []
+  fullInv: []
+  selectedItem: 0
+  empty: {fileID: 0}
+  CraftingUI: {fileID: 0}
+--- !u!114 &7371112895444909941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3096622124833139852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdef3e1ffdf885468b9e93538a75aa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4152069555864584868
 GameObject:
   m_ObjectHideFlags: 0

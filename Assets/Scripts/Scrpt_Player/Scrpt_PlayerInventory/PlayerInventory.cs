@@ -139,22 +139,22 @@ public class PlayerInventory : MonoBehaviour
 
         //Let's assume E is Inventory button, because it usually is.... 
 
-        if(Input.GetKeyDown(KeyCode.E) ){
+        //if(Input.GetKeyDown(KeyCode.E) ){
 
-            if (fullInventory != null && !CraftingUI.activeSelf){
+        //    if (fullInventory != null && !CraftingUI.activeSelf){
     
-                bool isActive = fullInventory.activeSelf;
+        //        bool isActive = fullInventory.activeSelf;
                 
-                fullInventory.SetActive(!isActive);
-                gameUI.SetActive(isActive); 
+        //        fullInventory.SetActive(!isActive);
+        //        gameUI.SetActive(isActive); 
 
 
 
-                this.GetComponent<helperFunctions>().togglePause();
+        //        this.GetComponent<helperFunctions>().togglePause();
 
-            }
+        //    }
 
-        }
+        //}
         
            if(Input.GetKeyDown(KeyCode.Q) ){
 

@@ -52,16 +52,20 @@ public static class ChunkManager
         Chunk targetChunk = getChunkFromWorld(tilePos);
 
         //place in chunk
-        if(targetChunk != null) targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
-        //if this chunk is already rendered then make the change directly on the tilemap as well.
-        if (loadedChunks.Contains(targetChunk))
+        if (targetChunk != null)
         {
-            if (isWall)
+            targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
+            //if this chunk is already rendered then make the change directly on the tilemap as well.
+            if (loadedChunks.Contains(targetChunk))
             {
-                wallTilemap.SetTile(tilePos, tile);
-            } else
-            {
-                groundTilemap.SetTile(tilePos, tile);
+                if (isWall)
+                {
+                    wallTilemap.SetTile(tilePos, tile);
+                }
+                else
+                {
+                    groundTilemap.SetTile(tilePos, tile);
+                }
             }
         }
     }

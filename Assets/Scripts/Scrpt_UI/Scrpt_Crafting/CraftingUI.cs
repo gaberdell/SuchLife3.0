@@ -100,8 +100,9 @@ public class CraftingUI : MonoBehaviour
 
     void onEnable(){
 
+        Debug.Log("enabled");
 
-        for(int i = 0; i < 9; i++){
+        for (int i = 0; i < 9; i++){
             crafting[i].isEmpty = true;
 
         }
@@ -112,8 +113,8 @@ public class CraftingUI : MonoBehaviour
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
-
-            if(!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
+            Debug.Log(player.GetComponent<PlayerInventory>().inventory.Count);
+            if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
 
