@@ -113,7 +113,6 @@ public class CraftingUI : MonoBehaviour
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
-            Debug.Log(player.GetComponent<PlayerInventory>().inventory.Count);
             if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
@@ -153,8 +152,7 @@ public class CraftingUI : MonoBehaviour
     {
 
         //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.
-         int count = 0; 
-
+         int count = 0;
 
         foreach (GameObject panel in inv)
         {
@@ -174,7 +172,9 @@ public class CraftingUI : MonoBehaviour
                 
                 tmp.color = new Color32(255,255,225,100);
 
-                if(inventory[count].item != null){
+                Debug.Log(count);
+                Debug.Log(inventory.Count);
+                if (inventory[count].item != null){
                  inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
                 }
 
@@ -186,7 +186,7 @@ public class CraftingUI : MonoBehaviour
                 tmp.text = "";
 
             }
-           
+            
            count++; 
 
 

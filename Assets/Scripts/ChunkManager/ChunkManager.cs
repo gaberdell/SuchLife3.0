@@ -42,6 +42,7 @@ public static class ChunkManager
         {
             chunkGrid.Add(new List<Chunk>());
         }
+        if (chunkY < 0) return;
         while(chunkX+1 > chunkGrid[chunkY].Count)
         {
             chunkGrid[chunkY].Add(new Chunk(chunkSize));
@@ -160,7 +161,7 @@ public static class ChunkManager
         int yInChunk = (int) input.y % chunkSize;
 
         //if out of bounds return null
-        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX || input.x < 0 || input.y < 0)
+        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX || input.x < 0 || input.y < 0 || input.z < 0)
         {
             return null;
         }

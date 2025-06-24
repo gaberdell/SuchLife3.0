@@ -35514,6 +35514,22 @@ PrefabInstance:
       propertyPath: showHealthText
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Size.x
+      value: 0.9375
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9375
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -306787472437928336, guid: 7cad9827c0428a6448a5f0fe45af6d7f, type: 3}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8892674321149298916, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
     - {fileID: 7371112895444909941, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}

@@ -137,26 +137,28 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        //Let's assume E is Inventory button, because it usually is.... 
+        //Let's assume E is Inventory button, because it usually is.... //setting to P for testing as E is the interact key so it conflicts
 
-        //if(Input.GetKeyDown(KeyCode.E) ){
+        if (Input.GetKeyDown(KeyCode.P))
+        {
 
-        //    if (fullInventory != null && !CraftingUI.activeSelf){
-    
-        //        bool isActive = fullInventory.activeSelf;
-                
-        //        fullInventory.SetActive(!isActive);
-        //        gameUI.SetActive(isActive); 
+            if (fullInventory != null && !CraftingUI.activeSelf)
+            {
+
+                bool isActive = fullInventory.activeSelf;
+
+                fullInventory.SetActive(!isActive);
+                gameUI.SetActive(isActive);
 
 
 
-        //        this.GetComponent<helperFunctions>().togglePause();
+                this.GetComponent<helperFunctions>().togglePause();
 
-        //    }
+            }
 
-        //}
-        
-           if(Input.GetKeyDown(KeyCode.Q) ){
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q) ){
 
             if (CraftingUI != null && !fullInventory.activeSelf){
                  bool isActive = CraftingUI.activeSelf;
