@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/WorldCreator.unity
     guid: c76c7f40566245745b3c3e834905839d
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/TestScene.unity
     guid: 7d68186d33624e840a808688f3f7a975
   - enabled: 1
     path: Assets/Scenes/DungeonScene.unity
