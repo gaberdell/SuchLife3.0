@@ -82,13 +82,15 @@ namespace BlockIteraction
                 {
                     placingCoolDown = placingMinCoolDown;
                     
-                    placeTileMap.SetTile(hitVal, tileToPlace);
+                    //placeTileMap.SetTile(hitVal, tileToPlace);
+                    ChunkManager.SetTile(hitVal, tileToPlace, true);
                 }
 
                 if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
                 {
                     destroyingCoolDown = destroyingMinCoolDown;
-                    placeTileMap.SetTile(drawWhereHit, null);
+                    //placeTileMap.SetTile(drawWhereHit, null);
+                    ChunkManager.SetTile(drawWhereHit, null, true);
                 }
 
                 placingCoolDown = Mathf.Max(placingCoolDown - Time.deltaTime, 0);

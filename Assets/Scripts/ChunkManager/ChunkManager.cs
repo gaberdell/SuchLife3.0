@@ -42,6 +42,7 @@ public static class ChunkManager
         {
             chunkGrid.Add(new List<Chunk>());
         }
+        if (chunkY < 0) return;
         while(chunkX+1 > chunkGrid[chunkY].Count)
         {
             chunkGrid[chunkY].Add(new Chunk(chunkSize));
@@ -52,7 +53,22 @@ public static class ChunkManager
         Chunk targetChunk = getChunkFromWorld(tilePos);
 
         //place in chunk
-        if(targetChunk != null) targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
+        if (targetChunk != null)
+        {
+            targetChunk.insertTile(xInChunk, yInChunk, tile, isWall);
+            //if this chunk is already rendered then make the change directly on the tilemap as well.
+            if (loadedChunks.Contains(targetChunk))
+            {
+                if (isWall)
+                {
+                    wallTilemap.SetTile(tilePos, tile);
+                }
+                else
+                {
+                    groundTilemap.SetTile(tilePos, tile);
+                }
+            }
+        }
     }
 
     //set fill method for chunks
@@ -80,11 +96,22 @@ public static class ChunkManager
 
     }
 
-    static public void addEntityToChunk(Mob entity, Vector3Int worldPos)
+    //
+    static public void addEntityToChunk(GameObject entity, Vector3Int worldPos)
     {
         //get chunk
-
+        Chunk targetChunk = getChunkFromWorld(worldPos);
         //place entity in chunk
+        entity = GameObject.Instantiate(entity, worldPos, Quaternion.identity);
+        entity.SetActive(false);
+        targetChunk.addEntity(entity);
+    }
+
+    static public void updateEntityPos(Vector2 prevChunk, Vector2 currChunk, GameObject entity)
+    {
+        Debug.Log("updating enemy position");
+        chunkGrid[(int)prevChunk.y][(int)prevChunk.x].removeEntity(entity);
+        chunkGrid[(int)currChunk.y][(int)currChunk.x].addEntity(entity);
     }
 
 
@@ -134,7 +161,7 @@ public static class ChunkManager
         int yInChunk = (int) input.y % chunkSize;
 
         //if out of bounds return null
-        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
+        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX || input.x < 0 || input.y < 0 || input.z < 0)
         {
             return null;
         }
