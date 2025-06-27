@@ -15,10 +15,17 @@ public class PlayerAttack : MonoBehaviour
 
     private float _lastAttackTime;
     private bool _isAttacking;
-    public bool IsAttacking => _isAttacking; 
+    public bool IsAttacking => _isAttacking;
+    private float damageMultiplier = 1f;
 
     private void Update()
     {
+        if (InputHandler.Instance == null)
+        {
+            Debug.LogError("InputHandler.Instance is null!");
+            return;
+        }
+
         if (InputHandler.Instance.IsAttacking && Time.time >= _lastAttackTime + attackCooldown)
         {
             StartAttack();
@@ -39,6 +46,17 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
+    public void ApplyDamageBoost(float multiplier, float duration)
+    {
+        damageMultiplier = multiplier;
+        Invoke(nameof(RemoveDamageBoost), duration);
+    }
+
+    private void RemoveDamageBoost()
+    {
+        damageMultiplier = 1f;
+    }
+
     private void DetectHits()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
@@ -53,7 +71,8 @@ public class PlayerAttack : MonoBehaviour
             {
                 if (enemy.TryGetComponent<Health>(out var health))
                 {
-                    health.TakeDamage(attackDamage);
+                    int boostedDamage = Mathf.RoundToInt(attackDamage * damageMultiplier);
+                    health.TakeDamage(boostedDamage);
                 }
                 //apply a knockback force to the mob
                 //read force from some value associated with the attack or weapon
