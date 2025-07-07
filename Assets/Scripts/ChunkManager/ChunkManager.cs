@@ -26,6 +26,23 @@ public static class ChunkManager
     static Tilemap groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
 
     // INSTANTIATION METHODS
+ /*
+ * requires: 
+ * modifies: 
+ * effects: 
+ * returns: 
+ * throws:
+ */
+
+
+     /*
+     * requires: tilePos, isWall not null; tilePos >= 0,0,0 (no negative nums)
+     * modifies: chunkGrid, wallTilemap, groundTilemap
+     * effects: updates the chunk manager by setting the tile at the given position to match the given TileBase. may create new chunks if necessary. essentially mimics the behavior of tilemap.setTile.
+     * will update currently rendered chunks with changes as well.
+     * returns: none
+     * throws: none
+     */
     static public void SetTile(Vector3Int tilePos, TileBase tile, bool isWall)
     {
         //figure out what chunk to place the tile into
@@ -71,7 +88,14 @@ public static class ChunkManager
         }
     }
 
-    //set fill method for chunks
+    /*
+    * requires: x, y, width, height not null
+    * modifies: chunkGrid
+    * effects: invokes the setFillInfo method on every chunk within the width and height. this 'fill' refers to all of the tiles in a chunk that are not previously set to another tile. For example, dungeon grids have a fill attribute set to the wall tile.
+    * This is done to prevent unnecessary setTile calls when instantiating dungeons into chunks. May not be applicable for overworld generation.
+    * returns: none
+    * throws: none
+    */
     static public void setChunksFill(int x, int y, int width, int height, TileBase fillTile)
     {
         for (int i = x; i < x + width; i+= chunkSize)
@@ -96,7 +120,13 @@ public static class ChunkManager
 
     }
 
-    //
+    /*
+    * requires: entity, worldPos not null
+    * modifies: chunkGrid
+    * effects: places an entity gameObject onto a chunk. sets prefab objects to set active when the chunk is rendered, and instantiates them immediately. - suboptimal?
+    * returns: none
+    * throws: none
+    */
     static public void addEntityToChunk(GameObject entity, Vector3Int worldPos)
     {
         //get chunk
@@ -107,6 +137,13 @@ public static class ChunkManager
         targetChunk.addEntity(entity);
     }
 
+    /*
+    * requires: prevChunk, currChunk, entity not null
+    * modifies: chunkGrid
+    * effects: removes a given entity from prevChunk, and adds it to currChunk using chunk class methods. 
+    * returns: none
+    * throws: none
+    */
     static public void updateEntityPos(Vector2 prevChunk, Vector2 currChunk, GameObject entity)
     {
         Debug.Log("updating enemy position");
@@ -117,6 +154,13 @@ public static class ChunkManager
 
 
     // HELPERS
+    /*
+    * requires: none
+    * modifies: chunkGrid
+    * effects: sets every chunk on the chunkGrid with position parameters matching its place in the chunkGrid by invoking its own fill method. - this should probably be moved to the chunk's instantiation method...
+    * returns: none
+    * throws: none
+    */
     static private void fillChunkInfo()
     {
         for (int i = 0; i < chunkGrid.Count; i++)
@@ -129,6 +173,13 @@ public static class ChunkManager
         }
     }
 
+    /*
+    * requires: tilePos, isWall not null.
+    * modifies: none
+    * effects: returns the tile set at the given position; isWall is necessary to know which tilemap to check.
+    * returns: the tile at the chunk at the input tilePos position; null otherwise
+    * throws: none
+    */
     static public TileBase GetTile(Vector3Int tilePos, bool isWall)
     {
         int chunkX = tilePos.x / chunkSize;
@@ -145,7 +196,15 @@ public static class ChunkManager
 
 
 
-    // RENDERING
+    
+
+    /*
+    * requires: input not null
+    * modifies: none
+    * effects: translates a Vector3 input into a chunk coordinate.
+    * returns: Vector2 representing the chunk coordinate of the given Vector3 position
+    * throws: none
+    */
     static public Vector2 getChunkPosFromWorld(Vector3 input)
     {
         int chunkX = (int)input.x / chunkSize;
@@ -153,6 +212,13 @@ public static class ChunkManager
         return new Vector2(chunkX, chunkY);
     }
 
+    /*
+    * requires: input not null
+    * modifies: none
+    * effects: returns the chunk at the input vector3 coordinate.
+    * returns: Chunk c in chunkGrid at the given vector3 input position.
+    * throws: none
+    */
     static public Chunk getChunkFromWorld(Vector3 input)
     {
         int chunkX = (int) input.x / chunkSize;
@@ -170,7 +236,17 @@ public static class ChunkManager
         return chunkGrid[chunkY][chunkX];
     }
 
-    //call these whenever the player moves into a new chunk
+    //RENDERING
+
+    //called whenever the player moves into a new chunk
+    /*
+    * requires: playerPos not null; playerPos > (0,0,0) 
+    * modifies: loadedChunks, wallTilemap, groundTilemap, chunkGrid
+    * effects: gets chunks around player within renderDistance radius and attempts to render them (set chunk tile data onto the scene tilemap) by adding them to a list of loaded chunks.
+    * then, remove the chunks that are now too far away from the player and unload them with their unload methods after the new chunks are rendered.
+    * returns: none
+    * throws: none
+    */
     static public void renderPlayerChunks(Vector3 playerPos)
     {
         if(playerPos.x < 0 || playerPos.y < 0)return; //how to handle negative pos?

@@ -150,6 +150,7 @@ public class CraftingUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //breaks in main scene without this line but works in crafting scene without it... ???
         inventory = player.GetComponent<PlayerInventory>().inventory;
 
         //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.

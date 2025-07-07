@@ -19,6 +19,13 @@ public class Chunk
     List<List<TileBase>> wallTiles = new List<List<TileBase>>(); //grid of placed tiles for wall tilemap
     List<GameObject> chunkMobs = new List<GameObject>();//container for enemies present in this chunk
 
+    /*
+    * requires: csize not null
+    * modifies: size, floorTiles, wallTiles
+    * effects: instantiates the chunk's size and fills its floor and wall tile lists with null tiles
+    * returns: none
+    * throws: none
+    */
     public Chunk(int csize)
     {
         size = csize;
@@ -38,8 +45,15 @@ public class Chunk
         }
     }
 
-    
+
     // INFO METHODS
+    /*
+    * requires: x > 0, y > 0
+    * modifies: wallTiles, floorTiles
+    * effects: updates the chunk's tilegrid at input position with input tile
+    * returns: none
+    * throws: IndexOutOfBoundsException when  y > size or x > size or x or y is negative 
+    */
     public void insertTile(int x, int y, TileBase tile, bool isWall)
     {
         if(isWall)
@@ -51,6 +65,13 @@ public class Chunk
         }
     }
 
+    /*
+    * requires: x > 0, y > 0
+    * modifies: none
+    * effects: returns the tile in the chunk's tilegrid at the input position
+    * returns: returns a TileBase object at the input position from either the floor or wall tileMap, depending on arguments.
+    * throws: IndexOutOfBoundsException when  y > size or x > size or x or y is negative 
+    */
     public TileBase getTile(int x, int y, bool isWall)
     {
         if (!isWall)
@@ -63,6 +84,13 @@ public class Chunk
         }
     }
 
+    /*
+    * requires: cx, cy, wx, wy not null
+    * modifies: chunkX, chunkY, worldX, worldY
+    * effects: instantiates this chunk's position properties to the argument values. ... can probably be moved into the initialization method
+    * returns: none
+    * throws: none
+    */
     public void fillInfo(int cx, int cy, int wx, int wy)
     {
         chunkX = cx;
@@ -72,11 +100,26 @@ public class Chunk
     }
 
     // HELPER METHODS
+
+    /*
+    * requires: none
+    * modifies: none
+    * effects:  returns this chunk's position in the chunkGrid
+    * returns: returns a Vector2 representing this chunk's position in the chunkGrid
+    * throws: none
+    */
     public Vector2 getPos()
     {
         return new Vector2(chunkX, chunkY);
     }
 
+    /*
+    * requires: otherChunk not null
+    * modifies: none
+    * effects: returns the distance between this chunk and the input chunk, in terms of coordinates on the chunkGrid
+    * returns: int distance where distance is obtained by subtracting the 2 chunks' positions from each other and getting the absolute value.
+    * throws: none
+    */
     public int distanceFromChunk(Chunk otherChunk)
     {
         Vector2 c2pos = otherChunk.getPos();
@@ -85,8 +128,35 @@ public class Chunk
         return distance;
     }
 
+    /*
+    * requires: mob not null
+    * modifies: chunkMobs
+    * effects:  adds/removes the input mob gameobject from the chunk's chunkMobs list. Used for moving mobs between chunks.
+    * returns: none
+    * throws: none
+    */
+    public void addEntity(GameObject mob)
+    {
+        chunkMobs.Add(mob);
+    }
+
+    public void removeEntity(GameObject mob)
+    {
+        chunkMobs.Remove(mob);
+    }
+
+
 
     // RENDERING METHODS
+
+    /*
+    * requires: groundTilemap, wallTilemap
+    * modifies: hasBeenRenderedOnce, groundTilemap, wallTilemap, chunkMobs
+    * effects: sets all of the tiles on the chunk onto the input tilemaps (which are present in the scene). If this is the first time, then fill the chunk with tiles matching its wallTile/floorTile respectively.
+    * Also set entities present in the chunk to active.
+    * returns: none
+    * throws: none
+    */
     public void render(Tilemap groundTilemap, Tilemap wallTilemap)
     {
         //if already rendered, then don't. 
@@ -131,13 +201,25 @@ public class Chunk
         }
     }
 
-
+    /*
+    * requires: none
+    * modifies: none
+    * effects:  sets this chunk's wallTile attribute to the input tile. Only sets wall fill tiles now, will likely have a floor fill later too.
+    * returns: none
+    * throws: none
+    */
     public void setFillInfo(TileBase wallT)
     {
         wallTile = wallT;
     }
 
-    //fill walls when rendering chunk (for the first time) so it doesnt have to be done all at once
+    /*
+    * requires: wallTilemap not null
+    * modifies: wallTiles
+    * effects:  sets all tiles on the wallTiles grid above null floors to be the fill Tile. Does this when the chunk is rendered for the first time so it doesn't all ahve to be done at runtime.
+    * returns: none 
+    * throws: none
+    */
     public void fillChunkWalls(Tilemap wallTilemap)
     {
         for (int i = 0; i < size; i++)
@@ -153,6 +235,13 @@ public class Chunk
         }
     }
 
+    /*
+    * requires: groundTilemap, wallTilemap not null
+    * modifies: chunkMobs, groundTilemap, wallTilemap
+    * effects: unloads the current chunk by setting all of its tiles in the scene to be null and cleans out mobs by removing null enemies and setting the rest to be inactive
+    * returns: none
+    * throws: none
+    */
     public void unload(Tilemap groundTilemap, Tilemap wallTilemap)
     {
         rendered = false;
@@ -181,15 +270,6 @@ public class Chunk
         }
     }
 
-    public void addEntity(GameObject mob)
-    {
-        chunkMobs.Add(mob);
-    }
 
-    public void removeEntity(GameObject mob)
-    {
-        chunkMobs.Remove(mob);
-    }
-   
 
 }
