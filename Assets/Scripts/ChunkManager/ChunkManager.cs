@@ -83,15 +83,21 @@ public static class ChunkManager
         }
     }
 
-    // adds a null chunk to the grid at the given index
+    /*
+     * requires: chunkX, chunkY not null and > 0
+     * modifies: chunkGrid
+     * effects: adds a null chunk to the grid at the given index; only really used when attempting to render chunks that dont exist on the grid
+     * returns: none
+     * throws: none
+     */
     static private void addChunk(int chunkX, int chunkY)
     {
-        while (chunkY + 2 > chunkGrid.Count)
+        while (chunkY + 1 > chunkGrid.Count)
         {
             chunkGrid.Add(new List<Chunk>());
         }
         if (chunkY < 0) return;
-        while (chunkX + 2 > chunkGrid[chunkY].Count)
+        while (chunkX + 1 > chunkGrid[chunkY].Count)
         {
             chunkGrid[chunkY].Add(new Chunk(chunkSize, offset, chunkGrid[chunkY].Count, chunkY));
         }
@@ -272,8 +278,8 @@ public static class ChunkManager
                 {
                     //Debug.Log("tried rendering a chunk out of bounds! what now?");
                     //if a null chunk is rendered then create a new empty chunk at that coordinate... this shouldn't happen in the real game though 
-                    addChunk(cornerPos.y+i, cornerPos.x+j);
-                    //loadedChunks.Add(chunkGrid[cornerPos.y + i][cornerPos.x + j]);
+                    addChunk(cornerPos.x+j, cornerPos.y+i);
+                    loadedChunks.Add(chunkGrid[cornerPos.y + i][cornerPos.x + j]);
                 }
             }
         }
