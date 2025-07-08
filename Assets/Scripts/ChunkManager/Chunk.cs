@@ -10,6 +10,7 @@ public class Chunk
     private int worldY;
     private int chunkX; //location relative to other chunks (in the grid of chunks)
     private int chunkY;
+    private int offset; //offset of chunk pos vs world pos
     public int size; //size of chunk
     bool rendered = false; //bools for determining whether the chunk has been rendered in the scene or not
     bool hasBeenRenderedOnce = false; //bool used to determine whether to fill the chunk with walls or not, only needs to be done on initial render
@@ -22,13 +23,18 @@ public class Chunk
     /*
     * requires: csize not null
     * modifies: size, floorTiles, wallTiles
-    * effects: instantiates the chunk's size and fills its floor and wall tile lists with null tiles
+    * effects: instantiates the chunk's size and positions and fills its floor and wall tile lists with null tiles
     * returns: none
     * throws: none
     */
-    public Chunk(int csize)
+    public Chunk(int csize, int coffset, int cx, int cy)
     {
         size = csize;
+        offset = coffset;
+        chunkX = cx;
+        chunkY = cy;
+        worldX = cx * csize;
+        worldY = cy * csize;
 
         for (int i = 0; i < size; i++)
         {
@@ -178,8 +184,8 @@ public class Chunk
             {
                 TileBase ftile = floorTiles[i][j];
                 TileBase wtile = wallTiles[i][j];
-                groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), ftile);
-                wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), wtile);
+                groundTilemap.SetTile(new Vector3Int(worldX + j - offset, worldY + i - offset, 0), ftile);
+                wallTilemap.SetTile(new Vector3Int(worldX + j - offset, worldY + i - offset, 0), wtile);
             }
         }
         //activate chunk entities 
@@ -264,8 +270,8 @@ public class Chunk
         {
             for (int j = 0; j < size; j++)
             {
-                groundTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), null);
-                wallTilemap.SetTile(new Vector3Int(worldX + j, worldY + i, 0), null);
+                groundTilemap.SetTile(new Vector3Int(worldX + j - offset, worldY + i - offset, 0), null);
+                wallTilemap.SetTile(new Vector3Int(worldX + j - offset, worldY + i - offset, 0), null);
             }
         }
     }

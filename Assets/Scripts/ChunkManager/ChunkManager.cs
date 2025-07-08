@@ -17,7 +17,7 @@ public static class ChunkManager
 
     const int chunkSize = 4; //width & height of chunk in tiles;
     const int renderDistance = 4; //amount of chunks away from player's chunk to render (e.g. if 2, then render 8 chunks around player's chunk)
-    //const int offset = 500; //add this number to world positions read into and from this manager; used to offset the 0,0 point of the manager so negative cases don't need to be considered.
+    const int offset = 500; //add this number to world positions read into and from this manager; used to offset the 0,0 point of the manager so negative cases don't need to be considered.
     static Vector3Int worldPos = new Vector3Int(0, 0, 0); //position of chunk manager in world (should match the tilemaps'
     static List<List<Chunk>> chunkGrid = new List<List<Chunk>>(); //container for world chunks
     static HashSet<Chunk> loadedChunks = new HashSet<Chunk>(); //keep track of loaded chunks to unload them when player renders new chunks.
@@ -26,13 +26,7 @@ public static class ChunkManager
     static Tilemap groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
 
     // INSTANTIATION METHODS
- /*
- * requires: 
- * modifies: 
- * effects: 
- * returns: 
- * throws:
- */
+
 
 
      /*
@@ -49,10 +43,11 @@ public static class ChunkManager
         //0th 0th chunk starts at bottom left corner? top left?
         //input is the position on the tilemap
 
-        int chunkX =  tilePos.x / chunkSize;
-        int chunkY = tilePos.y / chunkSize;
-        int xInChunk = tilePos.x % chunkSize;
-        int yInChunk = tilePos.y % chunkSize;
+        Vector2 cPos = getChunkPosFromWorld(tilePos);
+        int chunkX = (int)cPos.x;
+        int chunkY = (int)cPos.y;
+        int xInChunk = (tilePos.x + offset) % chunkSize;
+        int yInChunk = (tilePos.y + offset) % chunkSize;
 
         //if out of bounds then add empty chunks
         while(chunkY+1 > chunkGrid.Count)
@@ -62,9 +57,9 @@ public static class ChunkManager
         if (chunkY < 0) return;
         while(chunkX+1 > chunkGrid[chunkY].Count)
         {
-            chunkGrid[chunkY].Add(new Chunk(chunkSize));
+            chunkGrid[chunkY].Add(new Chunk(chunkSize, offset, chunkGrid[chunkY].Count, chunkY));
         }
-        fillChunkInfo();
+        //fillChunkInfo();
 
         //Chunk targetChunk = chunkGrid[chunkY][chunkX]; //index out of range?
         Chunk targetChunk = getChunkFromWorld(tilePos);
@@ -86,6 +81,23 @@ public static class ChunkManager
                 }
             }
         }
+    }
+
+    // adds a null chunk to the grid at the given index
+    static private void addChunk(int chunkX, int chunkY)
+    {
+        while (chunkY + 2 > chunkGrid.Count)
+        {
+            chunkGrid.Add(new List<Chunk>());
+        }
+        if (chunkY < 0) return;
+        while (chunkX + 2 > chunkGrid[chunkY].Count)
+        {
+            chunkGrid[chunkY].Add(new Chunk(chunkSize, offset, chunkGrid[chunkY].Count, chunkY));
+        }
+        //Chunk newC = chunkGrid[chunkY][chunkX];
+        //fill chunk with stuff
+        
     }
 
     /*
@@ -154,24 +166,6 @@ public static class ChunkManager
 
 
     // HELPERS
-    /*
-    * requires: none
-    * modifies: chunkGrid
-    * effects: sets every chunk on the chunkGrid with position parameters matching its place in the chunkGrid by invoking its own fill method. - this should probably be moved to the chunk's instantiation method...
-    * returns: none
-    * throws: none
-    */
-    static private void fillChunkInfo()
-    {
-        for (int i = 0; i < chunkGrid.Count; i++)
-        {
-            for (int j = 0; j < chunkGrid[i].Count; j++)
-            {
-                Chunk c = chunkGrid[i][j];
-                c.fillInfo(j, i, j * chunkSize, i * chunkSize);
-            }
-        }
-    }
 
     /*
     * requires: tilePos, isWall not null.
@@ -182,10 +176,11 @@ public static class ChunkManager
     */
     static public TileBase GetTile(Vector3Int tilePos, bool isWall)
     {
-        int chunkX = tilePos.x / chunkSize;
-        int chunkY = tilePos.y / chunkSize;
-        int xInChunk = tilePos.x % chunkSize;
-        int yInChunk = tilePos.y % chunkSize;
+        Vector2 cPos = getChunkPosFromWorld(tilePos);
+        int chunkX = (int)cPos.x;
+        int chunkY = (int)cPos.y;
+        int xInChunk = (tilePos.x + offset) % chunkSize;
+        int yInChunk = (tilePos.y + offset) % chunkSize;
 
         Chunk targetChunk = getChunkFromWorld(tilePos);
 
@@ -207,6 +202,8 @@ public static class ChunkManager
     */
     static public Vector2 getChunkPosFromWorld(Vector3 input)
     {
+        //increase position by offset to prevent negative cases
+        input += new Vector3(offset, offset, 0);
         int chunkX = (int)input.x / chunkSize;
         int chunkY = (int)input.y / chunkSize;
         return new Vector2(chunkX, chunkY);
@@ -221,14 +218,16 @@ public static class ChunkManager
     */
     static public Chunk getChunkFromWorld(Vector3 input)
     {
-        int chunkX = (int) input.x / chunkSize;
-        int chunkY = (int) input.y / chunkSize;
-        int xInChunk = (int) input.x % chunkSize;
-        int yInChunk = (int) input.y % chunkSize;
+        Vector2 cPos = getChunkPosFromWorld(input);
+        int chunkX = (int)cPos.x;
+        int chunkY = (int)cPos.y;
+        int xInChunk = (int) (input.x + offset) % chunkSize;
+        int yInChunk = (int) (input.y + offset) % chunkSize;
 
         //if out of bounds return null
-        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX || input.x < 0 || input.y < 0 || input.z < 0)
+        if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
         {
+            Debug.Log("getting out of bounds chunk from world!");
             return null;
         }
 
@@ -249,7 +248,7 @@ public static class ChunkManager
     */
     static public void renderPlayerChunks(Vector3 playerPos)
     {
-        if(playerPos.x < 0 || playerPos.y < 0)return; //how to handle negative pos?
+        if(playerPos.x + offset < 0 || playerPos.y + offset < 0) { Debug.Log("PLAYER IS NEGATIVE EVEN WITH OFFSET"); return; } //how to handle negative pos?
         //Vector3 playerPos = GameObject.Find("Player").transform.position;
         //get chunk player is on
         Chunk playerChunk = getChunkFromWorld(playerPos);
@@ -271,7 +270,10 @@ public static class ChunkManager
                 }
                 catch
                 {
-                    Debug.Log("tried rendering a chunk out of bounds! what now?");
+                    //Debug.Log("tried rendering a chunk out of bounds! what now?");
+                    //if a null chunk is rendered then create a new empty chunk at that coordinate... this shouldn't happen in the real game though 
+                    addChunk(cornerPos.y+i, cornerPos.x+j);
+                    //loadedChunks.Add(chunkGrid[cornerPos.y + i][cornerPos.x + j]);
                 }
             }
         }

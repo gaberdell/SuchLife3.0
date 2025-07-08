@@ -248,7 +248,7 @@ public class CraftingUI : MonoBehaviour
             if(recipe.compareRecipes(current_crafting)){ //IF WE'VE FOUND A MATCH
 
                 resultbox.GetComponent<Image>().sprite = recipe.result.icon;
-                Debug.Log("True!!!");
+                //Debug.Log("True!!!");
             }
             else{
 
@@ -265,16 +265,20 @@ public class CraftingUI : MonoBehaviour
 
     public void onInventorySlotPress(int index){
 
-        if (firstButtonPress.type == null){ //If we've selected nothing. 
-            firstButtonPress.type = "inv";
-            firstButtonPress.index = index;
-
-            //change color too!!!
-            inv[index].GetComponent<Image>().color = new Color32(50,255,225,100);
-                        Debug.Log("Selected first!");
-
-
-
+        if (firstButtonPress.type == null){ //If nothing has been selected yet
+            //ignore selections of nothing - swapping when selecting nothing first is buggy and confusing behavior
+            if (inventory[index].isEmpty)
+            {
+                firstButtonPress.type = null;
+                firstButtonPress.index = -1;
+            } else
+            {
+                firstButtonPress.type = "inv";
+                firstButtonPress.index = index;
+                //change color too!!!
+                inv[index].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+                Debug.Log("Selected first!");
+            }  
         }
         else if (secondButtonPress.type == null){
             secondButtonPress.type = "inv";
