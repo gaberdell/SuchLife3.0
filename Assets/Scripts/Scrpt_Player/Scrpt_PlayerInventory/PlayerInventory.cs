@@ -172,6 +172,11 @@ public class PlayerInventory : MonoBehaviour
             }
 
         }
+        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            UseSelectedItem();
+        }
 
 
     }
@@ -313,6 +318,36 @@ public class PlayerInventory : MonoBehaviour
               Debug.Log(slot.item.itemName + " : Quantity " + slot.quantity );
 
             }
+        }
+    }
+
+    public void UseSelectedItem()
+    {
+        if (selectedItem < 0 || selectedItem >= inventory.Count)
+            return;
+
+        InventorySlot slot = inventory[selectedItem];
+        if (slot.isEmpty)
+            return;
+
+        Item item = slot.item;
+
+        ConsumableItem consumable = item as ConsumableItem;
+        if (consumable != null)
+        {
+            Health health = GetComponent<Health>();
+            if (health != null)
+            {
+                health.Heal(consumable.healAmount);
+            }
+
+            RemoveItem(item);
+            Debug.Log($"Used {consumable.itemName} and healed {consumable.healAmount} HP");
+        }
+        else
+        {
+            Debug.Log($"Used non-consumable item: {item.itemName}");
+            // Handle other item types here if needed
         }
     }
 
