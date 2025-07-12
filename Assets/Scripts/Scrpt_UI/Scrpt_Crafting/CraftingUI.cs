@@ -41,7 +41,10 @@ public class CraftingUI : MonoBehaviour
 
     public List<Recipe> allrecipes; //A list of all recipes. 
 
-    public GameObject resultbox; 
+    public GameObject resultbox;
+
+    //for displaying selected item in cursor
+    public GameObject itemInCursor;
 
 
     void Start()
@@ -51,14 +54,16 @@ public class CraftingUI : MonoBehaviour
 
     crafting = new List<InventorySlot>();
 
-
     firstButtonPress.type = null; 
     firstButtonPress.index = -1;
 
     secondButtonPress.type = null; 
     secondButtonPress.index = -1;
 
-           for (int i = 0; i < inv_panel.transform.childCount; i++)
+    itemInCursor.GetComponent<Image>().enabled = false;
+
+
+        for (int i = 0; i < inv_panel.transform.childCount; i++)
             {
                 inv.Add(inv_panel.transform.GetChild(i).gameObject);
 
@@ -155,6 +160,10 @@ public class CraftingUI : MonoBehaviour
 
         //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.
         int count = 0;
+
+        //move itemInCursor position to match cursor
+        Vector3 mousePos = Input.mousePosition;
+        itemInCursor.transform.position = mousePos;
 
         foreach (GameObject panel in inv)
         {
@@ -275,6 +284,20 @@ public class CraftingUI : MonoBehaviour
             {
                 firstButtonPress.type = "inv";
                 firstButtonPress.index = index;
+                //instead of changing color, we can set the sprite to be rendered around the player's cursor when selected (like minecraft & terraria)
+                itemInCursor.GetComponent<Image>().sprite = inv[index].GetComponent<Image>().sprite;
+                itemInCursor.GetComponent<Image>().enabled = true;
+                //visually subtract 1 from the slot
+                if (inventory[index].quantity > 1)
+                {
+
+                }  else
+                {
+                    //display empty box
+                    //inv[index].sprite = player.GetComponent<PlayerInventory>().empty;
+                }
+
+                Cursor.visible = false;
                 //change color too!!!
                 inv[index].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
                 Debug.Log("Selected first!");
@@ -285,6 +308,11 @@ public class CraftingUI : MonoBehaviour
             secondButtonPress.index = index;
 
             Debug.Log("Selected second!");
+
+            //reset image in cursor
+            itemInCursor.GetComponent<Image>().enabled = false;
+            Cursor.visible = true;
+
             inv[index].GetComponent<Image>().color = new Color32(255,255,225,100);
             inv[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
 
