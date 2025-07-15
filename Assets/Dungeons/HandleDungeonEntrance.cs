@@ -25,7 +25,7 @@ public class HandleDungeonEntrance : MonoBehaviour
         //trigger on true -> false (when key is let go)
         if(interact == true && inputHandler.InteractTriggered == false && playerInRange == true){
             //generate dungeon if none exists 
-            GameObject dungeonGrid = GameObject.Find("DungeonGrid");
+            GameObject dungeonGrid = GameObject.Find("Grid");
             if (!rendered)
             {
                 dungeonGrid.GetComponent<RenderDungeon>().StartRender(gameObject, opts.dungeonOffsetX, opts.dungeonOffsetY, opts);

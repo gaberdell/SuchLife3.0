@@ -71,7 +71,7 @@ public class CraftingUI : MonoBehaviour
             }   
 
 
-        inventory =  player.GetComponent<PlayerInventory>().inventory;
+      inventory = player.GetComponent<PlayerInventory>().inventory;
    
       for(int i = 0; i < 9; i++)
         {
@@ -100,8 +100,9 @@ public class CraftingUI : MonoBehaviour
 
     void onEnable(){
 
+        Debug.Log("enabled");
 
-        for(int i = 0; i < 9; i++){
+        for (int i = 0; i < 9; i++){
             crafting[i].isEmpty = true;
 
         }
@@ -112,8 +113,7 @@ public class CraftingUI : MonoBehaviour
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
-
-            if(!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
+            if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
 
@@ -150,10 +150,10 @@ public class CraftingUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        inventory = player.GetComponent<PlayerInventory>().inventory;
 
         //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.
-         int count = 0; 
-
+        int count = 0;
 
         foreach (GameObject panel in inv)
         {
@@ -173,7 +173,8 @@ public class CraftingUI : MonoBehaviour
                 
                 tmp.color = new Color32(255,255,225,100);
 
-                if(inventory[count].item != null){
+
+                if (inventory[count].item != null){
                  inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
                 }
 
@@ -185,7 +186,7 @@ public class CraftingUI : MonoBehaviour
                 tmp.text = "";
 
             }
-           
+            
            count++; 
 
 
@@ -503,8 +504,18 @@ public class CraftingUI : MonoBehaviour
             secondButtonPress.type = "craft";
             secondButtonPress.index = index;
 
+            Debug.Log(firstButtonPress.index);
             craft[index].GetComponent<Image>().color = new Color32(255,255,225,100);
-            craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
+            //determine whether first button was in crafting grid or not
+            if(firstButtonPress.type == "craft")
+            {
+                //if in craft then clear first crafting slot
+                craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
+            }
+            else
+            {
+                //dont try to clear crafting slot because first click was not in crafting slot
+            }
 
 
 

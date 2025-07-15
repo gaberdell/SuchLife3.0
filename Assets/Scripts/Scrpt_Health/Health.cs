@@ -53,8 +53,11 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
+        Debug.Log($"Health.Die() called on {gameObject.name}");
         onDeath?.Invoke();
-        Destroy(gameObject);
+
+        // Destroy with delay instead of instantly
+        Destroy(gameObject, 0.1f);
     }
 
     private void CreateHealthText()
