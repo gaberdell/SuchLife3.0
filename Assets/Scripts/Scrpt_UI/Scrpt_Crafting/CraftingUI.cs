@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using static UnityEngine.Rendering.DebugUI;
+using static Unity.Burst.Intrinsics.X86.Avx;
+using System;
 
 
 //Right now, 
@@ -44,7 +47,9 @@ public class CraftingUI : MonoBehaviour
     public GameObject resultbox;
 
     //for displaying selected item in cursor
-    public GameObject itemInCursor;
+    public GameObject itemInCursorObj;
+    public Item itemInCursor;
+    public int itemInCursorQuantity = 0;
 
 
     void Start()
@@ -60,7 +65,7 @@ public class CraftingUI : MonoBehaviour
     secondButtonPress.type = null; 
     secondButtonPress.index = -1;
 
-    itemInCursor.GetComponent<Image>().enabled = false;
+    itemInCursorObj.GetComponent<Image>().enabled = false;
 
 
         for (int i = 0; i < inv_panel.transform.childCount; i++)
@@ -163,7 +168,7 @@ public class CraftingUI : MonoBehaviour
 
         //move itemInCursor position to match cursor
         Vector3 mousePos = Input.mousePosition;
-        itemInCursor.transform.position = mousePos;
+        itemInCursorObj.transform.position = mousePos;
 
         foreach (GameObject panel in inv)
         {
@@ -284,58 +289,122 @@ public class CraftingUI : MonoBehaviour
             {
                 firstButtonPress.type = "inv";
                 firstButtonPress.index = index;
+                //when an item is selected, move the item and its data to the itemInHand container.
+                //one item is picked up at a time with left click.
+
                 //instead of changing color, we can set the sprite to be rendered around the player's cursor when selected (like minecraft & terraria)
-                itemInCursor.GetComponent<Image>().sprite = inv[index].GetComponent<Image>().sprite;
-                itemInCursor.GetComponent<Image>().enabled = true;
-                //visually subtract 1 from the slot
-                if (inventory[index].quantity > 1)
-                {
-
-                }  else
-                {
-                    //display empty box
-                    //inv[index].sprite = player.GetComponent<PlayerInventory>().empty;
-                }
-
-                Cursor.visible = false;
-                //change color too!!!
-                inv[index].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
-                Debug.Log("Selected first!");
+                itemInCursorObj.GetComponent<Image>().sprite = inv[index].GetComponent<Image>().sprite;
+                itemInCursorObj.GetComponent<Image>().enabled = true;
+                selectItem("inv", index);
             }  
         }
         else if (secondButtonPress.type == null){
             secondButtonPress.type = "inv";
             secondButtonPress.index = index;
 
-            Debug.Log("Selected second!");
+            //Since we have two things selected , we can swap inventory places now. 
+            handleItemInCursor();
+            //swapOrAdd(); 
 
-            //reset image in cursor
-            itemInCursor.GetComponent<Image>().enabled = false;
-            Cursor.visible = true;
+            //reset back to nothing.
+            secondButtonPress.type = null; 
+            secondButtonPress.index = -1;
+        }
+    }
 
-            inv[index].GetComponent<Image>().color = new Color32(255,255,225,100);
-            inv[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
+    public void onCraftingGridSlotPress(int index)
+    {
+        if (firstButtonPress.type == null)
+        {
+            Debug.Log("one");
+            //ignore selections of nothing
+            if (crafting[index].isEmpty)
+            {
+                firstButtonPress.type = null;
+                firstButtonPress.index = -1;
+            }
+            else
+            {
+                firstButtonPress.type = "craft";
+                firstButtonPress.index = index;
+                //same behavior as inventory; when an item is selected, move the item and its data to the itemInHand container.
+                itemInCursorObj.GetComponent<Image>().sprite = craft[index].GetComponent<Image>().sprite;
+                itemInCursorObj.GetComponent<Image>().enabled = true;
+                selectItem("craft", index);
+            }
+
+        }
+        else if (secondButtonPress.type == null)
+        {
+            Debug.Log("two");
+            secondButtonPress.type = "craft";
+            secondButtonPress.index = index;
+            //determine whether first button was in crafting grid or not
+            //if (firstButtonPress.type == "craft")
+            //{
+            //    //if in craft then clear first crafting slot
+            //    craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255, 255, 225, 100);
+            //}
+            //else
+            //{
+            //    //dont try to clear crafting slot because first click was not in crafting slot
+            //}
+
+            //swap selection with cursor
+            handleItemInCursor();
+
+            //reset back to nothing.
+            secondButtonPress.type = null;
+            secondButtonPress.index = -1;
+
 
 
             //Since we have two things selected , we can swap inventory places now. 
 
-            swapOrAdd(); 
+            //swapOrAdd();
 
-            //reset back to nothing.
-            firstButtonPress.type = null; 
-            firstButtonPress.index = -1;
+            ////reset back to nothing.
+            //firstButtonPress.type = null;
+            //firstButtonPress.index = -1;
 
-            secondButtonPress.type = null; 
-            secondButtonPress.index = -1;
+            //secondButtonPress.type = null;
+            //secondButtonPress.index = -1;
+
         }
-        
-        
 
+    }
+
+    //handler for picking up an item with the cursor
+    void selectItem(string type, int index)
+    {
+
+        //add an instance of the selected item to itemInCursor
+        if (type == "inv")
+        {
+            itemInCursor = inventory[index].item;
+        }
+        else
+        {
+            itemInCursor = crafting[index].item;
+        }
+        itemInCursorQuantity = 1;
+        //remove item from slot
+        RemoveItemInSlot(type, index);
+        Cursor.visible = false;
+    }
+
+    void clearSelectedItem()
+    {
+        itemInCursor = null;
+        itemInCursorQuantity = 0;
+        //stop displaying image over cursor
+        itemInCursorObj.GetComponent<Image>().enabled = false;
+        Cursor.visible = true;
     }
 
     //This differs from AddItem in PLayerInventory, because this is adding an item to a specific slot, not just the first avaliable one. Type is if we're adding to the crafting grid or inventory grid.
     //Type and Index are the type and index of the destination.
-    void AddItemInSlot(Item item, string type, int index){
+    void AddItemInSlot(Item item, string type, int index, int quantity = 1){
 
         InventorySlot destination; 
     
@@ -358,7 +427,7 @@ public class CraftingUI : MonoBehaviour
         if(destination.isEmpty ){  //if is empty. Just in case we wanna add grouping function.
             destination.isEmpty = false; 
             destination.item = item;
-            destination.quantity = 1; 
+            destination.quantity = quantity; 
 
         } 
         else{ //If destination isn't empty. 
@@ -409,6 +478,73 @@ public class CraftingUI : MonoBehaviour
 
 
     }
+
+    //when player clicks while they have an item in the cursor, decide what to do with it; drop item in empty/same item box or swap itemInCursor with item in box
+    void handleItemInCursor()
+    {
+        InventorySlot target;
+        target = inventory[secondButtonPress.index];
+
+        //if target is empty then drop the currently selected item in it
+        if (target.isEmpty)
+        {
+            AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, itemInCursorQuantity);
+            clearSelectedItem();
+            //reset first selected item
+            firstButtonPress.type = null;
+            firstButtonPress.index = -1;
+        } else
+        {
+            //otherwise we want to swap the selected item with the item in target
+            //if they are the same items then increment the quantity of the second item
+            if (target.item == itemInCursor)
+            {
+                AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, itemInCursorQuantity);
+                clearSelectedItem();
+                Cursor.visible = true;
+                //reset first selected item
+                firstButtonPress.type = null;
+                firstButtonPress.index = -1;
+
+            } else
+            {
+                //set sprite for cursor
+                //swap item in cursor with selected item
+                int q;
+                Item i;
+                if (secondButtonPress.type == "inv")
+                {
+                    itemInCursorObj.GetComponent<Image>().sprite = inv[secondButtonPress.index].GetComponent<Image>().sprite;
+                    q = inventory[secondButtonPress.index].quantity;
+                    i = inventory[secondButtonPress.index].item;
+                    inventory[secondButtonPress.index].item = itemInCursor;
+                    inventory[secondButtonPress.index].quantity = itemInCursorQuantity;
+                } else if(secondButtonPress.type == "craft")
+                {
+                    itemInCursorObj.GetComponent<Image>().sprite = craft[secondButtonPress.index].GetComponent<Image>().sprite;
+                    q = crafting[secondButtonPress.index].quantity;
+                    i = crafting[secondButtonPress.index].item;
+                    crafting[secondButtonPress.index].item = itemInCursor;
+                    crafting[secondButtonPress.index].quantity = itemInCursorQuantity;
+                } else
+                {
+                    Debug.Log("invalid type for item destination");
+                    return;
+                }
+
+                itemInCursor = i;
+                itemInCursorQuantity = q;
+                //act as if this item was clicked by a first press
+                firstButtonPress.type = secondButtonPress.type;
+            }
+        }
+
+    }
+
+    
+
+
+    /*---------------------------------------------------------------------DEPRECATED; KEPT FOR POSTERITY-----------------------------------------------------------------------------------*/
 
 
     //If the second slot is empty and doesn't have an item in it, we want to move one of our first selected thing into there. If we've selected two things, we should swap.
@@ -525,47 +661,7 @@ public class CraftingUI : MonoBehaviour
 
     }
 
-    public void onCraftingGridSlotPress(int index){
-        if (firstButtonPress.type == null){ //If we've selected nothing. 
-            firstButtonPress.type = "craft";
-            firstButtonPress.index = index;
-            craft[index].GetComponent<Image>().color = new Color32(50,255,225,100);
 
-
-        }
-        else if (secondButtonPress.type == null){
-            secondButtonPress.type = "craft";
-            secondButtonPress.index = index;
-
-            Debug.Log(firstButtonPress.index);
-            craft[index].GetComponent<Image>().color = new Color32(255,255,225,100);
-            //determine whether first button was in crafting grid or not
-            if(firstButtonPress.type == "craft")
-            {
-                //if in craft then clear first crafting slot
-                craft[firstButtonPress.index].GetComponent<Image>().color = new Color32(255,255,225,100);
-            }
-            else
-            {
-                //dont try to clear crafting slot because first click was not in crafting slot
-            }
-
-
-
-            //Since we have two things selected , we can swap inventory places now. 
-
-            swapOrAdd(); 
-
-            //reset back to nothing.
-            firstButtonPress.type = null; 
-            firstButtonPress.index = -1;
-
-            secondButtonPress.type = null; 
-            secondButtonPress.index = -1;
-
-        }
-
-    }
 
   
 }
