@@ -8,5 +8,7 @@ using UnityEngine.UI;
 public class ConsumableItem : Item
 {
     public int healAmount;
+    public float damageBoostAmount;
+    public float boostDuration;
     public string description;
 }

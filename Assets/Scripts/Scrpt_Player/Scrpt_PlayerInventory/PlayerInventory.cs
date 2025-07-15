@@ -331,27 +331,44 @@ public class PlayerInventory : MonoBehaviour
             return;
 
         Item item = slot.item;
-
         ConsumableItem consumable = item as ConsumableItem;
+
         if (consumable != null)
         {
-            Health health = GetComponent<Health>();
-            if (health != null)
+            bool used = false;
+
+            // Heal if healAmount is set
+            if (consumable.healAmount > 0)
             {
-                health.Heal(consumable.healAmount);
+                Health health = GetComponent<Health>();
+                if (health != null && health.currentHealth < health.maxHealth)
+                {
+                    health.Heal(consumable.healAmount);
+                    used = true;
+                }
+                else
+                {
+                    Debug.Log("Health is already full. Cannot use potion.");
+                }
             }
 
-            RemoveItem(item);
-            Debug.Log($"Used {consumable.itemName} and healed {consumable.healAmount} HP");
-        }
-        else
-        {
-            Debug.Log($"Used non-consumable item: {item.itemName}");
-            // Handle other item types here if needed
+            // Damage boost if values are set
+            if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
+            {
+                PlayerAttack playerAttack = GetComponent<PlayerAttack>();
+                if (playerAttack != null)
+                {
+                    playerAttack.ApplyDamageBoost(consumable.damageBoostAmount, consumable.boostDuration);
+                    used = true;
+                }
+            }
+
+            if (used)
+            {
+                RemoveItem(item); // Only remove if something was actually used
+                Debug.Log($"Used {consumable.itemName}");
+            }
         }
     }
-
-
-
 
 }

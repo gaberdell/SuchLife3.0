@@ -35498,6 +35498,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 3652674543495926234, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: tileToPlace
       value: 
