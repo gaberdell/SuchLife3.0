@@ -44,7 +44,7 @@ public class Bomb : Mob
 
     void Update()
     {
-        updateKnockback(); //inherited from mob parent
+        //updateKnockback(); //inherited from mob parent
         updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
         distance = Vector2.Distance(transform.position, target.position);

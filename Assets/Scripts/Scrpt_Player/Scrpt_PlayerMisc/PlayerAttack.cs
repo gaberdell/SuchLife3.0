@@ -79,20 +79,11 @@ public class PlayerAttack : MonoBehaviour
                 }
                 //apply a knockback force to the mob
                 //read force from some value associated with the attack or weapon
-                float knockbackForce = 5f;
-                //calculate direction to knockback based on player and enemy's position
-                Vector3 enemyPos = enemy.transform.position;
-                Vector3 playerPos = gameObject.transform.position;
-                Vector3 diff = enemyPos - playerPos;
-                Vector3 knockbackVector = new Vector3(diff.x * knockbackForce, diff.y * knockbackForce, 0);
-                //calculate direction to knockback based on player's facing direction
-                float playerFacing = gameObject.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
-                Vector3 playerFacingVector = new Vector3(Mathf.Sin(playerFacing), Mathf.Cos(playerFacing) * -1, 0);
-                Vector3 newKnockbackVector = playerFacingVector * knockbackForce;
-                //Debug.Log(playerFacingVector);
+                float knockbackForce = 10f;
+                Vector2 knockbackDir = (enemy.transform.position - transform.position).normalized;
+                Vector2 knockbackVector = knockbackDir * knockbackForce;
 
-                
-                mob.applyKnockback(newKnockbackVector, knockbackForce);
+                mob.applyKnockback(knockbackVector, knockbackForce);
                 //Debug.Log("push");
                 //Debug.Log(knockbackVector);
             }
