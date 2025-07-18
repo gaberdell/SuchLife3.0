@@ -45,6 +45,7 @@ public class CraftingUI : MonoBehaviour
     public List<Recipe> allrecipes; //A list of all recipes. 
 
     public GameObject resultbox;
+    public Recipe resultRecipe = null;
 
     //for displaying selected item in cursor
     public GameObject itemInCursorObj;
@@ -262,7 +263,8 @@ public class CraftingUI : MonoBehaviour
             if(recipe.compareRecipes(current_crafting)){ //IF WE'VE FOUND A MATCH
 
                 resultbox.GetComponent<Image>().sprite = recipe.result.icon;
-                //Debug.Log("True!!!");
+                resultRecipe = recipe;
+                
             }
             else{
 
@@ -455,12 +457,19 @@ public class CraftingUI : MonoBehaviour
         else if(type == "craft"){
 
             destination = crafting[index];
-            current_crafting[index] = emptyitem; //Changes the current item in this index to empty
-
+            if (destination.quantity <= 1)
+            {
+                current_crafting[index] = emptyitem; //Changes the current item in this index to empty when removing a lone item
+            }
         }
         else{
             //oops!
             destination = null;
+        }
+        if (destination.isEmpty)
+        {
+            //dont remove anything if empty
+            return;
         }
 
         if(destination.quantity == 1 ){ 
@@ -483,7 +492,8 @@ public class CraftingUI : MonoBehaviour
     void handleItemInCursor()
     {
         InventorySlot target;
-        target = inventory[secondButtonPress.index];
+        if (secondButtonPress.type == "inv") target = inventory[secondButtonPress.index];
+        else target = crafting[secondButtonPress.index];
 
         //if target is empty then drop the currently selected item in it
         if (target.isEmpty)
@@ -521,6 +531,7 @@ public class CraftingUI : MonoBehaviour
                     inventory[secondButtonPress.index].quantity = itemInCursorQuantity;
                 } else if(secondButtonPress.type == "craft")
                 {
+                    Debug.Log("craft swap");
                     itemInCursorObj.GetComponent<Image>().sprite = craft[secondButtonPress.index].GetComponent<Image>().sprite;
                     q = crafting[secondButtonPress.index].quantity;
                     i = crafting[secondButtonPress.index].item;
@@ -541,6 +552,30 @@ public class CraftingUI : MonoBehaviour
 
     }
 
+
+    public void onCraftingResultPress()
+    {
+        //check if there is an item in the panel (successful recipe found)
+        Item resultItem = resultRecipe.result;
+        if(resultItem != null)
+        {
+            //put item in cursor
+            itemInCursor = resultItem;
+            itemInCursorQuantity = 1;
+            itemInCursorObj.GetComponent<Image>().sprite = resultItem.icon;
+            firstButtonPress.type = "craft";
+            firstButtonPress.index = 9; //necessary?
+            itemInCursorObj.GetComponent<Image>().enabled = true;
+            //clear result box
+            resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
+            //clear grid corresponding to how many items are made
+            for (int i = 0; i < crafting.Count; i++)
+            {
+                RemoveItemInSlot("craft", i);
+            }
+            //more of the same items might still be craftable; check again 
+        }
+    }
     
 
 
