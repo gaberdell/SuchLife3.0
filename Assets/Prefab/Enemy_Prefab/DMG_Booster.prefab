@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5049966693821918943}
-  - component: {fileID: 3157069525406846537}
   - component: {fileID: 5134714998127479796}
   - component: {fileID: 6082381911061552797}
+  - component: {fileID: 3129035712410032768}
   m_Layer: 0
   m_Name: DMG_Booster
   m_TagString: Untagged
@@ -29,25 +29,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.1, y: 1.06, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.63, y: 0.63, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3157069525406846537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5149180284610993495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 191db9fda4d7f7e468591f0bc2898df4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageBoostAmount: 10
-  boostDuration: 20
 --- !u!212 &5134714998127479796
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -139,3 +125,19 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &3129035712410032768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5149180284610993495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d0e92eb67203545adfbdfc6d5d431f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 1839a23fb7a4b154db86220114e04de8, type: 2}
+  pullRadius: 2
+  pickupRadius: 0.3
+  moveSpeed: 20

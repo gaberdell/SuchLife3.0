@@ -16,7 +16,8 @@ public class PlayerAttack : MonoBehaviour
     private float _lastAttackTime;
     private bool _isAttacking;
     public bool IsAttacking => _isAttacking;
-    private float damageMultiplier = 1f;
+    private float additiveDamageBoost = 0f;
+
 
     private void Update()
     {
@@ -46,15 +47,17 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
-    public void ApplyDamageBoost(float multiplier, float duration)
+    public void ApplyDamageBoost(float amount, float duration)
     {
-        damageMultiplier = multiplier;
+        additiveDamageBoost = amount;
+        Debug.Log($"Applied +{amount} damage boost for {duration} seconds.");
         Invoke(nameof(RemoveDamageBoost), duration);
     }
 
     private void RemoveDamageBoost()
     {
-        damageMultiplier = 1f;
+        additiveDamageBoost = 0f;
+        Debug.Log("Damage boost ended.");
     }
 
     private void DetectHits()
@@ -71,7 +74,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 if (enemy.TryGetComponent<Health>(out var health))
                 {
-                    int boostedDamage = Mathf.RoundToInt(attackDamage * damageMultiplier);
+                    int boostedDamage = Mathf.RoundToInt(attackDamage + additiveDamageBoost);
                     health.TakeDamage(boostedDamage);
                 }
                 //apply a knockback force to the mob

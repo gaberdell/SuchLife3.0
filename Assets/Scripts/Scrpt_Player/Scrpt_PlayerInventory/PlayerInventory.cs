@@ -172,6 +172,11 @@ public class PlayerInventory : MonoBehaviour
             }
 
         }
+        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            UseSelectedItem();
+        }
 
 
     }
@@ -316,7 +321,54 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    public void UseSelectedItem()
+    {
+        if (selectedItem < 0 || selectedItem >= inventory.Count)
+            return;
 
+        InventorySlot slot = inventory[selectedItem];
+        if (slot.isEmpty)
+            return;
 
+        Item item = slot.item;
+        ConsumableItem consumable = item as ConsumableItem;
+
+        if (consumable != null)
+        {
+            bool used = false;
+
+            // Heal if healAmount is set
+            if (consumable.healAmount > 0)
+            {
+                Health health = GetComponent<Health>();
+                if (health != null && health.currentHealth < health.maxHealth)
+                {
+                    health.Heal(consumable.healAmount);
+                    used = true;
+                }
+                else
+                {
+                    Debug.Log("Health is already full. Cannot use potion.");
+                }
+            }
+
+            // Damage boost if values are set
+            if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
+            {
+                PlayerAttack playerAttack = GetComponent<PlayerAttack>();
+                if (playerAttack != null)
+                {
+                    playerAttack.ApplyDamageBoost(consumable.damageBoostAmount, consumable.boostDuration);
+                    used = true;
+                }
+            }
+
+            if (used)
+            {
+                RemoveItem(item); // Only remove if something was actually used
+                Debug.Log($"Used {consumable.itemName}");
+            }
+        }
+    }
 
 }
