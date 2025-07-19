@@ -3,8 +3,8 @@ using UnityEngine;
 public class NewMonoBehaviourScript : MonoBehaviour
 {
     public float offset; //allows weapon to align regardless
-    //of the weapon sprites orientation (adjust offset according to 
-    // sprite starting orientation)
+    //of the weapon sprite's orientation 
+    //Default for weapon facing up = -90
 
     public GameObject projectile;
     public Transform shotPoint;
