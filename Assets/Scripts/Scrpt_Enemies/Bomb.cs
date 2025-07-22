@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
-    [SerializeField] private AIPath path;
+    //[SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
@@ -112,6 +112,14 @@ public class Bomb : Mob
         {
             Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
             mobHealth.onDeath?.Invoke();
+
+            // freeze movement and physics to stop post-death knockback
+            OnDeath();
+
+            // Hide health bar if it still exists
+            Transform healthBar = transform.Find("HealthBar");
+            if (healthBar != null)
+                healthBar.gameObject.SetActive(false);
         }
 
         yield return new WaitForSeconds(3f);

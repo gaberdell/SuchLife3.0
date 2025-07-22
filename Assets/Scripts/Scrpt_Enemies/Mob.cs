@@ -12,8 +12,10 @@ public class Mob : MonoBehaviour
     protected Vector2 chunkPos;
 
     private Rigidbody2D rb;
-    private AIPath path;
+    protected AIPath path;
     private bool isKnockedBack = false;
+
+    protected bool isDead = false;
 
     private void Awake()
     {
@@ -27,7 +29,7 @@ public class Mob : MonoBehaviour
 
     public void applyKnockback(Vector3 knockbackVector, float knockbackForce)
     {
-        if (rb == null) return;
+        if (rb == null || isDead) return;  // don't knockback dead mobs
 
         if (path != null)
             path.enabled = false;  // Disable AIPath during knockback
@@ -38,9 +40,9 @@ public class Mob : MonoBehaviour
         Vector2 knockbackDir = new Vector2(knockbackVector.x, knockbackVector.y).normalized;
         rb.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
 
-        // Start coroutine to re-enable AIPath after knockback
-        StartCoroutine(ReenableAIPathAfterDelay(0.5f)); // adjust duration as needed
+        StartCoroutine(ReenableAIPathAfterDelay(0.5f));
     }
+
     private IEnumerator ReenableAIPathAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -66,6 +68,19 @@ public class Mob : MonoBehaviour
         {
             ChunkManager.updateEntityPos(chunkPos, currChunkPos, objectInScene != null ? objectInScene : gameObject);
             chunkPos = currChunkPos;
+        }
+    }
+
+    public void OnDeath()
+    {
+        isDead = true;
+        if (path != null)
+            path.enabled = false;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.isKinematic = true;  // freeze physics
         }
     }
 }
