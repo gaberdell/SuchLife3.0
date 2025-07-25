@@ -114,7 +114,7 @@ public class RenderDungeon : MonoBehaviour
         ymax += opts.dungeonOffsetY + 10;
 
         //set fill tile for dungeon chunks
-        ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile);
+        ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile, groundTiles);
 
         //now fill ground tilemap so player doesnt see void when they break walls
         //float scale = .01f;

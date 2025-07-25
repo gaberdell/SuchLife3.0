@@ -114,7 +114,7 @@ public static class ChunkManager
     * returns: none
     * throws: none
     */
-    static public void setChunksFill(int x, int y, int width, int height, TileBase fillTile)
+    static public void setChunksFill(int x, int y, int width, int height, TileBase fillTile, TileBase[] groundTiles)
     {
         for (int i = x; i < x + width; i+= chunkSize)
         {
@@ -123,14 +123,14 @@ public static class ChunkManager
                 Chunk currChunk = getChunkFromWorld(new Vector3(i, j, 0));
                 if (currChunk != null)
                 {
-                    currChunk.setFillInfo(fillTile);
+                    currChunk.setFillInfo(fillTile, groundTiles);
                 } else
                 {
                     //Vector2 pos = getChunkPosFromWorld(new Vector3(i, j, 0));
                     //if chunk is null then create a chunk at that index to be filled completely
                     SetTile(new Vector3Int(i, j, 0), fillTile, true);
                     Chunk newChunk = getChunkFromWorld(new Vector3(i, j, 0));
-                    newChunk.setFillInfo(fillTile);
+                    newChunk.setFillInfo(fillTile, groundTiles);
                 }
                 
             }

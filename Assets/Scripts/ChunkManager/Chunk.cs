@@ -214,9 +214,10 @@ public class Chunk
     * returns: none
     * throws: none
     */
-    public void setFillInfo(TileBase wallT)
+    public void setFillInfo(TileBase wallT, TileBase[] groundTiles)
     {
         wallTile = wallT;
+        floorTile = groundTiles;
     }
 
     /*
@@ -237,6 +238,8 @@ public class Chunk
                 {
                     wallTiles[i][j] = wallTile;
                 }
+                //set floor tile after
+                floorTiles[i][j] = floorTile[0];
             }
         }
     }
