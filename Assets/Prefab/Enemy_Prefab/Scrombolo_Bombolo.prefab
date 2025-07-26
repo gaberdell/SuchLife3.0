@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 110210032273967185}
   - component: {fileID: 3698520942294514577}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: EarRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1852298218644448698}
   - component: {fileID: 2534092236976229464}
   - component: {fileID: 2098140509326663582}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Scrombolo_Bombolo
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -5220,7 +5220,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2583978886270625268}
   - component: {fileID: 5605358815671642204}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: EarLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5307,7 +5307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9077534997037707946}
   - component: {fileID: 5464877206876373133}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: UnderMouth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5394,7 +5394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4303046098423030456}
   - component: {fileID: 3174689650813920794}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Mouth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5481,7 +5481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2909254627390010806}
   - component: {fileID: 2880516944685476568}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Wick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5568,7 +5568,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5938163068557236940}
   - component: {fileID: 8554188963783717560}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: FootRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5655,7 +5655,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3983651727347057616}
   - component: {fileID: 8418042649540705595}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: EyeRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5742,7 +5742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4339693122273555211}
   - component: {fileID: 7475189089732002758}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5829,7 +5829,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1434241566632547308}
   - component: {fileID: 729530395412855091}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: EyeLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5916,7 +5916,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7600915811416526446}
   - component: {fileID: 774674331734075403}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6003,7 +6003,7 @@ GameObject:
   m_Component:
   - component: {fileID: 321446243149235185}
   - component: {fileID: 2452535406711679834}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: FootLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
