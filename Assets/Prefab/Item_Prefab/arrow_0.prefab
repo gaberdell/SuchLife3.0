@@ -106,5 +106,6 @@ MonoBehaviour:
   damage: 500
   whatIsSolid:
     serializedVersion: 2
-    m_Bits: 640
-  destroyEffect: {fileID: 0}
+    m_Bits: 384
+  destroyEffectEnemy: {fileID: 5922004877681328416, guid: 58bdeeb4478b0458890775dd2d9b8cb4, type: 3}
+  destroyEffectWall: {fileID: 5922004877681328416, guid: 47a8e729520da4826ac8f85e976826d0, type: 3}
