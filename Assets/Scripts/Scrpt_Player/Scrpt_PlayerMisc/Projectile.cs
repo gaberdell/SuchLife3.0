@@ -9,12 +9,14 @@ public class Projectile : MonoBehaviour
 
     public LayerMask whatIsSolid;
 
-    public GameObject destroyEffect;
+    public GameObject destroyEffectEnemy;
+    public GameObject destroyEffectWall;
 
-    //if we want a lifetime on arrows
+
     private void Start()
     {
-        Invoke("DestroyProjectile", lifeTime);
+        //if we want a lifetime on arrows
+        Invoke("DestroyProjectileDueToLifetime", lifeTime);
     }
 
     // Update is called once per frame
@@ -22,21 +24,43 @@ public class Projectile : MonoBehaviour
     {
 
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.up, distance, whatIsSolid);
-        if (hitInfo.collider != null){
-            if (hitInfo.collider.CompareTag("Enemy")) {
+        if (hitInfo.collider != null)
+        {
+            bool hitWall = true;
+            bool hitEnemy = false;
+            if (hitInfo.collider.CompareTag("Enemy"))
+            {
                 Debug.Log("ENEMY MUST TAKE DAMAGE !");
                 hitInfo.collider.GetComponent<Health>().TakeDamage(damage);
+                
+                hitWall = false;
+                hitEnemy = true;
             }
-            destroyProjectile();
+            DestroyProjectile(hitEnemy, hitWall);
         }
-
-
-
         transform.Translate(Vector2.up * speed * Time.deltaTime);
     }
 
-    void destroyProjectile(){
-        Instantiate(destroyEffect, transform.position, Quaternion.identity);
+    void DestroyProjectile(bool hitEnemy = false, bool hitWall = false)
+    {
+        if(hitEnemy)
+        {
+            Debug.Log("Destroying projectile; Hit Enemy");
+            GameObject destroyEffectInScene = Instantiate(destroyEffectEnemy, transform.position, Quaternion.identity);
+            destroyEffectInScene.GetComponent<ParticleSystem>().Play();
+        }
+        else if(hitWall)
+        {
+            Debug.Log("Destroying projectile; Hit Wall");
+            GameObject destroyEffectInScene = Instantiate(destroyEffectWall, transform.position, Quaternion.identity);
+            destroyEffectInScene.GetComponent<ParticleSystem>().Play();
+        }
         Destroy(gameObject);
+    }
+
+    void DestroyProjectileDueToLifetime()
+    {
+        Debug.Log("Destroying projectile; Lifetime ran out");
+        DestroyProjectile(false, false);
     }
 }
