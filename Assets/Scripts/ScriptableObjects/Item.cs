@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Item : ScriptableObject
 {
     public string itemName;
+    public string useFlag = "none";
     public Sprite icon;
     public TileBase tileThisPlaces;
 

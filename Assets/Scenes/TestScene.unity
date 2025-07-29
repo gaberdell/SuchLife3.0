@@ -19936,6 +19936,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474589738}
   m_CullTransparentMesh: 1
+--- !u!1 &1476887136 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 324757969995828777, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+  m_PrefabInstance: {fileID: 4748201746997400629}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1476887139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476887136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b164c35b304ffa47af4e701bb90ad40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentlyHeld: {fileID: 0}
+  normalRotation: {x: 0, y: 0, z: 0, w: 0}
+  toolRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1477282234
 GameObject:
   m_ObjectHideFlags: 0
@@ -34361,6 +34381,14 @@ PrefabInstance:
       propertyPath: showHealthText
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8959118705387878318, guid: f24689c79e71c7a488fc40e5312170fd, type: 3}
+    - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34374,6 +34402,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4748201746997400631}
+    - targetCorrespondingSourceObject: {fileID: 324757969995828777, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1476887139}
   m_SourcePrefab: {fileID: 100100000, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
 --- !u!95 &4748201746997400630 stripped
 Animator:
