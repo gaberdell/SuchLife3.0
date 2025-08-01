@@ -128,7 +128,7 @@ public class PlayerInventory : MonoBehaviour
                 {
                     //i-1 to account for 0 being 10.
                     selectedItem = i - 1;
-                    playerInfo.HeldItem = inventory[selectedItem].item;
+                    receiveItem.HeldItem = inventory[selectedItem].item;
 
                     hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
 

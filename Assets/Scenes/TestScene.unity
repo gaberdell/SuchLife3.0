@@ -33199,6 +33199,7 @@ MonoBehaviour:
   emptyitem: {fileID: 11400000, guid: 08bfc371bc663d24f82afb7f61b60a0a, type: 2}
   allrecipes:
   - {fileID: 11400000, guid: 7ae0290551022344aaff9d768c237d7d, type: 2}
+  - {fileID: 11400000, guid: 9abdfe27c8753c943a9766614e9af4e5, type: 2}
   resultbox: {fileID: 1392403720}
   resultRecipe: {fileID: 0}
   itemInCursorObj: {fileID: 501229571}

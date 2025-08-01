@@ -69,12 +69,27 @@ namespace BlockIteraction
                 bool boolHitBlock;
 
 
+                //only draw block placement preview when block is held
                 drawWhereHit = TileMapHelperFunc.DDARayCheck(placeTileMap, transform.position, mousePos, maxRange, out hitVal, out boolHitBlock, out listOfStepPoints);
 
                 Quaternion destroyRotation = Quaternion.Euler(0, 0, Mathf.Round((Mathf.Rad2Deg * Mathf.Atan2(transform.position.y-mousePos.y, transform.position.x - mousePos.x)) / 90f)*90f + 90f);
 
+                //only draw breakable preview when tool is held
+                if (playerInfo.heldType == "Tool")
+                {
+                    playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
 
-                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null);
+                    //only break item when tool is held
+                    if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
+                    {
+                        destroyingCoolDown = destroyingMinCoolDown;
+                        //placeTileMap.SetTile(drawWhereHit, null);
+                        ChunkManager.SetTile(drawWhereHit, null, true);
+                    }
+
+                }
+
+                //draw block preview when block is held
 
                 //Debug.Log(drawWhereHit);
 
@@ -86,12 +101,7 @@ namespace BlockIteraction
                     ChunkManager.SetTile(hitVal, tileToPlace, true);
                 }
 
-                if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
-                {
-                    destroyingCoolDown = destroyingMinCoolDown;
-                    //placeTileMap.SetTile(drawWhereHit, null);
-                    ChunkManager.SetTile(drawWhereHit, null, true);
-                }
+
 
                 placingCoolDown = Mathf.Max(placingCoolDown - Time.deltaTime, 0);
                 destroyingCoolDown = Mathf.Max(destroyingCoolDown - Time.deltaTime, 0);

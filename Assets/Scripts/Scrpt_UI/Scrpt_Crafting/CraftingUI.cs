@@ -42,8 +42,8 @@ public class CraftingUI : MonoBehaviour
 
     public Item emptyitem; //Used in comparisons. 
 
+    //crafting
     public List<Recipe> allrecipes; //A list of all recipes. 
-
     public GameObject resultbox;
     public Recipe resultRecipe = null;
 
@@ -259,23 +259,40 @@ public class CraftingUI : MonoBehaviour
 
         //Now we need to update what Results looks like.
 
-        foreach (Recipe recipe in allrecipes){
-            if(recipe.compareRecipes(current_crafting)){ //IF WE'VE FOUND A MATCH
 
-                resultbox.GetComponent<Image>().sprite = recipe.result.icon;
-                resultRecipe = recipe;
-                
-            }
-            else{
-
-                resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
-            }
-
-        }
 
 
 
         
+    }
+
+    //only update recipe result when a change is detected on the crafting grid
+    public void updateRecipeResult()
+    {
+        //assume no result found by default
+        bool resultFound = false;
+        foreach (Recipe recipe in allrecipes)
+        {
+            Debug.Log(recipe);
+            if (recipe.compareRecipes(current_crafting))
+            { //IF WE'VE FOUND A MATCH
+                Debug.Log("MATCH FOUND");
+                Debug.Log(recipe.result);
+                resultbox.GetComponent<Image>().sprite = recipe.result.icon;
+                resultRecipe = recipe;
+                resultFound = true;
+            }
+            else
+            {
+                if (!resultFound)
+                {
+                    //don't overwrite displayed result; stop at first match found
+                    resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
+                }
+            }
+
+        }
+
     }
 
 
@@ -311,6 +328,7 @@ public class CraftingUI : MonoBehaviour
             //reset back to nothing.
             secondButtonPress.type = null; 
             secondButtonPress.index = -1;
+            updateRecipeResult();
         }
     }
 
@@ -334,6 +352,7 @@ public class CraftingUI : MonoBehaviour
                 itemInCursorObj.GetComponent<Image>().enabled = true;
                 selectItem("craft", index);
             }
+            updateRecipeResult();
 
         }
         else if (secondButtonPress.type == null)
@@ -358,6 +377,7 @@ public class CraftingUI : MonoBehaviour
             //reset back to nothing.
             secondButtonPress.type = null;
             secondButtonPress.index = -1;
+
 
 
 
@@ -537,6 +557,7 @@ public class CraftingUI : MonoBehaviour
                     i = crafting[secondButtonPress.index].item;
                     crafting[secondButtonPress.index].item = itemInCursor;
                     crafting[secondButtonPress.index].quantity = itemInCursorQuantity;
+                    current_crafting[secondButtonPress.index] = crafting[secondButtonPress.index].item;
                 } else
                 {
                     Debug.Log("invalid type for item destination");
@@ -549,7 +570,7 @@ public class CraftingUI : MonoBehaviour
                 firstButtonPress.type = secondButtonPress.type;
             }
         }
-
+        updateRecipeResult();
     }
 
 
