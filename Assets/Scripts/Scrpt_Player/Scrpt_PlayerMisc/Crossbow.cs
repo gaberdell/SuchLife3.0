@@ -12,6 +12,14 @@ public class NewMonoBehaviourScript : MonoBehaviour
     private float timeBtwShots;
     public float startTimeBtwShots;
 
+    public float timeToFullCharge;
+    private float timeHeld;
+    private bool isCharged;
+
+    //3 different states of transition for crossbow charge
+
+
+
     // Update is called once per frame
     private void Update()
     {
@@ -20,10 +28,20 @@ public class NewMonoBehaviourScript : MonoBehaviour
         float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, rotZ + offset);
 
-        if(timeBtwShots <= 0){
+        if(Input.GetMouseButton(0)){
+            timeHeld += Time.deltaTime;
+        }
+
+        if(timeHeld >= timeToFullCharge){
+            isCharged = true;
+        }
+
+        if(timeBtwShots <= 0 && isCharged){
             if(Input.GetMouseButtonDown(0)) {
                 Instantiate(projectile, shotPoint.position, transform.rotation);
                 timeBtwShots = startTimeBtwShots;
+                isCharged = false;
+                timeHeld = 0f;
             }
         }
         else{
