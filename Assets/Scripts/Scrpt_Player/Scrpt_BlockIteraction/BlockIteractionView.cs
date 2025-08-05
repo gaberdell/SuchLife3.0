@@ -40,15 +40,25 @@ namespace BlockIteraction
             stayPosition.z = destroyBlockGhost.transform.position.z;
             if (placingBlocks)
             {
+                placeBlockGhost.SetActive(true);
                 placeBlockGhost.transform.position = blockPosition + offsetVector;
             } else
             {
+                destroyBlockGhost.SetActive(true);
                 destroyBlockGhost.transform.position = stayPosition + offsetVector;
                 destroyBlockGhost.transform.rotation = destroyRotation;
             }
+        }
 
-
-
+        public void ClearGhost(bool isPlacingGhost)
+        {
+            if (isPlacingGhost)
+            {
+                placeBlockGhost.SetActive(false);
+            } else
+            {
+                destroyBlockGhost.SetActive(false);
+            }
         }
 
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
-using static UnityEngine.Rendering.DebugUI;
-using static Unity.Burst.Intrinsics.X86.Avx;
+//using static UnityEngine.Rendering.DebugUI;
+//using static Unity.Burst.Intrinsics.X86.Avx; //what are these for?
 using System;
 
 

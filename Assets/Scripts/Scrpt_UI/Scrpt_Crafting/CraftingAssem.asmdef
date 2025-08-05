@@ -1,14 +1,10 @@
 {
-    "name": "BlockIteractionAssem",
+    "name": "CraftingAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:f58aa23d71e72b14bab58999d573ff5d",
-        "GUID:a124ba4e86fff204aa29f03d87343810",
-        "GUID:e1e369f40babfaf47b5f48ace34cfd76",
-        "GUID:3d2f7f4ef350e4445b7e73ef5a8ef2c1",
-        "GUID:2a049e55224a3424f8808782c8ef48fe",
         "GUID:6504a31fc89c6d041aecc3d7be8ea4af",
-        "GUID:c3af3a7c87c0f024ea9efbc36ed1a8f4"
+        "GUID:c3af3a7c87c0f024ea9efbc36ed1a8f4",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

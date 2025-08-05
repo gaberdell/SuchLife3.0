@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   itemName: Apple
+  useFlag: 0
   icon: {fileID: 7482667652216324306, guid: c0ea8ca5db8a2a546b77c413658e15d6, type: 3}
+  tileThisPlaces: {fileID: 0}
   information:
   - This is an apple!

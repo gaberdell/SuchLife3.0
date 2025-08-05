@@ -10,13 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82f33b68939a98043bae850294612226, type: 3}
-  m_Name: Orange
+  m_Name: Blue Bricks
   m_EditorClassIdentifier: 
-  itemName: Orange
-  useFlag: 0
-  icon: {fileID: 6017262749777024526, guid: b495e3fd64314da4389f5f3922a3be2c, type: 3}
-  tileThisPlaces: {fileID: 0}
-  information:
-  - 'This is an Orange
-
-'
+  itemName: Blue Bricks
+  useFlag: 2
+  icon: {fileID: -114017585, guid: 7d776d01371ab8641b06244793b541a6, type: 3}
+  tileThisPlaces: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
+  information: []

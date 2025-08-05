@@ -128,7 +128,17 @@ public class PlayerInventory : MonoBehaviour
                 {
                     //i-1 to account for 0 being 10.
                     selectedItem = i - 1;
-                    receiveItem.HeldItem = inventory[selectedItem].item;
+                    playerInfo.HeldItem = inventory[selectedItem].item;
+                    playerInfo.heldItemIndex = selectedItem;
+                    //if selecting a blank slot
+                    if (inventory[selectedItem].isEmpty)
+                    {
+                        InputHandler.setSelectedContext(0); //0 = None
+                    }
+                    else
+                    {
+                        InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
+                    }
 
                     hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
 
@@ -309,6 +319,14 @@ public class PlayerInventory : MonoBehaviour
 
             slot.isEmpty = true;
             slot.item = null;
+
+            //also remove from player's held item if necessary
+            if (playerInfo.heldItemIndex == index)
+            {
+                InputHandler.setSelectedContext(0);
+                playerInfo.HeldItem = null;
+            }
+
         }
 
         if (slot.quantity <= 1)

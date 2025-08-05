@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Empty
   m_EditorClassIdentifier: 
   itemName: Empty
+  useFlag: 0
   icon: {fileID: 0}
+  tileThisPlaces: {fileID: 0}
   information: []

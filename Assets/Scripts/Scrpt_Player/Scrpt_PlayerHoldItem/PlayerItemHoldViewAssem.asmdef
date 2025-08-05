@@ -1,9 +1,8 @@
 {
-    "name": "PlayerInfoAssem",
+    "name": "PlayerItemHoldViewAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:6504a31fc89c6d041aecc3d7be8ea4af",
-        "GUID:0c7bfeadb3501194685851749a856672"
+        "GUID:6504a31fc89c6d041aecc3d7be8ea4af"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

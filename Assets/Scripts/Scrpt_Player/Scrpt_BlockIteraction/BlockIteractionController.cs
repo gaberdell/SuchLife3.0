@@ -71,11 +71,14 @@ namespace BlockIteraction
 
                 //only draw block placement preview when block is held
                 drawWhereHit = TileMapHelperFunc.DDARayCheck(placeTileMap, transform.position, mousePos, maxRange, out hitVal, out boolHitBlock, out listOfStepPoints);
-
                 Quaternion destroyRotation = Quaternion.Euler(0, 0, Mathf.Round((Mathf.Rad2Deg * Mathf.Atan2(transform.position.y-mousePos.y, transform.position.x - mousePos.x)) / 90f)*90f + 90f);
 
+                //will this work
+                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
+
+
                 //only draw breakable preview when tool is held
-                if (playerInfo.heldType == "Tool")
+                if (InputHandler.currSelectedContext == InputHandler.SelectedContext.Tool)
                 {
                     playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
 
@@ -87,21 +90,42 @@ namespace BlockIteraction
                         ChunkManager.SetTile(drawWhereHit, null, true);
                     }
 
-                }
-
-                //draw block preview when block is held
-
-                //Debug.Log(drawWhereHit);
-
-                if (inputHandler.IsPlacing && placingCoolDown <= 0)
+                } else
                 {
-                    placingCoolDown = placingMinCoolDown;
-                    
-                    //placeTileMap.SetTile(hitVal, tileToPlace);
-                    ChunkManager.SetTile(hitVal, tileToPlace, true);
+                    //otherwise clear breakable preview 
+                    playerBlockView.ClearGhost(false);
                 }
+                //draw block preview when block is held
+                if(InputHandler.currSelectedContext == InputHandler.SelectedContext.Block)
+                {
+                    playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, true);
 
+                    //determine block to place based on held item (TO BE IMPLEMENTED)
+                    try
+                    {
+                        tileToPlace = playerInfo.HeldItem.tileThisPlaces;
+                    }
+                    catch
+                    {
+                        Debug.Log("trying to place a block when an item without a valid tileThisPlaces attribute is selected!");
+                    }
 
+                    //only place block when block is held
+                    if (inputHandler.IsPlacing && placingCoolDown <= 0)
+                    {
+                        placingCoolDown = placingMinCoolDown;
+
+                        //placeTileMap.SetTile(hitVal, tileToPlace);
+                        ChunkManager.SetTile(hitVal, tileToPlace, true);
+
+                        //remove placed block from inventory
+                        playerInfo.player.GetComponent<PlayerInventory>().RemoveItem(playerInfo.heldItemIndex);
+                    }
+                } else
+                {
+                    //otherwise clear block place preview
+                    playerBlockView.ClearGhost(true);
+                }
 
                 placingCoolDown = Mathf.Max(placingCoolDown - Time.deltaTime, 0);
                 destroyingCoolDown = Mathf.Max(destroyingCoolDown - Time.deltaTime, 0);

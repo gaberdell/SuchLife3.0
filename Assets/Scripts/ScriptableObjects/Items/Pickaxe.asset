@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   itemName: Pickaxe
-  useFlag: Tool
+  useFlag: 1
   icon: {fileID: -5367917012095684457, guid: fb788ad12377a634f8e4906444ebf2d2, type: 3}
   tileThisPlaces: {fileID: 0}
   information: []
