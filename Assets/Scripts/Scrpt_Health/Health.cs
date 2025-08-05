@@ -1,4 +1,4 @@
-// Health.cs
+﻿// Health.cs
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,16 +23,28 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, bool applyKnockback = true)
     {
         currentHealth -= amount;
-        currentHealth = Mathf.Max(currentHealth, 0); 
+        currentHealth = Mathf.Max(currentHealth, 0);
 
         onDamageTaken?.Invoke(amount);
 
         if (showHealthText)
         {
             UpdateHealthText();
+        }
+
+        // ✅ Apply knockback only if requested
+        if (applyKnockback)
+        {
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                // Example knockback direction (improve later with attacker position)
+                Vector3 knockbackDir = (transform.position - transform.position).normalized;
+                rb.AddForce(knockbackDir * 3f, ForceMode2D.Impulse);
+            }
         }
 
         if (currentHealth <= 0)
