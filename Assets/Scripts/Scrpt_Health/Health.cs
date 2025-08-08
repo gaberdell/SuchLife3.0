@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class Health : MonoBehaviour
 {
     public int maxHealth = 100;
@@ -35,14 +36,13 @@ public class Health : MonoBehaviour
             UpdateHealthText();
         }
 
-        // ✅ Apply knockback only if requested
+        // ✅ Only apply knockback if explicitly allowed
         if (applyKnockback)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                // Example knockback direction (improve later with attacker position)
-                Vector3 knockbackDir = (transform.position - transform.position).normalized;
+                Vector3 knockbackDir = Vector3.zero; // TODO: set a proper direction
                 rb.AddForce(knockbackDir * 3f, ForceMode2D.Impulse);
             }
         }
