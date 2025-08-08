@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using NUnit.Framework.Constraints;
 using Pathfinding;
 using UnityEngine;
@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
-    [SerializeField] private AIPath path;
+    //[SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
@@ -44,7 +44,7 @@ public class Bomb : Mob
 
     void Update()
     {
-        updateKnockback(); //inherited from mob parent
+        //updateKnockback(); //inherited from mob parent
         updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
         distance = Vector2.Distance(transform.position, target.position);
@@ -71,38 +71,30 @@ public class Bomb : Mob
 
         yield return new WaitForSeconds(explosionDelay);
 
-        
         enemyCollider.isTrigger = true;
         path.enabled = false;
         animator.Play("scrombolo_bombolo_exploding");
-        // collider.radius = explosionRadius;
 
         yield return new WaitForSeconds(.35f);
 
         particles.Play();
-        //damage nearby entities on explosion
+
+        // ✅ Damage nearby entities on explosion (NO knockback)
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
-                health.TakeDamage(damage); 
+                // ✅ Pass "false" to avoid extra knockback
+                health.TakeDamage(damage, false);
             }
         }
 
-        //destroy nearby wall tiles on explosion
-        // int explosionBlockRadius = 2;
-        //get pos of tile entity is standing on
+        // Destroy nearby wall tiles on explosion
         int tileX = (int)gameObject.transform.position.x;
         int tileY = (int)gameObject.transform.position.y;
         Vector3Int bombTilePos = blockTilemap.WorldToCell(new Vector3Int(tileX, tileY, 0));
-        //erase tiles T around P
-        //XXXXTXXXX
-        //XXXTTTXXX
-        //XXTTPTTXX 
-        //XXXTTTXXX
-        //XXXXTXXXX
         int explosionBlockRadius = (int)Mathf.Ceil(explosionRadius);
         spreadToNeighbors(blockTilemap, bombTilePos.x, bombTilePos.y, null, explosionBlockRadius);
 
@@ -112,13 +104,17 @@ public class Bomb : Mob
         {
             Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
             mobHealth.onDeath?.Invoke();
+
+            // ✅ Stop all physics so body doesn’t move after death
+            OnDeath();
+
+            // Hide health bar if it still exists
+            Transform healthBar = transform.Find("HealthBar");
+            if (healthBar != null)
+                healthBar.gameObject.SetActive(false);
         }
 
         yield return new WaitForSeconds(3f);
-
-
-        // onExplode?.Invoke(collider);
-
 
         Destroy(gameObject);
     }

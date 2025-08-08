@@ -165,7 +165,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!58 &5283234298430202359
 CircleCollider2D:
@@ -300,7 +300,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyCollider: {fileID: 5283234298430202359}
-  path: {fileID: 7006902875869644995}
   animator: {fileID: 5940736215880480939}
   particles: {fileID: 1852298218644448698}
   aggroDistance: 10
@@ -5225,9 +5224,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropItems:
   - itemPrefab: {fileID: 6294790831666749654, guid: c6a123158aef95f4f80eae9df6c41cbe, type: 3}
-    dropChance: 0.5
+    dropChance: 0
   - itemPrefab: {fileID: 5149180284610993495, guid: 742451511d9b6fa46873d230b9bca20d, type: 3}
-    dropChance: 0.5
+    dropChance: 1
 --- !u!1 &946024941618545243
 GameObject:
   m_ObjectHideFlags: 0
