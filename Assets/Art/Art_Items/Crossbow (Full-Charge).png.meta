@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6638252ccebcb47ad9b1a23c5a5a3e55
+guid: 9386e4cd2da31494e8ab07ffe916f4c1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7349563376270216815
-    second: Arrow copy_0
+      213: -8394096309387777244
+    second: Crossbow-Copy (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Arrow copy_0
+      name: Crossbow-Copy (1)_0
       rect:
         serializedVersion: 2
-        x: 10
+        x: 123
         y: 0
-        width: 12
-        height: 32
+        width: 1676
+        height: 1675
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6e8ec873f4eef560800000000000000
-      internalID: 7349563376270216815
+      spriteID: 42b268461ed228b80800000000000000
+      internalID: -8394096309387777244
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Arrow copy_0: 7349563376270216815
+      Crossbow-Copy (1)_0: -8394096309387777244
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

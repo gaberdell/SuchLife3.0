@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Crossbow : MonoBehaviour
 {
     public float offset; //allows weapon to align regardless
     //of the weapon sprite's orientation 
