@@ -1,3 +1,16 @@
 {
-	"name": "HealthAssem"
+    "name": "HealthAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6504a31fc89c6d041aecc3d7be8ea4af"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
