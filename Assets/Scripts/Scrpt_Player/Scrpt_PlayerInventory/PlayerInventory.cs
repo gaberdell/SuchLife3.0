@@ -109,6 +109,8 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < hotbarSize+1; i++)
         {
+   
+            
             if (Input.GetKeyDown(i.ToString())) // Check if a number key is pressed
             {
 
@@ -208,7 +210,7 @@ public class PlayerInventory : MonoBehaviour
             //make quantity match inventory data
             Transform textChild = panel.transform.GetChild(0); // Get the quantity object
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
-            if (inventory[i].quantity == 0) tmp.text = "";
+            if (inventory[i].quantity <= 1) tmp.text = "";
             else tmp.text = inventory[i].quantity.ToString();
             //match icons
             try
@@ -236,25 +238,30 @@ public class PlayerInventory : MonoBehaviour
                 slot.quantity++; 
 
                  if(isInHotbar < hotbarSize){
-                    //Change color to teal just for debugging, so we know it's working.
-                   //hotbar[isInHotbar].GetComponent<Image>().color = new Color32(50,255,225,100);
-                  //hotbar[isInHotbar].GetComponent<Image>().sprite = slot.item.icon; 
+                    
 
                    Transform textChild = hotbar[isInHotbar].transform.GetChild(0); // Get the first child
                    TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
                    tmp.text = slot.quantity.ToString(); 
+                   if(slot.quantity <= 1)
+                   {
+                        tmp.text = "";
+                   }
 
                 }
 
-               // fullInv[isInHotbar].GetComponent<Image>().color = new Color32(50,255,225,100);
                   fullInv[isInHotbar].GetComponent<Image>().sprite = slot.item.icon; 
 
                    Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(0); // Get the first child
                    TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
-                   tmp_inv.text = slot.quantity.ToString(); 
+                   tmp_inv.text = slot.quantity.ToString();
+                    if (slot.quantity <= 1)
+                    {
+                        tmp_inv.text = "";
+                    }
 
 
-    
+
                 return; 
             }
             isInHotbar++;

@@ -34795,6 +34795,10 @@ PrefabInstance:
       propertyPath: playerBlockView
       value: 
       objectReference: {fileID: 1337005327}
+    - target: {fileID: 3652674543495926234, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      propertyPath: droppedBlockItem
+      value: 
+      objectReference: {fileID: 5149180284610993495, guid: b4799d7f0a931c447a345539920b0c2b, type: 3}
     - target: {fileID: 7718391250072885259, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: showHealthText
       value: 1
@@ -34805,7 +34809,7 @@ PrefabInstance:
       objectReference: {fileID: 8959118705387878318, guid: f24689c79e71c7a488fc40e5312170fd, type: 3}
     - target: {fileID: 8132244114368443803, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

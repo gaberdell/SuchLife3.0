@@ -36,6 +36,9 @@ namespace BlockIteraction
 
         Vector3Int drawWhereHit;
 
+        [SerializeField]
+        GameObject droppedBlockItem;
+
         void Start()
         {
             inputHandler = InputHandler.Instance;
@@ -87,7 +90,15 @@ namespace BlockIteraction
                     {
                         destroyingCoolDown = destroyingMinCoolDown;
                         //placeTileMap.SetTile(drawWhereHit, null);
+                        //create block item object to pick up (slap in fix for demo; would use a droppable item class in the future)
+                        //check if a block was actually destroyed
+                        if (ChunkManager.GetTile(drawWhereHit, true) != null)
+                        {
+                            Instantiate(droppedBlockItem, drawWhereHit + new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity);
+                        }
                         ChunkManager.SetTile(drawWhereHit, null, true);
+
+                        
                     }
 
                 } else
