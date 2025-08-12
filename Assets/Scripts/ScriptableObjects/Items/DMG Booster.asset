@@ -17,6 +17,6 @@ MonoBehaviour:
   tileThisPlaces: {fileID: 0}
   information: []
   healAmount: 0
-  damageBoostAmount: 100
+  damageBoostAmount: 1000
   boostDuration: 15
   description: 

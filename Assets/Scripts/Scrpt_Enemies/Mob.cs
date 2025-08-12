@@ -4,6 +4,7 @@ using static UnityEngine.GraphicsBuffer;
 using System.Collections;     // For IEnumerator
 using Pathfinding;
 
+
 public class Mob : MonoBehaviour
 {
     protected GameObject objectInScene; // Can be optional if you just use transform
@@ -73,14 +74,23 @@ public class Mob : MonoBehaviour
 
     public void OnDeath()
     {
+        if (isDead) return;
         isDead = true;
+
         if (path != null)
             path.enabled = false;
+
         if (rb != null)
         {
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
-            rb.isKinematic = true;  // freeze physics
+
+            // Freeze all Rigidbody2D motion and rotation to avoid any movement
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
+            // Optional: disable the Rigidbody2D component if needed
+            // rb.simulated = false; 
+            // or rb.enabled = false;
         }
     }
 }

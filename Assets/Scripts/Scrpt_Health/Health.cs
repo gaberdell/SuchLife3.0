@@ -26,31 +26,39 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(int amount, bool applyKnockback = true)
     {
+        Debug.Log($"{gameObject.name} TakeDamage called. amount={amount}, applyKnockback={applyKnockback}, currentHealth={currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log($"{gameObject.name} is already dead. Skipping damage/knockback.");
+            return; // Prevent damage or knockback after death
+        }
+
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
         onDamageTaken?.Invoke(amount);
 
         if (showHealthText)
-        {
             UpdateHealthText();
-        }
 
-        // ✅ Only apply knockback if explicitly allowed
-        if (applyKnockback)
+        if (applyKnockback && currentHealth > 0)
         {
+            Debug.Log($"{gameObject.name} Applying knockback.");
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                Vector3 knockbackDir = Vector3.zero; // TODO: set a proper direction
+                Vector3 knockbackDir = Vector3.zero; // TODO: set proper direction
                 rb.AddForce(knockbackDir * 3f, ForceMode2D.Impulse);
             }
         }
+        else
+        {
+            Debug.Log($"{gameObject.name} Skipping knockback. applyKnockback={applyKnockback}, currentHealth={currentHealth}");
+        }
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     public void Heal(int amount)
