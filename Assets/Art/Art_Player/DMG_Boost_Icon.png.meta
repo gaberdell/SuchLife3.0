@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DMG_Boost_Icon_0: 166360746850584032
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

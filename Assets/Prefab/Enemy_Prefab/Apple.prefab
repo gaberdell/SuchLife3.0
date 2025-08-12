@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5049966693821918943}
   - component: {fileID: 5134714998127479796}
   - component: {fileID: 6082381911061552797}
-  - component: {fileID: 3129035712410032768}
+  - component: {fileID: 5017947086926232202}
   m_Layer: 0
   m_Name: Apple
   m_TagString: Untagged
@@ -125,7 +125,7 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
---- !u!114 &3129035712410032768
+--- !u!114 &5017947086926232202
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,10 +134,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5149180284610993495}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3d0e92eb67203545adfbdfc6d5d431f, type: 3}
+  m_Script: {fileID: 11500000, guid: 0aa3cab92e9e5bd46a75374b698f9c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 5a00c28d538e23b48b9cf2bde9de0bc8, type: 2}
   pullRadius: 2
   pickupRadius: 0.3
-  moveSpeed: 20
+  moveSpeed: 10
