@@ -476,6 +476,13 @@ public class PlayerInventory : MonoBehaviour
                 {
                     playerAttack.ApplyDamageBoost(consumable.damageBoostAmount, consumable.boostDuration);
                     used = true;
+
+                    // Show MG Boost Icon for the buff duration
+                    PlayerBuffUI buffUI = GetComponent<PlayerBuffUI>();
+                    if (buffUI != null)
+                    {
+                        buffUI.ShowMgBoostIcon(consumable.boostDuration);
+                    }
                 }
             }
 

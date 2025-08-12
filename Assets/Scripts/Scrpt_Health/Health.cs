@@ -1,6 +1,7 @@
-// Health.cs
+﻿// Health.cs
 using UnityEngine;
 using UnityEngine.Events;
+
 
 public class Health : MonoBehaviour
 {
@@ -23,16 +24,27 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, bool applyKnockback = true)
     {
         currentHealth -= amount;
-        currentHealth = Mathf.Max(currentHealth, 0); 
+        currentHealth = Mathf.Max(currentHealth, 0);
 
         onDamageTaken?.Invoke(amount);
 
         if (showHealthText)
         {
             UpdateHealthText();
+        }
+
+        // ✅ Only apply knockback if explicitly allowed
+        if (applyKnockback)
+        {
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                Vector3 knockbackDir = Vector3.zero; // TODO: set a proper direction
+                rb.AddForce(knockbackDir * 3f, ForceMode2D.Impulse);
+            }
         }
 
         if (currentHealth <= 0)
