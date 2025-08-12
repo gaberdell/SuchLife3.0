@@ -24,8 +24,9 @@ public class Crossbow : MonoBehaviour
 
     private void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        if (sr != null && idleSprite != null) sr.sprite = idleSprite;
+        //sr = GetComponent<SpriteRenderer>();
+        sr = GameObject.Find("ViewInHand").GetComponent<SpriteRenderer>();
+        //if (sr != null && idleSprite != null) sr.sprite = idleSprite;
     }
 
     // Update is called once per frame
