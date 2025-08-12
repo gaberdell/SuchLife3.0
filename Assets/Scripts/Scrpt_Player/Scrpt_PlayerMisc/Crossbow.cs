@@ -31,6 +31,11 @@ public class Crossbow : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        //only handle when weapon is selected
+        if(InputHandler.currSelectedContext != InputHandler.SelectedContext.Weapon)
+        {
+            return;
+        }
         //Rotates weapon to follow mouse cursor
         Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         float rotZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;

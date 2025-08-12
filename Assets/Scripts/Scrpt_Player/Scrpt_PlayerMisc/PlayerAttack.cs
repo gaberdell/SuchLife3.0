@@ -29,7 +29,15 @@ public class PlayerAttack : MonoBehaviour
 
         if (InputHandler.Instance.IsAttacking && Time.time >= _lastAttackTime + attackCooldown)
         {
-            StartAttack();
+            //if holding a weapon, use that instead
+            if (InputHandler.currSelectedContext == InputHandler.SelectedContext.Weapon) 
+            {
+                //look at item name
+            } else
+            {
+                StartAttack();
+
+            }
         }
     }
 
