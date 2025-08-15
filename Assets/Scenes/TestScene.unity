@@ -7672,7 +7672,7 @@ MonoBehaviour:
   offset: -90
   projectile: {fileID: 7840616202947656859, guid: fb0990f8d1ac54421b170a1a617cc61a, type: 3}
   shotPoint: {fileID: 204293634}
-  timeToFullCharge: 0
+  timeToFullCharge: 0.5
   idleSprite: {fileID: -6337030637045467450, guid: b03f95bcc95f44ec68ef0ec2f0b73356, type: 3}
   chargingSprite: {fileID: -7164231919537391237, guid: 2da2df3d8382d4c5699e08a7468a502b, type: 3}
   chargedSprite: {fileID: -5394934336488586490, guid: 94b96d7bfc1e84d32b3a283ba1c6bc3c, type: 3}
