@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Orange
   m_EditorClassIdentifier: 
   itemName: Orange
+  useFlag: 0
   icon: {fileID: 6017262749777024526, guid: b495e3fd64314da4389f5f3922a3be2c, type: 3}
+  tileThisPlaces: {fileID: 0}
   information:
   - 'This is an Orange
 

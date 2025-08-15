@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Item : ScriptableObject
 {
     public string itemName;
+    public int useFlag = 0; //corresponds to inputhandler enum; 0 = None, 1 = Tool, 2 = Block, 3 = Consumable
     public Sprite icon;
     public TileBase tileThisPlaces;
 

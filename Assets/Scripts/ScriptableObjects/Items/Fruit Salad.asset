@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Fruit Salad
   m_EditorClassIdentifier: 
   itemName: Fruit Salad
+  useFlag: 0
   icon: {fileID: -306787472437928336, guid: 7cad9827c0428a6448a5f0fe45af6d7f, type: 3}
+  tileThisPlaces: {fileID: 0}
   information: []

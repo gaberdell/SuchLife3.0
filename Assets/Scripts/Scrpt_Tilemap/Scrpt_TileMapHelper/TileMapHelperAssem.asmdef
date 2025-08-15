@@ -1,3 +1,16 @@
 {
-	"name": "TileMapHelperAssem"
+    "name": "TileMapHelperAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d2f7f4ef350e4445b7e73ef5a8ef2c1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

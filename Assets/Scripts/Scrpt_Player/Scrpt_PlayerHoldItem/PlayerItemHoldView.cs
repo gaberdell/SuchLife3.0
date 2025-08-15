@@ -4,7 +4,7 @@ public class PlayerItemHoldView : MonoBehaviour
 {
     [Header("Config")]
     [SerializeField]
-    SpriteRenderer currentlyHeld;
+    SpriteRenderer currentlyHeld; 
 
     [SerializeField]
     Quaternion normalRotation;
@@ -17,6 +17,7 @@ public class PlayerItemHoldView : MonoBehaviour
 
     private void OnEnable()
     {
+        currentlyHeld = gameObject.GetComponent<SpriteRenderer>();
         //EventManager.PlayerHandUpdate += playerHandUpdate;
     }
 
@@ -25,12 +26,17 @@ public class PlayerItemHoldView : MonoBehaviour
         //EventManager.PlayerHandUpdate -= playerHandUpdate;
     }
 
-    private void playerHandUpdate(Item newItem)
+    public void playerHandUpdate(Item newItem)
     {
         CurrentlyHeldItem = newItem;
 
         //switch rotation when that gets added
-
-        currentlyHeld.sprite = CurrentlyHeldItem.icon;
+        if (newItem != null)
+        {
+            currentlyHeld.sprite = CurrentlyHeldItem.icon;
+        } else
+        {
+            currentlyHeld.sprite = null;
+        }
     }
 }

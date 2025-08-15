@@ -114,7 +114,7 @@ public class RenderDungeon : MonoBehaviour
         ymax += opts.dungeonOffsetY + 10;
 
         //set fill tile for dungeon chunks
-        ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile);
+        ChunkManager.setChunksFill(xmin, ymin, xmax - xmin, ymax - ymin, wallTile, groundTiles);
 
         //now fill ground tilemap so player doesnt see void when they break walls
         //float scale = .01f;
@@ -317,7 +317,7 @@ public class RenderDungeon : MonoBehaviour
                         int tileX = prevRoom.drawXPos + offsetX + x + dungeonOffsetX - i;
                         int tileY = prevRoom.drawYPos + offsetY + y + dungeonOffsetY - i;
                         //skip null tiles
-                        if (groundTilemap.GetTile(new Vector3Int(tileX, tileY, 0)) == null) continue;
+                        if (ChunkManager.GetTile(new Vector3Int(tileX, tileY, 0), false) == null) continue;
                         if (hasSpecificNeighbor(groundTilemap, tileX, tileY, null))
                         {
                             //tile has null neighbor; tile is on the border
@@ -330,21 +330,22 @@ public class RenderDungeon : MonoBehaviour
         }
     }
 
+
     void spreadToNeighbors(Tilemap tilemap, int tileX, int tileY, Tile T)
     {
         //given an xPos, yPos, tilemap, and tile, change all adjacent tiles to match the given tile
-        tilemap.SetTile(new Vector3Int(tileX + 1, tileY, 0), T);
-        tilemap.SetTile(new Vector3Int(tileX - 1, tileY, 0), T);
-        tilemap.SetTile(new Vector3Int(tileX, tileY + 1, 0), T);
-        tilemap.SetTile(new Vector3Int(tileX, tileY - 1, 0), T);
+        ChunkManager.SetTile(new Vector3Int(tileX + 1, tileY, 0), T, false);
+        ChunkManager.SetTile(new Vector3Int(tileX - 1, tileY, 0), T, false);
+        ChunkManager.SetTile(new Vector3Int(tileX, tileY + 1, 0), T, false);
+        ChunkManager.SetTile(new Vector3Int(tileX, tileY - 1, 0), T, false);
     }
 
     bool hasSpecificNeighbor(Tilemap tilemap, int tileX, int tileY, Tile targetT)
     {
-        if (tilemap.GetTile(new Vector3Int(tileX + 1, tileY, 0)) == targetT) return true;
-        if (tilemap.GetTile(new Vector3Int(tileX - 1, tileY, 0)) == targetT) return true;
-        if (tilemap.GetTile(new Vector3Int(tileX, tileY + 1, 0)) == targetT) return true;
-        if (tilemap.GetTile(new Vector3Int(tileX, tileY - 1, 0)) == targetT) return true;
+        if (ChunkManager.GetTile(new Vector3Int(tileX + 1, tileY, 0), false) == targetT) return true;
+        if (ChunkManager.GetTile(new Vector3Int(tileX - 1, tileY, 0), false) == targetT) return true;
+        if (ChunkManager.GetTile(new Vector3Int(tileX, tileY + 1, 0), false) == targetT) return true;
+        if (ChunkManager.GetTile(new Vector3Int(tileX, tileY - 1, 0), false) == targetT) return true;
         return false;
     }
 

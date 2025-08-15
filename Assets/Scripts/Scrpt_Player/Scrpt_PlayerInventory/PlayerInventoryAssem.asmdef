@@ -1,0 +1,22 @@
+{
+    "name": "PlayerInventoryAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6504a31fc89c6d041aecc3d7be8ea4af",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:2a049e55224a3424f8808782c8ef48fe",
+        "GUID:f58aa23d71e72b14bab58999d573ff5d",
+        "GUID:de1d1e557f03d7545b983187a46f44ac",
+        "GUID:ee2ce899962f8af4e98552079f3352c2",
+        "GUID:36ad876dd12c4c24fbe5b8b11e8cfd6c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

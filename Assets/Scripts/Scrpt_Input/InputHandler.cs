@@ -61,6 +61,10 @@ public class InputHandler : MonoBehaviour
     public bool IsMouseEnabled { get; private set; }
     public static InputHandler Instance { get; private set; }
 
+    //handling for context-sensitive use; checked against in scripts that perform use-actions with the attack key (or other)
+    public enum SelectedContext {None = 0, Tool = 1, Block = 2, Consumable = 3, Weapon = 4}
+    static public SelectedContext currSelectedContext { get; private set; }
+
     private void Awake()
     {
 
@@ -212,6 +216,11 @@ public class InputHandler : MonoBehaviour
 
             Debug.Log("OnSceneUnloaded: " + current);
         }
+    }
+
+    static public void setSelectedContext(int itemFlag)
+    {
+        currSelectedContext = (SelectedContext) itemFlag; //casting int to enum equivalence
     }
 
 }

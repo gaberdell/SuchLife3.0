@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DMG Booster
   m_EditorClassIdentifier: 
   itemName: DMG Booster
+  useFlag: 3
   icon: {fileID: -4852239664572004155, guid: 0e8c8116e5f6d6c4a88fbf3022060c58, type: 3}
   tileThisPlaces: {fileID: 0}
   information: []

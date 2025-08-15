@@ -54,7 +54,7 @@ public class Mob : MonoBehaviour
     {
         if (rb != null)
         {
-            Debug.Log($"Current velocity: {rb.linearVelocity}");
+            //Debug.Log($"Current velocity: {rb.linearVelocity}");
         }
     }
 
