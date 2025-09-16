@@ -1,0 +1,10 @@
+is_global = true
+build_property.TargetFramework = net10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = GraphUpdater
+build_property.ProjectDir = /Users/nicholasbilsborrow/UnityProjects/SuchLife3.0/Assets/Scripts/Scrpt_Astar/
