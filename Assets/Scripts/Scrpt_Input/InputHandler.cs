@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.iOS;
+using UnityEngine.SceneManagement;
 using UnityEngine.tvOS;
 
 //Code from this fantastic tutorial by SpeedTutor
@@ -58,12 +59,15 @@ public class InputHandler : MonoBehaviour
     public bool EscapeTriggered { get; private set; }
 
     public bool IsMouseEnabled { get; private set; }
-
-
     public static InputHandler Instance { get; private set; }
+
+    //handling for context-sensitive use; checked against in scripts that perform use-actions with the attack key (or other)
+    public enum SelectedContext {None = 0, Tool = 1, Block = 2, Consumable = 3, Weapon = 4}
+    static public SelectedContext currSelectedContext { get; private set; }
 
     private void Awake()
     {
+
 
         if (Instance == null)
         {
@@ -71,8 +75,17 @@ public class InputHandler : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else
+        {
             Destroy(gameObject);
+            //Instance.moveAction.Enable();
+            return;
+        }
 
+        setUpAllActions();
+    }
+
+    private void setUpAllActions()
+    {
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         attackAction = playerControls.FindActionMap(actionMapName).FindAction(attack);
@@ -88,32 +101,56 @@ public class InputHandler : MonoBehaviour
         registerAllInitialDevices();
     }
 
-    private void OnEnable()
+    private void enableAllActions()
     {
         moveAction.Enable();
         sprintAction.Enable();
-        attackAction.Enable(); 
+        attackAction.Enable();
         placeAction.Enable();
         previousAction.Enable();
         nextAction.Enable();
         interactAction.Enable();
         escapeAction.Enable();
+    }
 
-        InputSystem.onDeviceChange += onDeviceChange;
+    private void OnEnable()
+    {
+        if (moveAction != null)
+        {
+            enableAllActions();
+
+            InputSystem.onDeviceChange += onDeviceChange;
+            SceneManager.sceneUnloaded += regenerateActions;
+        }
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        sprintAction.Disable();
-        attackAction.Disable();
-        placeAction.Disable();
-        previousAction.Disable();
-        nextAction.Disable();
-        interactAction.Disable();
-        escapeAction.Disable();
+        if (moveAction != null)
+        {
+            moveAction.Disable();
+            sprintAction.Disable();
+            attackAction.Disable();
+            placeAction.Disable();
+            previousAction.Disable();
+            nextAction.Disable();
+            interactAction.Disable();
+            escapeAction.Disable();
 
-        InputSystem.onDeviceChange -= onDeviceChange;
+            InputSystem.onDeviceChange -= onDeviceChange;
+            SceneManager.sceneUnloaded -= regenerateActions;
+        }
+    }
+
+
+    private void LateUpdate()
+    {
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Debug.Log("Is Ui Enabled : " + playerControls.FindActionMap("UI").enabled);
+            Debug.Log("Is Player Map Enabled : " + playerControls.FindActionMap(actionMapName).enabled);
+        }
     }
 
     private void registerInputActions()
@@ -165,6 +202,25 @@ public class InputHandler : MonoBehaviour
     public Vector2 GetMousePos()
     {
         return Mouse.current.position.ReadValue();
+    }
+
+    //Re register things if a PlayerInput was deleted
+    private void regenerateActions(Scene current)
+    {
+        if (!playerControls.FindActionMap(actionMapName).enabled)
+        {
+            playerControls.FindActionMap(actionMapName).Enable();
+            setUpAllActions();
+            enableAllActions();
+
+
+            Debug.Log("OnSceneUnloaded: " + current);
+        }
+    }
+
+    static public void setSelectedContext(int itemFlag)
+    {
+        currSelectedContext = (SelectedContext) itemFlag; //casting int to enum equivalence
     }
 
 }

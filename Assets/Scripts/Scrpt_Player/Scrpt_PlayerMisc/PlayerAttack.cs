@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -14,13 +15,29 @@ public class PlayerAttack : MonoBehaviour
 
     private float _lastAttackTime;
     private bool _isAttacking;
-    public bool IsAttacking => _isAttacking; 
+    public bool IsAttacking => _isAttacking;
+    private float additiveDamageBoost = 0f;
+
 
     private void Update()
     {
+        if (InputHandler.Instance == null)
+        {
+            Debug.LogError("InputHandler.Instance is null!");
+            return;
+        }
+
         if (InputHandler.Instance.IsAttacking && Time.time >= _lastAttackTime + attackCooldown)
         {
-            StartAttack();
+            //if holding a weapon, use that instead
+            if (InputHandler.currSelectedContext == InputHandler.SelectedContext.Weapon) 
+            {
+                //look at item name
+            } else
+            {
+                StartAttack();
+
+            }
         }
     }
 
@@ -38,6 +55,19 @@ public class PlayerAttack : MonoBehaviour
         _isAttacking = false;
     }
 
+    public void ApplyDamageBoost(float amount, float duration)
+    {
+        additiveDamageBoost = amount;
+        Debug.Log($"Applied +{amount} damage boost for {duration} seconds.");
+        Invoke(nameof(RemoveDamageBoost), duration);
+    }
+
+    private void RemoveDamageBoost()
+    {
+        additiveDamageBoost = 0f;
+        Debug.Log("Damage boost ended.");
+    }
+
     private void DetectHits()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
@@ -47,10 +77,25 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            if (enemy.TryGetComponent<Health>(out var health))
+            //only attack living entities
+            if (enemy.TryGetComponent<Mob>(out var mob))
             {
-                health.TakeDamage(attackDamage);
+                if (enemy.TryGetComponent<Health>(out var health))
+                {
+                    int boostedDamage = Mathf.RoundToInt(attackDamage + additiveDamageBoost);
+                    health.TakeDamage(boostedDamage);
+                }
+                //apply a knockback force to the mob
+                //read force from some value associated with the attack or weapon
+                float knockbackForce = 10f;
+                Vector2 knockbackDir = (enemy.transform.position - transform.position).normalized;
+                Vector2 knockbackVector = knockbackDir * knockbackForce;
+
+                mob.applyKnockback(knockbackVector, knockbackForce);
+                //Debug.Log("push");
+                //Debug.Log(knockbackVector);
             }
+
         }
     }
 

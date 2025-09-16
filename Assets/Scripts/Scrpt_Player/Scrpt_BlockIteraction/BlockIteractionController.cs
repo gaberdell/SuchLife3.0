@@ -36,6 +36,9 @@ namespace BlockIteraction
 
         Vector3Int drawWhereHit;
 
+        [SerializeField]
+        GameObject droppedBlockItem;
+
         void Start()
         {
             inputHandler = InputHandler.Instance;
@@ -69,26 +72,70 @@ namespace BlockIteraction
                 bool boolHitBlock;
 
 
+                //only draw block placement preview when block is held
                 drawWhereHit = TileMapHelperFunc.DDARayCheck(placeTileMap, transform.position, mousePos, maxRange, out hitVal, out boolHitBlock, out listOfStepPoints);
-
                 Quaternion destroyRotation = Quaternion.Euler(0, 0, Mathf.Round((Mathf.Rad2Deg * Mathf.Atan2(transform.position.y-mousePos.y, transform.position.x - mousePos.x)) / 90f)*90f + 90f);
 
+                //will this work
+                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
 
-                playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null);
 
-                //Debug.Log(drawWhereHit);
-
-                if (inputHandler.IsPlacing && placingCoolDown <= 0)
+                //only draw breakable preview when tool is held
+                if (InputHandler.currSelectedContext == InputHandler.SelectedContext.Tool)
                 {
-                    placingCoolDown = placingMinCoolDown;
-                    
-                    placeTileMap.SetTile(hitVal, tileToPlace);
+                    playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
+
+                    //only break item when tool is held
+                    if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
+                    {
+                        destroyingCoolDown = destroyingMinCoolDown;
+                        //placeTileMap.SetTile(drawWhereHit, null);
+                        //create block item object to pick up (slap in fix for demo; would use a droppable item class in the future)
+                        //check if a block was actually destroyed
+                        if (ChunkManager.GetTile(drawWhereHit, true) != null)
+                        {
+                            Instantiate(droppedBlockItem, drawWhereHit + new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity);
+                        }
+                        ChunkManager.SetTile(drawWhereHit, null, true);
+
+                        
+                    }
+
+                } else
+                {
+                    //otherwise clear breakable preview 
+                    playerBlockView.ClearGhost(false);
                 }
-
-                if (inputHandler.IsAttacking && destroyingCoolDown <= 0)
+                //draw block preview when block is held
+                if(InputHandler.currSelectedContext == InputHandler.SelectedContext.Block)
                 {
-                    destroyingCoolDown = destroyingMinCoolDown;
-                    placeTileMap.SetTile(drawWhereHit, null);
+                    playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, true);
+
+                    //determine block to place based on held item (TO BE IMPLEMENTED)
+                    try
+                    {
+                        tileToPlace = playerInfo.HeldItem.tileThisPlaces;
+                    }
+                    catch
+                    {
+                        Debug.Log("trying to place a block when an item without a valid tileThisPlaces attribute is selected!");
+                    }
+
+                    //only place block when block is held
+                    if (inputHandler.IsPlacing && placingCoolDown <= 0)
+                    {
+                        placingCoolDown = placingMinCoolDown;
+
+                        //placeTileMap.SetTile(hitVal, tileToPlace);
+                        ChunkManager.SetTile(hitVal, tileToPlace, true);
+
+                        //remove placed block from inventory
+                        playerInfo.player.GetComponent<PlayerInventory>().RemoveItem(playerInfo.heldItemIndex);
+                    }
+                } else
+                {
+                    //otherwise clear block place preview
+                    playerBlockView.ClearGhost(true);
                 }
 
                 placingCoolDown = Mathf.Max(placingCoolDown - Time.deltaTime, 0);

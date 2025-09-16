@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] 
     Rigidbody2D rigidBody;
 
+    
+
     [Header("Rotation")]
     [SerializeField]
     float rotationSpeed = 360.0f;
@@ -42,6 +44,9 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 previousPosition;
     List<ContactPoint2D> contactPoints;
+
+    //for chunk handling
+    Vector2 chunkPos;
 
     void Start()
     {
@@ -65,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
 
         handleMovement();
         handleRotation();
+        handleChunkPosition();
         //handleCollision();
 
         /*if (inputHandler.InteractTriggered)
@@ -182,5 +188,17 @@ public class PlayerMovement : MonoBehaviour
         }
         Debug.DrawLine(debugPoint, debugPoint + new Vector3(1f,0f), Color.red);
         Debug.DrawLine(transform.position, transform.position + new Vector3(1f, 0f), Color.red);
+    }
+
+    private void handleChunkPosition()
+    {
+        Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(transform.position);
+        //Debug.Log(currChunkPos);
+        //if detect a change in chunks
+        if(currChunkPos != chunkPos)
+        {
+            ChunkManager.renderPlayerChunks(transform.position);
+            chunkPos = currChunkPos;
+        }
     }
 }

@@ -34,13 +34,31 @@ namespace BlockIteraction
 
         Vector3 offsetVector = new Vector3(0.5f, 0.5f);
 
-        public void SetLookAtObject(Vector3 stayPosition, Vector3 blockPosition, Quaternion destroyRotation, Sprite placeSprite)
+        public void SetLookAtObject(Vector3 stayPosition, Vector3 blockPosition, Quaternion destroyRotation, Sprite placeSprite, bool placingBlocks)
         {
+            //decide whether to display place preview or destroy preview based on input
             stayPosition.z = destroyBlockGhost.transform.position.z;
-            destroyBlockGhost.transform.position = stayPosition + offsetVector;
-            destroyBlockGhost.transform.rotation = destroyRotation;
-            placeBlockGhost.transform.position = blockPosition + offsetVector;
+            if (placingBlocks)
+            {
+                placeBlockGhost.SetActive(true);
+                placeBlockGhost.transform.position = blockPosition + offsetVector;
+            } else
+            {
+                destroyBlockGhost.SetActive(true);
+                destroyBlockGhost.transform.position = stayPosition + offsetVector;
+                destroyBlockGhost.transform.rotation = destroyRotation;
+            }
+        }
 
+        public void ClearGhost(bool isPlacingGhost)
+        {
+            if (isPlacingGhost)
+            {
+                placeBlockGhost.SetActive(false);
+            } else
+            {
+                destroyBlockGhost.SetActive(false);
+            }
         }
 
 
