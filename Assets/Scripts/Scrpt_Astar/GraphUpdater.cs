@@ -13,7 +13,7 @@ public class GraphUpdater : MonoBehaviour
 
     void OnDisable()
     {
-        Tilemap.tilemapTileChanged -= OnTilemapChanged;
+        Tilemap.tilemapTileChanged -= OnTilemapChanged; 
     }
 
     void OnTilemapChanged(Tilemap tilemap, Tilemap.SyncTile[] ts)
