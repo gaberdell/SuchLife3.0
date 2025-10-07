@@ -7,7 +7,6 @@ using UnityEngine.Tilemaps;
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
-    //[SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
