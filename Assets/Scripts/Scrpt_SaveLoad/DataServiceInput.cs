@@ -19,14 +19,8 @@ public class DataServiceInput : MonoBehaviour
   void Start() { }
 
   // for valid key presses has been entered, returns KeyCode X from CTRL+X, KeyCode.None for invalid key presses
-  private KeyCode inputDetector() {
-    if (Input.GetKey(LC)) {
-           if (Input.GetKey(F)) return F;
-      else if (Input.GetKey(X)) return X;
-      else if (Input.GetKey(V)) return V;
-    }
-
-    return KeyCode.None; // no key has been pressed
+  private bool inputDetector() {
+    return Input.GetKey(LC) && (Input.GetKeyDown(F) || Input.GetKeyDown(X) || Input.GetKeyDown(V));
   }
 
   // returns whether a valid key press has been released
@@ -35,18 +29,19 @@ public class DataServiceInput : MonoBehaviour
   }
 
   // testing DataService based on key input
-  private void testDataService(KeyCode keyPress) {
+  private void testDataService() {
+        Debug.Log("Hello!!");
     Time.timeScale = 0f; // pausing game
     string savePath = DataService.GetSavePath() + "save";
 
     // fetch save files
-    if (keyPress == F) DataService.Fetch();
+    if (Input.GetKeyDown(F)) DataService.Fetch();
 
     // save game state
-    else if (keyPress == X) DataService.SaveCurr();
+    else if (Input.GetKeyDown(X)) DataService.SaveCurr();
 
     // load game 
-    else if (keyPress == V) {
+    else if (Input.GetKeyDown(V)) {
       List<SaveInfo> list = DataService.Fetch();
       if (list.Count == 0) {
         Debug.LogError("DataServiceInput: No save files found!");
@@ -60,13 +55,8 @@ public class DataServiceInput : MonoBehaviour
 
   void Update() {
 
-    KeyCode keyPress = inputDetector();
-    if (!blocking && keyPress != KeyCode.None) {
-      blocking = true;
-      testDataService(keyPress);
+    if (inputDetector()) {
+        testDataService();
     }
-
-    else if (blocking && keyReleased()) { blocking = false; }
-
   }
 }
