@@ -13,9 +13,10 @@ public struct SaveInfo {
 }
 public class DataService {
 
-
-
     const string SAVES_FOLDER_NAME = "Saves";
+    const string BASIC_SAVE_NAME = "Basic.json";
+    const string WORLD_DATA_SAVE_NAME = "WorldData.save";
+    const string ENTITY_SAVE_NAME = "Entity.save";
 
     private static string savePath = Application.persistentDataPath + "/" + SAVES_FOLDER_NAME + "/";
     private static int savePathLen = savePath.Length;
@@ -25,37 +26,21 @@ public class DataService {
 
     private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
-    // returns name, date (in that order) on all saves
+    // returns basic info : name, date (in that order) on all saves
     public static List<SaveInfo> Fetch() {
         Directory.CreateDirectory(savePath); // automatically create Saves\ directory if it doesn't exist
 
-
-        List<SaveInfo> info = new List<SaveInfo>();
+        List<SaveInfo> allBasicSaveData = new List<SaveInfo>();
+        string[] files = Directory.GetDirectories(savePath);
     
-        string[] paths = Directory.GetFiles(savePath);
+        foreach (string filePath in files)
+        {
+            string fileText = File.ReadAllText(filePath + "/" + BASIC_SAVE_NAME);
 
-    
-        Debug.Log("DataService: Fetched:");
-        if (paths.Length == 0)
-            Debug.Log("DataService: (none)"); // nothing in the Saves\ directory
-    
-        foreach (string path in paths) {
-            SaveInfo saveInfo = new SaveInfo();
-      
-            saveInfo.path = path;
-            saveInfo.name = path.Substring(savePathLen); // TODO: save world name separately
-            saveInfo.lastModified = Directory.GetLastWriteTime(path);
-
-            Debug.Log("DataService: saveInfo.path: " + saveInfo.path);
-            Debug.Log("DataService: saveInfo.name: " + saveInfo.name);
-            Debug.Log("DataService: saveInfo.lastModified: " + saveInfo.lastModified);
-
-            info.Add(saveInfo);
+            SaveInfo basicSaveInfo = JsonUtility.FromJson<SaveInfo>(fileText);
         }
 
-        // TODO: sort by time
-
-        return info;
+        return allBasicSaveData;
     }
 
   // converts and returns the lowercase character of c
@@ -66,49 +51,101 @@ public class DataService {
         return c; // not uppercase letter; just return c
     }
 
-  // given a world name, converts all characters to lowercase and replaces spaces with underscores
-    private static string toSaveName(string worldName) {
+    private static string toFileFormat(string name) {
         string saveName = "";
-    
+
         // converting...
         int len = worldName.Length;
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+        {
             if (worldName[i] == ' ')
                 saveName += '_';
             else
                 saveName += toLower(worldName[i]);
         }
 
-        return saveName + ".save";
+        return saveName;
+    }
+
+  // given a world name, converts all characters to lowercase and replaces spaces with underscores
+    private static string toSaveName(string worldName) {
+        return toFileFormat(worldName) + ".save";
+    }
+
+    // given a world name and directory ensures that the name is unique
+    private static string ensureUniqueName(string directory, string name)
+    {
+
+        if (Directory.Exists(directory + name))
+        {
+            uint addI = 0;
+            string newName = name + addI.ToString();
+            while (Directory.Exists(directory + newName))
+            {
+                addI++;
+
+                newName = name + addI.ToString();
+
+                if (addI == uint.MaxValue)
+                    name += "0";
+            }
+
+        return newName;
+        }
+
+        return name;
     }
 
   // creates a new save file with the given name, returns new SaveInfo struct representing the new save file
   // NOTE: will overwrite worlds with the same name
-public static SaveInfo NewSave(string worldName) {
-    Directory.CreateDirectory(savePath);
+    public static SaveInfo NewSave(string newWorldName) {
+        Directory.CreateDirectory(savePath);
+        string saveFolder;
+        string basicSave;
+        string worldSave;
+        string entitySave;
 
-    if (worldName == null || worldName.Length == 0) {
-        DataService.saveName = "unnamed.save";
-        DataService.worldName = "Unnamed World";
+        if (newWorldName == null || newWorldName.Length == 0) {
+            saveName = "unnamed";
+            worldName = "Unnamed World";
+        }
+        else {
+            saveName = toFileFormat(newWorldName);
+            worldName = newWorldName;
+        }
+
+        saveName = ensureUniqueName(savePath, saveName);
+
+        saveFolder = saveName;
+
+        //saveName += ".json";
+
+        //bool success = SaveCurr();
+        //if (!success)
+        //    return SAVEINFO_NULL; // returns blank save info
+
+        string almostFinishedPath = savePath + saveFolder + "/";
+
+        basicSave = almostFinishedPath + BASIC_SAVE_NAME;
+
+        worldSave = almostFinishedPath + WORLD_DATA_SAVE_NAME;
+
+        entitySave = almostFinishedPath + ENTITY_SAVE_NAME;
+
+        SaveInfo saveInfo = new SaveInfo();
+        saveInfo.path = basicSave;
+        saveInfo.name = worldName;
+        saveInfo.lastModified = Directory.GetLastWriteTime(saveInfo.path);
+        
+        File.WriteAllText(basicSave, JsonUtility.ToJson(saveInfo));
+        File.WriteAllText(worldSave, "");
+        File.WriteAllText(entitySave, "");
+
+
+        Debug.Log("DataService: New world saved!");
+
+        return saveInfo;
     }
-    else {
-        DataService.saveName = toSaveName(worldName);
-        DataService.worldName = worldName;
-    }
-
-    bool success = SaveCurr();
-    if (!success)
-        return SAVEINFO_NULL; // returns blank save info
-
-    SaveInfo saveInfo = new SaveInfo();
-    saveInfo.path = savePath + saveName;
-    saveInfo.name = worldName;
-    saveInfo.lastModified = Directory.GetLastWriteTime(saveInfo.path);
-
-    Debug.Log("DataService: New world saved!");
-
-    return saveInfo;
-}
 
   // saves current scene into savePath + name, returns success through a boolean
   // NOTE: as of 2025-04-04, TestScene is what is saved
