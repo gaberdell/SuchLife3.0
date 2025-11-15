@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "SaveLoadAssem",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "EventAssem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

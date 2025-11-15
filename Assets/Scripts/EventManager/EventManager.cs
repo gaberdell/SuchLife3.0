@@ -18,6 +18,9 @@ public class EventManager : MonoBehaviour
     public delegate void CraftingTableUpdated();
     public static event CraftingTableUpdated CraftingTableUpdate;
 
+    public delegate void UpdateSlotPositionDelegate(string pathName, uint position);
+    public static event UpdateSlotPositionDelegate UpdateSlotPosition;
+
 
     public static EventManager Instance;
 
@@ -39,6 +42,11 @@ public class EventManager : MonoBehaviour
     public static void CheckForCraftTableUpdate()
     {
         CraftingTableUpdate?.Invoke();
+    }
+
+    public static void SetUpdateSlotPosition(string pathName, uint position)
+    {
+        UpdateSlotPosition?.Invoke(pathName, position);
     }
 
     void Awake()

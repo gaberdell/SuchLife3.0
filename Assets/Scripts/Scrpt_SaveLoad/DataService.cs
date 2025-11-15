@@ -9,6 +9,7 @@ using UnityEngine;
 public struct SaveInfo {
     public string path;
     public string name;
+    public uint order;
     public DateTime lastModified;
 }
 public class DataService {
@@ -26,6 +27,14 @@ public class DataService {
 
     private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
+
+    public static int SaveInfoOrder(SaveInfo order, SaveInfo order2)
+    {
+        //in a perfect world imagine order.order <=> order2.order
+        //however this is not a perfect world
+        return order.order > order2.order ? 1 : (order.order < order2.order ? -1 : 0);
+    }
+
     // returns basic info : name, date (in that order) on all saves
     public static List<SaveInfo> Fetch() {
         Directory.CreateDirectory(savePath); // automatically create Saves\ directory if it doesn't exist
@@ -38,9 +47,21 @@ public class DataService {
             string fileText = File.ReadAllText(filePath + "/" + BASIC_SAVE_NAME);
 
             SaveInfo basicSaveInfo = JsonUtility.FromJson<SaveInfo>(fileText);
+
+            allBasicSaveData.Add(basicSaveInfo);
         }
 
+        allBasicSaveData.Sort(SaveInfoOrder);    
+
         return allBasicSaveData;
+    }
+
+    public static void BasicSave(List<SaveInfo> saves)
+    {
+        foreach (SaveInfo saveInfo in saves) 
+        {
+            File.WriteAllText(saveInfo.path + "/" + BASIC_SAVE_NAME, JsonUtility.ToJson(saveInfo));
+        }
     }
 
   // converts and returns the lowercase character of c
@@ -98,7 +119,7 @@ public class DataService {
 
   // creates a new save file with the given name, returns new SaveInfo struct representing the new save file
   // NOTE: will overwrite worlds with the same name
-    public static SaveInfo NewSave(string newWorldName) {
+    public static SaveInfo NewSave(string newWorldName, uint order) {
         Directory.CreateDirectory(savePath);
         string saveFolder;
         string basicSave;
@@ -133,8 +154,9 @@ public class DataService {
         entitySave = almostFinishedPath + ENTITY_SAVE_NAME;
 
         SaveInfo saveInfo = new SaveInfo();
-        saveInfo.path = basicSave;
+        saveInfo.path = savePath + saveFolder;
         saveInfo.name = worldName;
+        saveInfo.order = order;
         saveInfo.lastModified = Directory.GetLastWriteTime(saveInfo.path);
         
         File.WriteAllText(basicSave, JsonUtility.ToJson(saveInfo));
