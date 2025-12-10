@@ -1,5 +1,22 @@
 Vixey Foxwish Douglas
 
+Fall 2025 Final Contributions:
+● Made repeating tile artwork
+	○ Dungeon floor and walls
+		■ Repeating masonry
+		■ Retractable spike
+	○ Bottomless pit floor and walls
+	○ Grass tile
+● Made item artwork
+	○ potato, tomato, tomato hat
+	○ bandage, cloth, healing potion, med kit
+	○ stick, spiky stick, spear
+	○ flint, pickaxe, ladder
+● Made enemy creature artwork
+	○ bat, chicken, bunny, fox
+	○ fish, shark
+
+Goals:
 Not required to use restricted color palette
 Make tile artwork
 	What resolution per tile? 16x16
@@ -16,3 +33,5 @@ Make enemy artwork
 	Need text description of vibes/colors
 	Need pixel size of enemy (depends 16x16 style though)
 	Animated GIF or static PNG image?
+
+
