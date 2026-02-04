@@ -4,6 +4,7 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[Saveable]
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
@@ -18,7 +19,12 @@ public class Bomb : Mob
     [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
 
+    [Saveable]
+    public void testFunction() { }
+
+    [Saveable]
     private float distance;
+    [Saveable]
     private bool isExploding = false;
 
     [SerializeField] private Tilemap blockTilemap;
@@ -79,14 +85,12 @@ public class Bomb : Mob
 
         particles.Play();
 
-        // ✅ Damage nearby entities on explosion (NO knockback)
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
-                // ✅ Pass "false" to avoid extra knockback
                 health.TakeDamage(damage, false);
             }
         }
@@ -105,7 +109,6 @@ public class Bomb : Mob
             Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
             mobHealth.onDeath?.Invoke();
 
-            // ✅ Stop all physics so body doesn’t move after death
             OnDeath();
 
             // Hide health bar if it still exists
