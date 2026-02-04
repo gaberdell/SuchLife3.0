@@ -1,19 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Reflection;
-using System.Collections.Generic;
 
 public class SaveObjectsManager : MonoBehaviour
 {
     public bool joe = false;
 
     List<Tuple<object,string>> stuffToKeepTrackOff;
+    List<Tuple<FieldInfo, MonoBehaviour>> fieldInfos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         stuffToKeepTrackOff = new List<Tuple<object, string>>();
+        fieldInfos = new List<Tuple<FieldInfo, MonoBehaviour>>();
         AllObjects();
     }
 
@@ -37,9 +39,10 @@ public class SaveObjectsManager : MonoBehaviour
                         Debug.Log(member[i].Name);
 
                         Debug.Log(member[i].MemberType);
-
-                        object propertyValue = ((FieldInfo)member[i]).GetValue(component);
+                        FieldInfo saveableField = (FieldInfo)member[i];
+                        object propertyValue = saveableField.GetValue(component);
                         stuffToKeepTrackOff.Add(new Tuple<object, string>(propertyValue, rootGameObject.name));
+                        fieldInfos.Add(new Tuple<FieldInfo, MonoBehaviour>(saveableField, component));
                         Debug.Log("Value of this object : " + propertyValue.ToString());
 
                         Debug.Log("Name of parent : " + rootGameObject.name);
@@ -56,11 +59,11 @@ public class SaveObjectsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (var item in stuffToKeepTrackOff)
-        {
-            Debug.Log("Value of this object : " + item.Item1);
+        foreach (var item in fieldInfos)
+        { 
+            Debug.Log("Value of this object : " + item.Item1.GetValue(item.Item2));
 
-            Debug.Log("Name of parent : " + item.Item2);
+            Debug.Log("Name of parent : " + item.Item2.name);
         }
     }
 }
