@@ -20035,6 +20035,7 @@ MonoBehaviour:
   roomsFile: {fileID: 4900000, guid: 0c0870d2e9fca354f93e92dd56793b20, type: 3}
   grassTile: {fileID: 11400000, guid: 4a897bf66b222654dab561b61c64b61d, type: 2}
   wallTile: {fileID: 11400000, guid: fa56c7c51fb9406488034b0951da08ea, type: 2}
+  spikeTile: {fileID: 11400000, guid: ce5b856fd1fba7e4aabecbd37d38604c, type: 2}
   bonusTile: {fileID: 11400000, guid: 57900667e4ddddd4186077d60bf4e88f, type: 2}
   dungeonExit: {fileID: 9131490398547023997, guid: fd51934e443b6ad44972d86b3486f5af, type: 3}
   bombEnemy: {fileID: 843679319920769187, guid: 6e28442da32ba524e894925bba80cc0c, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Health Potion
   useFlag: 3
-  icon: {fileID: 8717908661333387831, guid: e7bafab80d904314a96b01c71073cabe, type: 3}
+  icon: {fileID: 7773460936587814792, guid: fa3f51de71c95c9458be5929f117fbd2, type: 3}
   tileThisPlaces: {fileID: 0}
   information: []
   healAmount: 50
