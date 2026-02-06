@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: ab04b2f5f99e60d48a2934e215b383e9
+guid: 28f3e2702ff40b941bcbe8192bc0a457
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8276683384943650512
-    second: shark_foe_v2_0
+      213: 1949769172964819161
+    second: sizing_fox_foe_v7_0_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: shark_foe_v2_0
+      name: sizing_fox_foe_v7_0_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 33
-        width: 116
-        height: 86
+        x: 0
+        y: 0
+        width: 62
+        height: 151
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0d6a1f5dfafacd270800000000000000
-      internalID: 8276683384943650512
+      spriteID: 9d043948bb8fe0b10800000000000000
+      internalID: 1949769172964819161
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      shark_foe_v2_0: 8276683384943650512
+      sizing_fox_foe_v7_0_0: 1949769172964819161
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

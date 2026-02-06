@@ -1,25 +1,28 @@
 fileFormatVersion: 2
-guid: f9cf53864fb8a3f45b05c04efb5fd673
+guid: 5c94329a31806ab428803328ef76ced1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7187586239273299296
-    second: chicken_foe_v3_0
+      213: 3386078801905993925
+    second: sizing_fox_foe_v7_cropped_0
   - first:
-      213: -5593726911663506219
-    second: chicken_foe_v3_1
+      213: 6290011662889280763
+    second: sizing_fox_foe_v7_cropped_1
   - first:
-      213: 4480877490636020164
-    second: chicken_foe_v3_2
+      213: 2090034245264898467
+    second: sizing_fox_foe_v7_cropped_2
   - first:
-      213: 8476586800938733342
-    second: chicken_foe_v3_3
+      213: 6612139098178782681
+    second: sizing_fox_foe_v7_cropped_3
   - first:
-      213: -3780743581031969169
-    second: chicken_foe_v3_4
+      213: 8043683317445331344
+    second: sizing_fox_foe_v7_cropped_4
   - first:
-      213: -2874208801655956375
-    second: chicken_foe_v3_5
+      213: -7595205856415405449
+    second: sizing_fox_foe_v7_cropped_5
+  - first:
+      213: 2633521247104168202
+    second: sizing_fox_foe_v7_cropped_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,12 +118,34 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: chicken_foe_v3_0
+      name: sizing_fox_foe_v7_cropped_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 95
-        width: 24
+        x: 0
+        y: 63
+        width: 45
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c84619eab4cdfe20800000000000000
+      internalID: 3386078801905993925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sizing_fox_foe_v7_cropped_1
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 85
+        width: 25
         height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -130,20 +155,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0a211a79560904c90800000000000000
-      internalID: -7187586239273299296
+      spriteID: bf4649f084c9a4750800000000000000
+      internalID: 6290011662889280763
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chicken_foe_v3_1
+      name: sizing_fox_foe_v7_cropped_2
       rect:
         serializedVersion: 2
-        x: 20
-        y: 84
-        width: 14
-        height: 14
+        x: 0
+        y: 0
+        width: 45
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,20 +177,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5dcf0cbb2071f52b0800000000000000
-      internalID: -5593726911663506219
+      spriteID: 3a97a65921b410d10800000000000000
+      internalID: 2090034245264898467
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chicken_foe_v3_2
+      name: sizing_fox_foe_v7_cropped_3
       rect:
         serializedVersion: 2
-        x: 29
-        y: 83
-        width: 54
-        height: 56
+        x: 49
+        y: 57
+        width: 22
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,18 +199,40 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c9576746564f2e30800000000000000
-      internalID: 4480877490636020164
+      spriteID: 9d50b682a7903cb50800000000000000
+      internalID: 6612139098178782681
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chicken_foe_v3_3
+      name: sizing_fox_foe_v7_cropped_4
       rect:
         serializedVersion: 2
-        x: 4
-        y: 88
+        x: 51
+        y: 37
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09980162c57e0af60800000000000000
+      internalID: 8043683317445331344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sizing_fox_foe_v7_cropped_5
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 27
         width: 14
         height: 6
       alignment: 0
@@ -196,20 +243,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e1fc7b9d8c2e2a570800000000000000
-      internalID: 8476586800938733342
+      spriteID: 77aa464c388689690800000000000000
+      internalID: -7595205856415405449
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: chicken_foe_v3_4
+      name: sizing_fox_foe_v7_cropped_6
       rect:
         serializedVersion: 2
-        x: 27
-        y: 71
-        width: 22
-        height: 16
+        x: 47
+        y: 13
+        width: 14
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -218,30 +265,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6e40c98eb9188bc0800000000000000
-      internalID: -3780743581031969169
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: chicken_foe_v3_5
-      rect:
-        serializedVersion: 2
-        x: 11
-        y: 5
-        width: 68
-        height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 96cdef6b252cc18d0800000000000000
-      internalID: -2874208801655956375
+      spriteID: a01761a0f952c8420800000000000000
+      internalID: 2633521247104168202
       vertices: []
       indices: 
       edges: []
@@ -260,12 +285,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      chicken_foe_v3_0: -7187586239273299296
-      chicken_foe_v3_1: -5593726911663506219
-      chicken_foe_v3_2: 4480877490636020164
-      chicken_foe_v3_3: 8476586800938733342
-      chicken_foe_v3_4: -3780743581031969169
-      chicken_foe_v3_5: -2874208801655956375
+      sizing_fox_foe_v7_cropped_0: 3386078801905993925
+      sizing_fox_foe_v7_cropped_1: 6290011662889280763
+      sizing_fox_foe_v7_cropped_2: 2090034245264898467
+      sizing_fox_foe_v7_cropped_3: 6612139098178782681
+      sizing_fox_foe_v7_cropped_4: 8043683317445331344
+      sizing_fox_foe_v7_cropped_5: -7595205856415405449
+      sizing_fox_foe_v7_cropped_6: 2633521247104168202
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
