@@ -4,7 +4,7 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[Saveable]
+[SaveableId(13)]
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
@@ -19,7 +19,6 @@ public class Bomb : Mob
     [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
 
-    [Saveable]
     public void testFunction() { }
 
     [Saveable]
