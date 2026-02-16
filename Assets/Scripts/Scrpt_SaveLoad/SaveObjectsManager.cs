@@ -1,21 +1,44 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+public class ByteArrayCompare : IComparer<byte[]> {
+    public int Compare(byte[] x, byte[] y) {
+        if (x.Length < y.Length)
+            return -1;
+        else if (x.Length > y.Length)
+            return 1;
+        else {
+            for (int i = 0; i < x.Length; i++) {
+                if (x[i] < y[i]) {
+                    return -1;
+                }
+                else if (x[i] > y[i]) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+    }
+}
 
 public class SaveObjectsManager : MonoBehaviour
 {
     Dictionary<Type, byte[]> objectTypeDictionary;
 
-    List<Tuple<FieldInfo, MonoBehaviour>> fieldInfos;
+    List<(FieldInfo, MonoBehaviour)> fieldInfos;
+
+    Dictionary<byte[], List<(Type, List<FieldInfo>)>> PrefabToMonoBehaviorFieldOrder;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        objectTypeDictionary = new Dictionary<Type, byte[]>();
+        fieldInfos = new List<(FieldInfo, MonoBehaviour)>();
 
-        fieldInfos = new List<Tuple<FieldInfo, MonoBehaviour>>();
         AllObjects();
     }
 
@@ -26,7 +49,7 @@ public class SaveObjectsManager : MonoBehaviour
     /// </summary>
     /// <param name="component"></param>
     /// <param name="saveableIdToAdd"></param>
-    void SuperErrorChecking(MonoBehaviour component, byte[] saveableIdToAdd)
+    void SuperErrorChecking(MonoBehaviour component, string saveableIdToAdd)
     {
         bool isIllegalByte = false;
         for (int i = 0; i < saveableIdToAdd.Length; i++)
@@ -71,15 +94,15 @@ public class SaveObjectsManager : MonoBehaviour
 
         foreach (MonoBehaviour component in gOToSave.GetComponents<MonoBehaviour>())
         {
-            SaveableId saveableId = (SaveableId)Attribute.GetCustomAttribute(component.GetType(), typeof(SaveableId));
+            SaveableComponent saveableId = (SaveableComponent)Attribute.GetCustomAttribute(component.GetType(), typeof(SaveableComponent));
 
             FieldInfo[] field = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
 
-            byte[] saveableIdToAdd = null;
+            string saveableClassName = null;
 
             if (saveableId != null)
             {
-                saveableIdToAdd = saveableId.Id;
+                saveableClassName = saveableId.SaveClassName;
             }
 
             bool wasSaveableField = false;
@@ -91,7 +114,7 @@ public class SaveObjectsManager : MonoBehaviour
 
                 Saveable newSavableAttribute = (Saveable)Attribute.GetCustomAttribute(fieldToCheck, typeof(Saveable));
 
-                if (newSavableAttribute != null && saveableIdToAdd == null)
+                if (newSavableAttribute != null && saveableClassName == null)
                 {
                     Debug.LogError("Saveable field '" + fieldToCheck.Name + "' yet it's parent class '" +
                                     component.name + "' has no saveable id attribute.");
@@ -108,7 +131,7 @@ public class SaveObjectsManager : MonoBehaviour
                 }
             }
 
-            if (saveableIdToAdd != null)
+            if (saveableClassName != null)
             {
                 if (!wasSaveableField)
                 {
@@ -116,14 +139,84 @@ public class SaveObjectsManager : MonoBehaviour
                 }
                 else
                 {
-                    SuperErrorChecking(component, saveableIdToAdd);
+                    SuperErrorChecking(component, saveableClassName);
 
-                    objectTypeDictionary.TryAdd(component.GetType(), saveableIdToAdd);
+                    //objectTypeDictionary.TryAdd(component.GetType(), saveableClassName);
                 }
             }
         }
     }
 
+    void PrefabSetToByteArray(GameObject prefab, byte[] dataToSetTo) {
+
+        int idDelinatorPosition = 0;
+        for (; idDelinatorPosition < dataToSetTo.Length; idDelinatorPosition++) {
+            if (dataToSetTo[idDelinatorPosition] == 0) {
+                break;
+            }
+        }
+
+        byte[] id = (byte[]) dataToSetTo.Take(idDelinatorPosition);
+
+        List<Tuple<Type, List<FieldInfo>>> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[id];
+
+        foreach (Tuple<Type, List<FieldInfo>> componentType in monoBehaviorAndTypeOrder) {
+            MonoBehaviour component = (MonoBehaviour) prefab.GetComponent(componentType.Item1.Name);
+
+            foreach (FieldInfo field in componentType.Item2) {
+                field.SetValue(component, )
+            }
+        }
+    }
+
+    void PrefabGetByteArray(GameObject prefab, byte[] dataToSetTo) {
+
+    }
+
+    List<Tuple<Type, List<FieldInfo>>> AddPrefabSavableType(GameObject prefab) {
+
+        List<Tuple<Type, List<FieldInfo>>> monoToSort = new List<Tuple<Type, List<FieldInfo>>>();
+
+        foreach (MonoBehaviour component in prefab.GetComponents<MonoBehaviour>()) {
+            SaveableComponent saveableId = (SaveableComponent)Attribute.GetCustomAttribute(component.GetType(), typeof(SaveableComponent));
+
+            if (saveableId == null) { continue; }
+
+            FieldInfo[] field = component.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+
+
+            for (int i = 0; i < field.Length; i++) {
+
+                FieldInfo fieldToCheck = field[i];
+
+                Saveable newSavableAttribute = (Saveable)Attribute.GetCustomAttribute(fieldToCheck, typeof(Saveable));
+
+
+                if (newSavableAttribute != null) {
+                    Tuple<Type, List<FieldInfo>> ourTuple = monoToSort.Find(i => i.Item1 == component.GetType());
+
+                    if (ourTuple != null) {
+                        ourTuple = new Tuple<Type, List<FieldInfo>>(component.GetType(), new List<FieldInfo>());
+                        ourTuple.Item2.Add(fieldToCheck);
+                    }
+                    else {
+                        ourTuple.Item2.Add(fieldToCheck);
+                    }
+                }
+            }
+
+
+            Tuple<Type, List<FieldInfo>> ourMono = monoToSort.Find(i => i.Item1 == component.GetType());
+
+            if (ourMono != null) {
+                ourMono.Item2 = ourMono.Item2.OrderBy(fieldInfo => ((Saveable)Attribute.GetCustomAttribute(fieldInfo, typeof(Saveable))).SaveName);
+            }
+        }
+
+        monoToSort.OrderBy(tuple => ((SaveableComponent)Attribute.GetCustomAttribute(tuple.Item1,typeof(SaveableComponent))).SaveClassName);
+
+        return monoToSort;
+    }
 
     void AllObjects()
     {

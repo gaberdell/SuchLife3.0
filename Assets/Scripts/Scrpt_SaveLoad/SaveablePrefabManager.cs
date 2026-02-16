@@ -24,7 +24,7 @@ public class SaveablePrefabManager : MonoBehaviour
     static MonoBehaviour SCROMBOLO_BOMBOLO_PREFAB;
 
     //Maybe make this into a two way dictionary type?
-    static Dictionary<byte[], MonoBehaviour> ByteToPrefabKey;
+    static public Dictionary<byte[], MonoBehaviour> ByteToPrefabKey { get; private set; }
     static Dictionary<MonoBehaviour, byte[]> PrefabToByteKey;
 
     static Dictionary<string, MonoBehaviour> StringToPrefabKey;
@@ -120,7 +120,7 @@ public class SaveablePrefabManager : MonoBehaviour
     }
 
 
-    void OnSuccessfulStart()
+    void OnSuccessfulAwake()
     {
         currentlyActiveEntities = new byte[2] { 1,1 };
         Debug.Log(Convert.ToString(currentlyActiveEntities[0],2));
@@ -147,13 +147,13 @@ public class SaveablePrefabManager : MonoBehaviour
         StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
     }
-    void Start()
+    void Awake()
     {
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            OnSuccessfulStart();
+            OnSuccessfulAwake();
         }
         else
         {

@@ -4,7 +4,7 @@ using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[SaveableId(13)]
+[SaveableComponent("Scrombolo Bombolo")]
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
@@ -21,9 +21,9 @@ public class Bomb : Mob
 
     public void testFunction() { }
 
-    [Saveable]
+    [Saveable("Distance")]
     private float distance;
-    [Saveable]
+    [Saveable("IsExploding")]
     private bool isExploding = false;
 
     [SerializeField] private Tilemap blockTilemap;

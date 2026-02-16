@@ -11,4 +11,10 @@ using UnityEngine;
                 Inherited = true, AllowMultiple = false)]
 public class Saveable : Attribute
 {
+    public string SaveName { get; private set; }
+
+    public Saveable(string name) {
+        SaveName = name;
+    }
+
 }
