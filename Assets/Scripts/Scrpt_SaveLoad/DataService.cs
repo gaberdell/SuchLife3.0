@@ -10,6 +10,7 @@ public struct SaveInfo {
     public string path;
     public string name;
     public uint order;
+    public uint saveVersion;
     public DateTime lastModified;
 }
 public class DataService {
@@ -19,8 +20,9 @@ public class DataService {
     const string WORLD_DATA_SAVE_NAME = "WorldData.save";
     const string ENTITY_SAVE_NAME = "Entity.save";
 
+    const uint currentSaveVersion = 0; //idk deal with 
+
     private static string savePath = Application.persistentDataPath + "/" + SAVES_FOLDER_NAME + "/";
-    private static int savePathLen = savePath.Length;
 
     private static string saveName = null; // name of the current world's save file
     private static string worldName = null; // name of the current world
@@ -56,45 +58,12 @@ public class DataService {
         return allBasicSaveData;
     }
 
-    public static void BasicSave(List<SaveInfo> saves)
-    {
-        foreach (SaveInfo saveInfo in saves) 
-        {
-            File.WriteAllText(saveInfo.path + "/" + BASIC_SAVE_NAME, JsonUtility.ToJson(saveInfo));
-        }
-    }
-
-  // converts and returns the lowercase character of c
-    private static char toLower(char c) {
-        if ('A' <= c && c <= 'Z')
-            return (char)('a' - 'A' + c);
-
-        return c; // not uppercase letter; just return c
-    }
-
     private static string toFileFormat(string name) {
-        string saveName = "";
-
-        // converting...
-        int len = worldName.Length;
-        for (int i = 0; i < len; i++)
-        {
-            if (worldName[i] == ' ')
-                saveName += '_';
-            else
-                saveName += toLower(worldName[i]);
-        }
-
-        return saveName;
-    }
-
-  // given a world name, converts all characters to lowercase and replaces spaces with underscores
-    private static string toSaveName(string worldName) {
-        return toFileFormat(worldName) + ".save";
+        return saveName.ToLower().Replace(' ', '-');
     }
 
     // given a world name and directory ensures that the name is unique
-    private static string ensureUniqueName(string directory, string name)
+    public static string EnsureUniqueName(string directory, string name)
     {
 
         if (Directory.Exists(directory + name))
@@ -135,7 +104,7 @@ public class DataService {
             worldName = newWorldName;
         }
 
-        saveName = ensureUniqueName(savePath, saveName);
+        saveName = EnsureUniqueName(savePath, saveName);
 
         saveFolder = saveName;
 
@@ -157,6 +126,7 @@ public class DataService {
         saveInfo.path = savePath + saveFolder;
         saveInfo.name = worldName;
         saveInfo.order = order;
+        saveInfo.saveVersion = currentSaveVersion;
         saveInfo.lastModified = Directory.GetLastWriteTime(saveInfo.path);
         
         File.WriteAllText(basicSave, JsonUtility.ToJson(saveInfo));
@@ -167,6 +137,22 @@ public class DataService {
         Debug.Log("DataService: New world saved!");
 
         return saveInfo;
+    }
+
+    public static void CloneSaveData(SaveInfo saveInfo) {
+        //Directory.
+        Debug.LogError("Cloning save data unimplemented yet");
+    }
+
+    public static void DeleteSaveData(SaveInfo saveInfo) {
+        Directory.Delete(saveInfo.path);
+    }
+
+
+    public static void ResaveBasicSaveInfo(SaveInfo saveInfoToResave) {
+        string basicSave = saveInfoToResave.path + "/" + BASIC_SAVE_NAME;
+
+        File.WriteAllText(basicSave, JsonUtility.ToJson(saveInfoToResave));
     }
 
   // saves current scene into savePath + name, returns success through a boolean

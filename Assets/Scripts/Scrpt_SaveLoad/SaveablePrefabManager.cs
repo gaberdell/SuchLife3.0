@@ -16,18 +16,20 @@ public class SaveablePrefabManager : MonoBehaviour
 
     static private string RESOURCE_LOCATION = "SaveablePrefabs/";
 
+    static private string ENEMY_FOLDER = "SaveableEnemyPrefabs/";
+
     static private string PLAYER_PREFAB_NAME = "Player";
-    static private string SCROMBOLO_BOMBOLO_NAME = "Bomb";
+    static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER+"Scrombolo_Bombolo";
     static private string ITEM_NAME = "Item";
 
-    static MonoBehaviour PLAYER_PREFAB;
-    static MonoBehaviour SCROMBOLO_BOMBOLO_PREFAB;
+    static GameObject PLAYER_PREFAB;
+    static GameObject SCROMBOLO_BOMBOLO_PREFAB;
 
     //Maybe make this into a two way dictionary type?
-    static public Dictionary<byte[], MonoBehaviour> ByteToPrefabKey { get; private set; }
-    static Dictionary<MonoBehaviour, byte[]> PrefabToByteKey;
+    static public Dictionary<byte[], GameObject> ByteToPrefabKey { get; private set; }
+    static Dictionary<GameObject, byte[]> PrefabToByteKey;
 
-    static Dictionary<string, MonoBehaviour> StringToPrefabKey;
+    static public Dictionary<string, GameObject> StringToPrefabKey { get; private set; }
 
     static uint MAX_BYTES_FOR_ENTITIES = 1024;
 
@@ -42,10 +44,6 @@ public class SaveablePrefabManager : MonoBehaviour
 
         byte oneByte = 1;
 
-        /*Debug.Log("Exact Byte : " + Convert.ToString(exactByte,2));
-        Debug.Log("ByteLocation : " + Convert.ToString(byteLocation, 2));
-        Debug.Log("Post-Shift : " + Convert.ToString(oneByte << byteLocation, 2));
-        Debug.Log("After And : " + Convert.ToString(exactByte & (oneByte << byteLocation), 2));*/
         //Bit shift black magic
         return (exactByte & (oneByte << byteLocation)) != 0;
     }
@@ -79,7 +77,7 @@ public class SaveablePrefabManager : MonoBehaviour
         return unoccupiedId;
     }
 
-    static public void DeletePrefab(MonoBehaviour prefab)
+    static public void DeletePrefab(GameObject prefab)
     {
         PrefabSaveInfo entity = prefab.GetComponent<PrefabSaveInfo>();
 
@@ -88,62 +86,61 @@ public class SaveablePrefabManager : MonoBehaviour
             removeLocation(entity.EntityId);
 
         }
+
+        EventManager.SetPrefabRemovedFromScene(prefab);
+
         Destroy(prefab);
     }
 
-    static public MonoBehaviour CreatePrefab(MonoBehaviour prefab, Vector3 position, Quaternion rotation)
+    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         //Maybe use object pooling
-        MonoBehaviour newObject = Instantiate(prefab, position, rotation);
+        GameObject newObject = Instantiate(prefab, position, rotation);
 
         PrefabSaveInfo entity = newObject.gameObject.AddComponent<PrefabSaveInfo>();
         entity.PrefabId = PrefabToByteKey[prefab];
         entity.EntityId = getUnoccupiedId();
 
+        EventManager.SetPrefabAddedToScene(newObject);
 
         return newObject;
     }
 
-    static public MonoBehaviour CreatePrefab(string prefabName)
+    static public GameObject CreatePrefab(string prefabName)
     {
         return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity);
     }
 
-    public static MonoBehaviour CreatePrefab(string prefabName, Vector3 position, Quaternion rotation)
+    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation)
     {
         return CreatePrefab(StringToPrefabKey[prefabName], position, rotation);
     }
 
-    public static MonoBehaviour CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation)
+    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation)
     {
         return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation);
     }
 
+#if UNITY_EDITOR
+    //Only used for testing creating stuff through the editor
+    public void EDITOR_SETUP() {
+        OnSuccessfulAwake();
+    }
+
+#endif
 
     void OnSuccessfulAwake()
     {
-        currentlyActiveEntities = new byte[2] { 1,1 };
-        Debug.Log(Convert.ToString(currentlyActiveEntities[0],2));
+        PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
+        SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
 
-        for (uint i = 0; i < 9; i++) {
-            if (!retrieveIsActiveEntity(i))
-            {
-                addLocation(i);
-                break;
-            }
-        }
-        Debug.Log(currentlyActiveEntities[0]);
-
-        PLAYER_PREFAB = Resources.Load<MonoBehaviour>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
-        SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<MonoBehaviour>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
-
-        ByteToPrefabKey = new Dictionary<byte[], MonoBehaviour>();
+        ByteToPrefabKey = new Dictionary<byte[], GameObject>(new ByteArrayComparer());
         ByteToPrefabKey.Add(new byte[1] { 1 }, PLAYER_PREFAB);
         ByteToPrefabKey.Add(new byte[1] { 2 }, SCROMBOLO_BOMBOLO_PREFAB);
 
         PrefabToByteKey = ByteToPrefabKey.ToDictionary((i) => i.Value, (i) => i.Key);
 
-        StringToPrefabKey = new Dictionary<string, MonoBehaviour>();
+        StringToPrefabKey = new Dictionary<string, GameObject>();
         StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
     }
@@ -152,8 +149,8 @@ public class SaveablePrefabManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
             OnSuccessfulAwake();
+            DontDestroyOnLoad(gameObject);
         }
         else
         {

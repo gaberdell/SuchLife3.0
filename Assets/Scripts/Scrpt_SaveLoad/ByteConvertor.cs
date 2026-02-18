@@ -49,17 +49,21 @@ public class ByteConvertor
     }
 
 
-    public static object ConvertBytesToValue(Type wantedType, byte[] value) {
+    public static object ConvertBytesToValue(Type wantedType, byte[] value, out int bytesUsed) {
         if (wantedType == typeof(int)) {
+            bytesUsed = sizeof(int);
             return BitConverter.ToInt32(value);
         }
         else if (wantedType == typeof(uint)) {
+            bytesUsed = sizeof(uint);
             return BitConverter.ToUInt32(value);
         }
         else if (wantedType == typeof(float)) {
+            bytesUsed = sizeof(float);
             return BitConverter.ToSingle(value);
         }
         else if (wantedType == typeof(double)) {
+            bytesUsed = sizeof(double);
             return BitConverter.ToDouble(value);
         }
         else if (wantedType == typeof(Vector3)) {
@@ -71,6 +75,14 @@ public class ByteConvertor
             for (; i < sizeof(float); i++) {
                 xBytes[i] = value[i];
             }
+            for (; i < sizeof(float); i++) {
+                yBytes[i] = value[i];
+            }
+            for (; i < sizeof(float); i++) {
+                zBytes[i] = value[i];
+            }
+
+            bytesUsed = 3*sizeof(float);
 
             return new Vector3(BitConverter.ToSingle(xBytes), BitConverter.ToSingle(yBytes),
                                BitConverter.ToSingle(zBytes));
@@ -78,6 +90,7 @@ public class ByteConvertor
 
 
         Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
+        bytesUsed = 0;
         return null;
     }
 }

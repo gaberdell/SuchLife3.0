@@ -21,6 +21,11 @@ public class EventManager : MonoBehaviour
     public delegate void UpdateSlotPositionDelegate(string pathName, uint position);
     public static event UpdateSlotPositionDelegate UpdateSlotPosition;
 
+    public delegate void GameObjectSingleDelegate(GameObject gameObject);
+    public static event GameObjectSingleDelegate PrefabAddedToScene;
+
+    public static event GameObjectSingleDelegate PrefabRemovedFromScene;
+
 
     public static EventManager Instance;
 
@@ -49,6 +54,12 @@ public class EventManager : MonoBehaviour
         UpdateSlotPosition?.Invoke(pathName, position);
     }
 
+    public static void SetPrefabRemovedFromScene(GameObject gameObject) {
+        PrefabRemovedFromScene?.Invoke(gameObject);
+    }
+    public static void SetPrefabAddedToScene(GameObject gameObject) {
+        PrefabAddedToScene?.Invoke(gameObject);
+    }
     void Awake()
     {
         if (Instance != null)
