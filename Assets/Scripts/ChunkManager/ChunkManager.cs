@@ -233,7 +233,7 @@ public static class ChunkManager
         //if out of bounds return null
         if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
         {
-            Debug.Log("getting out of bounds chunk from world!");
+            //Debug.Log("getting out of bounds chunk from world!");
             return null;
         }
 

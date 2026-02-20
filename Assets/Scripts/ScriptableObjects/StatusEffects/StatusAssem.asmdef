@@ -1,0 +1,16 @@
+{
+    "name": "StatusAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ee2ce899962f8af4e98552079f3352c2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

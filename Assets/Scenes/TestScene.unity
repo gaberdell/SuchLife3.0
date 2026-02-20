@@ -20010,7 +20010,7 @@ Transform:
   m_GameObject: {fileID: 1400653126}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -33449,7 +33449,7 @@ TilemapCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -35251,6 +35251,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4748201746997400643}
+    - targetCorrespondingSourceObject: {fileID: 3096622124833139852, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4748201746997400653}
     - targetCorrespondingSourceObject: {fileID: 324757969995828777, guid: 42d0bf5b64245614ba380ae0c79cb4f0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1476887139}
@@ -35307,6 +35310,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mgBoostIcon: {fileID: 410531442}
   timerText: {fileID: 0}
+--- !u!114 &4748201746997400653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187161259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d5c0423c1088ac4d8ffda2ebc4026d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4757084331873464254 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1603908336961683802, guid: d474fd319c63eff428594b9a5f57a5bd, type: 3}
