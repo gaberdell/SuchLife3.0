@@ -7,7 +7,7 @@ using UnityEngine;
  */
 
 //when instantiating statuseffects from scripts for tile behaviors and such just declare the effects then.
-public class StatusEffect : ScriptableObject
+public class StatusEffect 
 {
     [SerializeField] float duration;
     [SerializeField] Sprite icon;
@@ -20,10 +20,16 @@ public class StatusEffect : ScriptableObject
         effects = fx;
         target = Itarget;
     }
-    public void ApplyEffects()
+
+    public void setTarget(GameObject t)
+    {
+        target = t;
+    }
+    public void ApplyEffects(GameObject t = null)
     {
         foreach (BaseEffect effect in effects)
         {
+            if (t != null) target = t;
             effect.ApplyEffect(target);
         }
     }

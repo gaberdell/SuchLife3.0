@@ -7,6 +7,7 @@ public class BaseEffect
 {
     [SerializeField] int duration;
     virtual public void ApplyEffect(GameObject target) { }
+    virtual public void onEffectRemove(GameObject target) { }
 }
 
 [Serializable]
@@ -14,8 +15,15 @@ public class HurtEffect : BaseEffect
 {
     [SerializeField] int damageAmount;
     [SerializeField] int intervals;
+
+    public HurtEffect(int dmg, int inter)
+    {
+        damageAmount = dmg;
+        intervals = inter;
+    }
     public override void ApplyEffect(GameObject target)
     {
+        Debug.Log("apply hurt effect");
         //damage;
         Health targetH = target.GetComponent<Health>();
         if (targetH == null)
@@ -38,5 +46,6 @@ public class DamageBuff : BaseEffect
     {
         
     }
+    
 }
 

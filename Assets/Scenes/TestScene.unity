@@ -11269,6 +11269,50 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1411855232201380519, guid: a53a4c9072e9dff47874c64cd8d87863, type: 3}
   m_PrefabInstance: {fileID: 733502143}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &756655823
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 756655825}
+  - component: {fileID: 756655824}
+  m_Layer: 0
+  m_Name: EffectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &756655824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756655823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a2e2b592a41064388da64615b7cec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &756655825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756655823}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 198.49664, y: 220.11621, z: -0.21350592}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761426468
 GameObject:
   m_ObjectHideFlags: 0
@@ -28977,6 +29021,7 @@ GameObject:
   - component: {fileID: 1990606950}
   - component: {fileID: 1990606949}
   - component: {fileID: 1990606951}
+  - component: {fileID: 1990606952}
   m_Layer: 0
   m_Name: GroundTilemap
   m_TagString: Untagged
@@ -33457,6 +33502,20 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &1990606952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990606947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ef12ab85770e341a3125fee2d23dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spikeUpTile: {fileID: 11400000, guid: ce5b856fd1fba7e4aabecbd37d38604c, type: 2}
+  pitTile: {fileID: 0}
 --- !u!1 &1992036425
 GameObject:
   m_ObjectHideFlags: 0
@@ -35452,3 +35511,4 @@ SceneRoots:
   - {fileID: 2327471525985266752}
   - {fileID: 1490045384}
   - {fileID: 64125144}
+  - {fileID: 756655825}

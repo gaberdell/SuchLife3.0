@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class HandleTileCollisions : MonoBehaviour
 {
+    GameObject Player;
     Tilemap groundTilemap;
     //player will trigger certain effects when coming into contact with specific tiles. To handle this, we keep a dictionary of tiles paired with their corresponding effect
     /* Effects:
@@ -17,9 +18,10 @@ public class HandleTileCollisions : MonoBehaviour
      
     void Start()
     {
+        Player = GameObject.Find("Player");
         groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
         //create dictionary with tile effects.
-        effectTiles = TileEffectsDict.createDict();
+        effectTiles = GameObject.Find("GroundTilemap").GetComponent<TileEffectsDict>().getDict();
     }
 
     // Update is called once per frame
@@ -48,8 +50,8 @@ public class HandleTileCollisions : MonoBehaviour
                     //Debug.Log("player made contact with tile " + t.name);
                     if (effectTiles.ContainsKey(t))
                     {
-                        Debug.Log("player made contact with interactive tile " + t.name + ". Applying associated effect");
-
+                        Debug.Log("player made contact with interactive tile " + t.name + ". Applying associated effect " );
+                        effectTiles[t].ApplyEffects(Player);
                     }
                 }
 
