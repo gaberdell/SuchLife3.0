@@ -59,7 +59,7 @@ public class DataService {
     }
 
     private static string toFileFormat(string name) {
-        return saveName.ToLower().Replace(' ', '-');
+        return name.ToLower().Replace(' ', '-');
     }
 
     // given a world name and directory ensures that the name is unique
@@ -115,6 +115,7 @@ public class DataService {
         //    return SAVEINFO_NULL; // returns blank save info
 
         string almostFinishedPath = savePath + saveFolder + "/";
+        Directory.CreateDirectory(almostFinishedPath);
 
         basicSave = almostFinishedPath + BASIC_SAVE_NAME;
 

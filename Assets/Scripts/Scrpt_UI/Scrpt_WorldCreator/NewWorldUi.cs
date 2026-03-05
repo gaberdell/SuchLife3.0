@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using TMPro;
 
 public class NewWorldUI : MonoBehaviour
 {
@@ -18,83 +19,105 @@ public class NewWorldUI : MonoBehaviour
     [SerializeField]
     Button createNewWorldButton;
 
-    List<SaveInfo> info;
+    [SerializeField]
+    TMP_InputField newWorldInputField;
 
-    void Start()
-    {
-        info = DataService.Fetch();
-        Debug.Log(info); //debugging print statement
-        foreach(SaveInfo s in info)
-        {
-           string worldPath = s.path; //protection level on path and name are restricted
-           string worldName = s.name;
-           DateTime worldDate = s.lastModified;
+    static List<SaveSlotUI> saveSlotUIs;
+
+    SaveSlotUI newSaveSlotUI() {
+        SaveSlotUI newSlot = Instantiate(saveSlotUIPrefab, parentToAddThemTo);
+
+        saveSlotUIs.Add(newSlot);
+        return newSlot;
+    }
+
+    static void recalcPositions() {
+        for (int i = 0; i < saveSlotUIs.Count; i++) {
+            SaveSlotUI saveSlotUI = saveSlotUIs[i];
+            SaveInfo saveInfo = saveSlotUI.GetSaveInfo();
+            if (saveInfo.order != (uint)i) {
+                saveInfo.order = (uint)i;
+                saveSlotUI.UpdateSaveInfo(saveInfo);
+            }
+
+            saveSlotUI.transform.SetSiblingIndex(i);
+        }
+    }
+
+    void makeSaveSlots(List<SaveInfo> sSlots) {
+        while (parentToAddThemTo.childCount > 0) {
+            DestroyImmediate(parentToAddThemTo.GetChild(0).gameObject);
+        }
+
+
+        foreach (SaveInfo s in sSlots) {
+            Debug.Log("SaveInfo : " + s);
+            string worldPath = s.path; //protection level on path and name are restricted
+            string worldName = s.name;
+            DateTime worldDate = s.lastModified;
 
             //use the above to populate a clickable button corresponding to a saved world
-            SaveSlotUI newSlot = Instantiate(saveSlotUIPrefab, parentToAddThemTo);
+            SaveSlotUI newSlot = newSaveSlotUI();
+
             newSlot.UpdateSaveInfo(s);
         }
 
-        maxSize = (uint) info.Count;
+        maxSize = (uint)saveSlotUIs.Count;
+    }
 
+
+    void Start()
+    {
+        saveSlotUIs = new List<SaveSlotUI>();
+
+        makeSaveSlots(DataService.Fetch());
     }
 
     private void OnEnable()
     {
         createNewWorldButton.onClick.AddListener(CreateWorldButton);
-
-        EventManager.UpdateSlotPosition += UpdateSlotPosition;
     }
     private void OnDisable()
     {
         createNewWorldButton.onClick.RemoveAllListeners();
-
-        EventManager.UpdateSlotPosition -= UpdateSlotPosition;
     }
 
+    public static void UpdateSlotPosition(SaveSlotUI slot, int change) {
+        int indexOfSaveSlot = saveSlotUIs.IndexOf(slot);
 
-    public void UpdateSlotPosition(string nameOfPath, uint newSlotPosition)
-    {
-        int findIndex = -1;
-        for (int i = 0; i < info.Count; i++)
-        {
-            if (info[i].path == nameOfPath)
-            {
-                findIndex = i;
-                break;
-            }
-        }
-        if (findIndex < 0)
-        {
+        int newVal = indexOfSaveSlot + change;
+
+        //Dont change it in this case cuz it wont change anything
+        if (newVal < 0) {
             return;
         }
-        SaveInfo newSave = info[findIndex];
-        newSave.order = newSlotPosition;
-        info[findIndex] = newSave;
-
-        info.RemoveAt(findIndex);
-
-        int insertPosition = findIndex > (int)newSlotPosition ? 1 : 0;
-
-        info.Insert((int) newSlotPosition + insertPosition, newSave);
-
-
-        //Recalc slot positions
-        for (int i = insertPosition+1; i < info.Count; i++)
-        {
-            SaveInfo newSave2 = info[findIndex];
-            newSave2.order = newSave2.order+1;
-            info[findIndex] = newSave2;
+        else if (newVal >= saveSlotUIs.Count) {
+            return;
         }
+        SaveSlotUI otherUI = saveSlotUIs[newVal];
+
+        saveSlotUIs[newVal] = slot;
+        saveSlotUIs[indexOfSaveSlot] = otherUI;
+
+
+        //Recalc positions and stuff
+        recalcPositions();
+    }
+
+    public static void DeleteSlot(SaveSlotUI slot) {
+        saveSlotUIs.Remove(slot);
+        slot.transform.parent = null;
+
+        recalcPositions();
     }
 
     public void CreateWorldButton()
     {
         Debug.Log("Creating world...");
 
-        SaveInfo s = DataService.NewSave(null, ++maxSize);
+        SaveInfo s = DataService.NewSave(newWorldInputField.text, ++maxSize);
 
-        SaveSlotUI newSlot = Instantiate(saveSlotUIPrefab, parentToAddThemTo);
+        SaveSlotUI newSlot = newSaveSlotUI();
         newSlot.UpdateSaveInfo(s);
     }
 

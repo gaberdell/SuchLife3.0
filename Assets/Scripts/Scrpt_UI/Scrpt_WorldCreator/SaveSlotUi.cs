@@ -30,14 +30,16 @@ public class SaveSlotUI : MonoBehaviour
         tmpInputField.onDeselect.AddListener(updateName);
         tmpInputField.onEndEdit.AddListener(updateName);
 
-        upArrow.onClick.AddListener(() => moveSlotAmount(1));
-        downArrow.onClick.AddListener(() => moveSlotAmount(-1));
+        deleteButton.onClick.AddListener(deleteSlot);
+        upArrow.onClick.AddListener(() => moveSlotAmount(-1));
+        downArrow.onClick.AddListener(() => moveSlotAmount(1));
     }
 
     private void OnDisable() {
         tmpInputField.onDeselect.RemoveAllListeners();
         tmpInputField.onEndEdit.RemoveAllListeners();
 
+        deleteButton.onClick.RemoveAllListeners();
         upArrow.onClick.RemoveAllListeners();
         downArrow.onClick.RemoveAllListeners();
 
@@ -50,19 +52,20 @@ public class SaveSlotUI : MonoBehaviour
         Debug.LogError("Do cloning in data service");
     }
 
+    private void deleteSlot() {
+        NewWorldUI.DeleteSlot(this);
+        DataService.DeleteSaveData(currentSaveInfo);
+        Destroy(this);
+    }
+
     private void moveSlotAmount(int amount) {
-
-        wasModifiedFromOriginalValue = true;
-
-        currentSaveInfo.order = (uint)((int) Math.Clamp(currentSaveInfo.order+amount,0,int.MaxValue));
-
-        EventManager.SetUpdateSlotPosition(currentSaveInfo.path, currentSaveInfo.order);
+        NewWorldUI.UpdateSlotPosition(this, amount);
     }
 
 
     private void updateName(string newName) {
         currentSaveInfo.name = newName;
-        topText.text = currentSaveInfo.name;
+        tmpInputField.text = currentSaveInfo.name;
 
         wasModifiedFromOriginalValue = true;
     }
@@ -70,6 +73,10 @@ public class SaveSlotUI : MonoBehaviour
     public void UpdateSaveInfo(SaveInfo newSaveInfo)
     {
         currentSaveInfo = newSaveInfo;
-        topText.text = newSaveInfo.name;
+        tmpInputField.text = newSaveInfo.name;
+    }
+
+    public SaveInfo GetSaveInfo() {
+        return currentSaveInfo;
     }
 }
