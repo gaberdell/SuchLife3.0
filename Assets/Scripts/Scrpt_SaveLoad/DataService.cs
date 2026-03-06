@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 // used by fetch; simple packet that contains a save's path, name, and last modified date and time
@@ -20,12 +21,15 @@ public class DataService {
     const string WORLD_DATA_SAVE_NAME = "WorldData.save";
     const string ENTITY_SAVE_NAME = "Entity.save";
 
+    private static string WORLD_SCENE_NAME = "TestScene";
+
     const uint currentSaveVersion = 0; //idk deal with 
 
     private static string savePath = Application.persistentDataPath + "/" + SAVES_FOLDER_NAME + "/";
 
     private static string saveName = null; // name of the current world's save file
     private static string worldName = null; // name of the current world
+    private static string currentSavePath = null; // path of current world's save file
 
     private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
@@ -140,13 +144,35 @@ public class DataService {
         return saveInfo;
     }
 
-    public static void CloneSaveData(SaveInfo saveInfo) {
-        //Directory.
-        Debug.LogError("Cloning save data unimplemented yet");
+    public static SaveInfo CloneSaveData(SaveInfo saveInfo) {
+        string pathName = saveInfo.path.Substring(saveInfo.path.LastIndexOf('/')+1);
+
+        pathName = EnsureUniqueName(savePath, pathName);
+
+        string almostFinishedPath = savePath + pathName;
+
+        Directory.CreateDirectory(almostFinishedPath);
+
+        foreach (string directory in Directory.GetDirectories(saveInfo.path + "/", "*", SearchOption.AllDirectories)) {
+            Directory.CreateDirectory(directory.Replace(saveInfo.path, almostFinishedPath));
+            Debug.Log(directory.Replace(saveInfo.path, almostFinishedPath));
+        }
+
+        foreach (string filePath in Directory.GetFiles(saveInfo.path + "/", "*.*", SearchOption.AllDirectories)) {
+            File.Copy(filePath, filePath.Replace(saveInfo.path, almostFinishedPath), true);
+        }
+
+        SaveInfo newSaveInfo = new SaveInfo();
+        newSaveInfo = saveInfo;
+        newSaveInfo.path = savePath + pathName;
+
+        File.WriteAllText(almostFinishedPath + "/" + BASIC_SAVE_NAME, JsonUtility.ToJson(newSaveInfo));
+
+        return newSaveInfo;
     }
 
     public static void DeleteSaveData(SaveInfo saveInfo) {
-        Directory.Delete(saveInfo.path);
+        Directory.Delete(saveInfo.path,true);
     }
 
 
@@ -186,29 +212,21 @@ public class DataService {
 
     // TOFIX: loads game at savePath, returns success through a boolean
     public static bool Load(SaveInfo saveInfo) {
-        String path = saveInfo.path;
+        string path = saveInfo.path;
 
-        if (!File.Exists(path)) {
+        currentSavePath = path;
+
+        if (!Directory.Exists(path)) {
             Debug.LogError("DataService: \"" + savePath + "\" does not exist!"); 
             return false;
         }
 
-        // reading from file
-        Debug.Log("DataService: Loading from \"" + path + "\"...");
-        List<string> gridData = File.ReadLines(path).ToList();
-
-        // loading world
-        // GridSaveLoad.LoadGrid(gridData); // TODO
-
         worldName = saveInfo.name; // currently loaded world name
         Debug.Log("DataService: World loaded!");
 
-        return true;
-    }
+        SceneManager.LoadScene(WORLD_SCENE_NAME);
 
-    // TODO: deletes game at given path, returns success through a boolean
-    public static bool Delete(string path) {
-        return false;
+        return true;
     }
   
     // retuns the save directory, which ends with a \

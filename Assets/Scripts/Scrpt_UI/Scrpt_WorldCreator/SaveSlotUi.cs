@@ -30,6 +30,8 @@ public class SaveSlotUI : MonoBehaviour
         tmpInputField.onDeselect.AddListener(updateName);
         tmpInputField.onEndEdit.AddListener(updateName);
 
+        playButton.onClick.AddListener(playGame);
+        cloneButton.onClick.AddListener(cloneSave);
         deleteButton.onClick.AddListener(deleteSlot);
         upArrow.onClick.AddListener(() => moveSlotAmount(-1));
         downArrow.onClick.AddListener(() => moveSlotAmount(1));
@@ -39,6 +41,8 @@ public class SaveSlotUI : MonoBehaviour
         tmpInputField.onDeselect.RemoveAllListeners();
         tmpInputField.onEndEdit.RemoveAllListeners();
 
+        playButton.onClick.RemoveAllListeners();
+        cloneButton.onClick.RemoveAllListeners();
         deleteButton.onClick.RemoveAllListeners();
         upArrow.onClick.RemoveAllListeners();
         downArrow.onClick.RemoveAllListeners();
@@ -48,14 +52,18 @@ public class SaveSlotUI : MonoBehaviour
         }
     }
 
+    private void playGame() {
+        Debug.Log(currentSaveInfo.path);
+        DataService.Load(currentSaveInfo);
+    }
+
     private void cloneSave() {
-        Debug.LogError("Do cloning in data service");
+        SaveInfo cloneSaveInfo = DataService.CloneSaveData(currentSaveInfo);
+        NewWorldUI.AddClone(this, cloneSaveInfo);
     }
 
     private void deleteSlot() {
-        NewWorldUI.DeleteSlot(this);
-        DataService.DeleteSaveData(currentSaveInfo);
-        Destroy(this);
+        DeleteCheckUI.DeleteSave(currentSaveInfo, this);
     }
 
     private void moveSlotAmount(int amount) {

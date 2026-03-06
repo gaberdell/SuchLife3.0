@@ -1,11 +1,14 @@
+using System;
+using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Graphs;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System;
-using TMPro;
 
 public class NewWorldUI : MonoBehaviour
 {
+
+    static NewWorldUI instance;
 
     [SerializeField]
     SaveSlotUI saveSlotUIPrefab;
@@ -24,8 +27,8 @@ public class NewWorldUI : MonoBehaviour
 
     static List<SaveSlotUI> saveSlotUIs;
 
-    SaveSlotUI newSaveSlotUI() {
-        SaveSlotUI newSlot = Instantiate(saveSlotUIPrefab, parentToAddThemTo);
+    static SaveSlotUI newSaveSlotUI() {
+        SaveSlotUI newSlot = Instantiate(instance.saveSlotUIPrefab, instance.parentToAddThemTo);
 
         saveSlotUIs.Add(newSlot);
         return newSlot;
@@ -51,7 +54,6 @@ public class NewWorldUI : MonoBehaviour
 
 
         foreach (SaveInfo s in sSlots) {
-            Debug.Log("SaveInfo : " + s);
             string worldPath = s.path; //protection level on path and name are restricted
             string worldName = s.name;
             DateTime worldDate = s.lastModified;
@@ -68,7 +70,15 @@ public class NewWorldUI : MonoBehaviour
 
     void Start()
     {
-        saveSlotUIs = new List<SaveSlotUI>();
+        if (instance == null) {
+            instance = this;
+        }
+        else {
+            Destroy(this);
+            return;
+        }
+
+            saveSlotUIs = new List<SaveSlotUI>();
 
         makeSaveSlots(DataService.Fetch());
     }
@@ -107,6 +117,18 @@ public class NewWorldUI : MonoBehaviour
     public static void DeleteSlot(SaveSlotUI slot) {
         saveSlotUIs.Remove(slot);
         slot.transform.parent = null;
+
+        recalcPositions();
+    }
+
+    public static void AddClone(SaveSlotUI nonClone, SaveInfo cloneSaveData) {
+        int index = saveSlotUIs.IndexOf(nonClone);
+
+        SaveSlotUI newCloneSaveSlot = Instantiate(instance.saveSlotUIPrefab, instance.parentToAddThemTo);
+
+        newCloneSaveSlot.UpdateSaveInfo(cloneSaveData);
+
+        saveSlotUIs.Insert(index, newCloneSaveSlot);
 
         recalcPositions();
     }
