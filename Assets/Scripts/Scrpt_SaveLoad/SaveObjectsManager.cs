@@ -4,12 +4,26 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+//Small helper class to encapsualte stuff
+public class MonoBehaviourSaveFields {
+
+    public MonoBehaviourSaveFields(Type saveType) {
+        MonobehaviorSaveType = saveType;
+        SaveFields = new List<FieldInfo> ();
+    }
+
+
+    public Type MonobehaviorSaveType;
+    public List<FieldInfo> SaveFields;
+}
+
+
 public class SaveObjectsManager : MonoBehaviour
 {
 
     Dictionary<GameObject, List<MonoBehaviour>> saveableMonoBehaviorQuickRetriveDictionary;
 
-    Dictionary<byte[], List<(Type, List<FieldInfo>)>> PrefabToMonoBehaviorFieldOrder;
+    Dictionary<byte[], List<MonoBehaviourSaveFields>> PrefabToMonoBehaviorFieldOrder;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,7 +31,7 @@ public class SaveObjectsManager : MonoBehaviour
 
         saveableMonoBehaviorQuickRetriveDictionary = new Dictionary<GameObject, List<MonoBehaviour>>();
 
-        PrefabToMonoBehaviorFieldOrder = new Dictionary<byte[], List<(Type, List<FieldInfo>)>>(new ByteArrayComparer());
+        PrefabToMonoBehaviorFieldOrder = new Dictionary<byte[], List<MonoBehaviourSaveFields>>(new ByteArrayComparer());
 
 
         foreach (KeyValuePair<byte[], GameObject> pair in SaveablePrefabManager.ByteToPrefabKey) {
@@ -78,15 +92,15 @@ public class SaveObjectsManager : MonoBehaviour
 
         int positionToReadDataFrom = idDelinatorPosition;
 
-        List<(Type, List<FieldInfo>)> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[id];
+        List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[id];
 
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
-            (Type, List<FieldInfo>) componentType = monoBehaviorAndTypeOrder[i];
+            MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
 
             MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
 
-            foreach (FieldInfo field in componentType.Item2) {
+            foreach (FieldInfo field in componentType.SaveFields) {
                 field.SetValue(component, ByteConvertor.ConvertBytesToValue(field.FieldType, (byte[])dataToSetTo.Skip(newStartPos), out bytesUsed));
                 newStartPos += bytesUsed;
             }
@@ -98,8 +112,8 @@ public class SaveObjectsManager : MonoBehaviour
         return new byte[1] {0};
     }
 
-    List<(Type, List<FieldInfo>)> AddPrefabSavableType(GameObject prefab) {
-        List<(Type, List<FieldInfo>)> monoToSort = new List<(Type, List<FieldInfo>)>();
+    List<MonoBehaviourSaveFields> AddPrefabSavableType(GameObject prefab) {
+        List<MonoBehaviourSaveFields> monoToSort = new List<MonoBehaviourSaveFields>();
 
         foreach (MonoBehaviour component in prefab.GetComponents<MonoBehaviour>()) {
             SaveableComponent saveableId = (SaveableComponent)Attribute.GetCustomAttribute(component.GetType(), typeof(SaveableComponent));
@@ -117,27 +131,38 @@ public class SaveObjectsManager : MonoBehaviour
 
 
                 if (newSavableAttribute != null) {
-                    (Type, List<FieldInfo>) ourTuple = monoToSort.Find(i => i.Item1 == component.GetType());
+                    MonoBehaviourSaveFields ourTuple = monoToSort.Find(i => i.MonobehaviorSaveType == component.GetType());
 
-                    if (ourTuple.Item1 != null) {
-                        ourTuple = (component.GetType(), new List<FieldInfo>());
-                        ourTuple.Item2.Add(fieldToCheck);
+
+                    if (ourTuple != null) {
+                        ourTuple.SaveFields.Add(fieldToCheck);
                     }
                     else {
-                        ourTuple.Item2.Add(fieldToCheck);
+                        ourTuple = new MonoBehaviourSaveFields(component.GetType());
+                        ourTuple.SaveFields.Add(fieldToCheck);
                     }
+
+                    monoToSort.Add(ourTuple);
                 }
+
             }
 
 
-            (Type, List<FieldInfo>) ourMono = monoToSort.Find(i => i.Item1 == component.GetType());
+            MonoBehaviourSaveFields ourMono = monoToSort.Find(i => i.MonobehaviorSaveType == component.GetType());
 
-            if (ourMono.Item1 != null) {
-                ourMono.Item2 = (List<FieldInfo>) ourMono.Item2.OrderBy(fieldInfo => ((Saveable)Attribute.GetCustomAttribute(fieldInfo, typeof(Saveable))).SaveName);
+            if (ourMono != null) {
+                IOrderedEnumerable<FieldInfo> orderedField = ourMono.SaveFields.OrderBy(fieldInfo => ((Saveable)Attribute.GetCustomAttribute(fieldInfo, typeof(Saveable))).SaveName); ;
+
+                ourMono.SaveFields = orderedField.ToList();
+
+
+                //ourMono.SaveFields = (List<FieldInfo>) ourMono.SaveFields.OrderBy(fieldInfo => ((Saveable)Attribute.GetCustomAttribute(fieldInfo, typeof(Saveable))).SaveName);
             }
         }
 
-        monoToSort.OrderBy(tuple => ((SaveableComponent)Attribute.GetCustomAttribute(tuple.Item1,typeof(SaveableComponent))).SaveClassName);
+        IOrderedEnumerable<MonoBehaviourSaveFields> orderedObjects = monoToSort.OrderBy(tuple => ((SaveableComponent)Attribute.GetCustomAttribute(tuple.MonobehaviorSaveType, typeof(SaveableComponent))).SaveClassName);
+
+        monoToSort = orderedObjects.ToList();
 
         return monoToSort;
     }
@@ -149,6 +174,7 @@ public class SaveObjectsManager : MonoBehaviour
         //Test input to spit something out
         if (Input.GetKeyDown(KeyCode.RightAlt)) {
             //Implement dis stuff
+            Debug.Log(saveableMonoBehaviorQuickRetriveDictionary.Count());
         }
     }
 }
