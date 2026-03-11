@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class EffectEntry
 {
-    public enum Tag {Attack, Health}
     public StatusEffect effect;
     public float timeLeft;
     public Sprite icon;
-    public Tag effectTag;
+    public BaseEffect.effectTag effectTag;
 
-    public EffectEntry(StatusEffect Ieffect, float duration, Sprite Iicon)
+    public EffectEntry(StatusEffect Ieffect, float duration, Sprite Iicon, BaseEffect.effectTag t)
     {
         effect = Ieffect;
         timeLeft = duration;
         icon = Iicon;
+        effectTag = t;
     }
 
 }

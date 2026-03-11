@@ -21,7 +21,7 @@ public class HandleTileCollisions : MonoBehaviour
         Player = GameObject.Find("Player");
         groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
         //create dictionary with tile effects.
-        effectTiles = GameObject.Find("GroundTilemap").GetComponent<TileEffectsDict>().getDict();
+        effectTiles = GameObject.Find("GroundTilemap").GetComponent<EffectsDict>().getEffectDict();
     }
 
     // Update is called once per frame

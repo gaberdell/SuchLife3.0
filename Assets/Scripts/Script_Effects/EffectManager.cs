@@ -28,4 +28,14 @@ public class EffectManager : MonoBehaviour
             effect.timeLeft -= Time.deltaTime;
         }
     }
+
+    public List<EffectEntry> getEffectsWithTag(BaseEffect.effectTag tag)
+    {
+        List<EffectEntry> r = new List<EffectEntry>();
+        foreach(EffectEntry effect in effects)
+        {
+            if(effect.effectTag == tag) r.Add(effect);
+        }
+        return r;
+    }
 }

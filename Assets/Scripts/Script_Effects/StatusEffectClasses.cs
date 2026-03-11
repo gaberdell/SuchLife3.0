@@ -5,6 +5,8 @@ using UnityEngine;
 [Serializable]
 public class BaseEffect
 {
+    public enum effectTag { Attack, Health }
+    public effectTag tag;
     [SerializeField] int duration;
     virtual public void ApplyEffect(GameObject target) { }
     virtual public void onEffectRemove(GameObject target) { }
@@ -18,6 +20,7 @@ public class HurtEffect : BaseEffect
 
     public HurtEffect(int dmg, int inter)
     {
+        tag = effectTag.Health;
         damageAmount = dmg;
         intervals = inter;
     }
@@ -41,7 +44,12 @@ public class HurtEffect : BaseEffect
 [Serializable]
 public class DamageBuff : BaseEffect
 {
-    [SerializeField] int buffAmount;
+    public DamageBuff(int buffAmount)
+    {
+        tag = effectTag.Attack;
+    }
+    
+    [SerializeField] int buffAmount; // is a percent. e.g. 100 is 100% damage boost
     public override void ApplyEffect(GameObject target)
     {
         
