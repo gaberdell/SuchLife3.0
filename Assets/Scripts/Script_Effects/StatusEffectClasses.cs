@@ -26,7 +26,6 @@ public class HurtEffect : BaseEffect
     }
     public override void ApplyEffect(GameObject target)
     {
-        Debug.Log("apply hurt effect");
         //damage;
         Health targetH = target.GetComponent<Health>();
         if (targetH == null)

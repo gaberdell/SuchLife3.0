@@ -11279,6 +11279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 756655825}
   - component: {fileID: 756655824}
+  - component: {fileID: 756655826}
   m_Layer: 0
   m_Name: EffectManager
   m_TagString: Untagged
@@ -11313,6 +11314,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &756655826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756655823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73deff900ea1eff4e9f652aafb8cdbda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spikeUpTile: {fileID: 11400000, guid: ce5b856fd1fba7e4aabecbd37d38604c, type: 2}
+  pitTile: {fileID: 0}
 --- !u!1 &761426468
 GameObject:
   m_ObjectHideFlags: 0
@@ -29021,7 +29036,6 @@ GameObject:
   - component: {fileID: 1990606950}
   - component: {fileID: 1990606949}
   - component: {fileID: 1990606951}
-  - component: {fileID: 1990606952}
   m_Layer: 0
   m_Name: GroundTilemap
   m_TagString: Untagged
@@ -33502,20 +33516,6 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
---- !u!114 &1990606952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1990606947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6ef12ab85770e341a3125fee2d23dfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spikeUpTile: {fileID: 11400000, guid: ce5b856fd1fba7e4aabecbd37d38604c, type: 2}
-  pitTile: {fileID: 0}
 --- !u!1 &1992036425
 GameObject:
   m_ObjectHideFlags: 0
@@ -35510,5 +35510,5 @@ SceneRoots:
   - {fileID: 1330200884}
   - {fileID: 2327471525985266752}
   - {fileID: 1490045384}
-  - {fileID: 64125144}
   - {fileID: 756655825}
+  - {fileID: 64125144}

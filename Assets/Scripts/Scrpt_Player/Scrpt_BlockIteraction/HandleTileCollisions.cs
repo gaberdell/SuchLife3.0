@@ -21,7 +21,7 @@ public class HandleTileCollisions : MonoBehaviour
         Player = GameObject.Find("Player");
         groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
         //create dictionary with tile effects.
-        effectTiles = GameObject.Find("GroundTilemap").GetComponent<EffectsDict>().getEffectDict();
+        effectTiles = GameObject.Find("EffectManager").GetComponent<EffectsDict>().getEffectDict();
     }
 
     // Update is called once per frame
@@ -50,7 +50,9 @@ public class HandleTileCollisions : MonoBehaviour
                     //Debug.Log("player made contact with tile " + t.name);
                     if (effectTiles.ContainsKey(t))
                     {
-                        Debug.Log("player made contact with interactive tile " + t.name + ". Applying associated effect " );
+                        //Debug.Log(groundTilemap.GetAnimationFrame(cellp));
+                        if (t.name == "FloorSpike" && groundTilemap.GetAnimationFrame(cellp) == 1) return; //dont hurt on spikes that are retracted 
+                        //Debug.Log("player made contact with interactive tile " + t.name + ". Applying associated effect " );
                         effectTiles[t].ApplyEffects(Player);
                     }
                 }

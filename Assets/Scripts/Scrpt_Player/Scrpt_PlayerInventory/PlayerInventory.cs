@@ -471,19 +471,11 @@ public class PlayerInventory : MonoBehaviour
             // Damage boost if values are set
             if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
             {
-                PlayerAttack playerAttack = GetComponent<PlayerAttack>();
-                if (playerAttack != null)
-                {
-                    playerAttack.ApplyDamageBoost(consumable.damageBoostAmount, consumable.boostDuration);
-                    used = true;
+                //
+                used = true;
 
-                    // Show MG Boost Icon for the buff duration
-                    PlayerBuffUI buffUI = GetComponent<PlayerBuffUI>();
-                    if (buffUI != null)
-                    {
-                        buffUI.ShowMgBoostIcon(consumable.boostDuration);
-                    }
-                }
+                    
+                
             }
 
             if (used)
