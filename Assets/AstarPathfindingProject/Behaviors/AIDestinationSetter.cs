@@ -20,7 +20,7 @@ namespace Pathfinding {
 
 		void Start()
         {
-            target = GameObject.Find("Player").transform;
+			//target = GameObject.Find("Player").transform;
         }
 
 		void OnEnable () {

@@ -17,6 +17,7 @@ public class Fox : Mob
     [SerializeField] private float explosionRadius;
     [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
+    private AIDestinationSetter pathSetter;
 
     private float distance;
     private bool isExploding = false;
@@ -35,10 +36,17 @@ public class Fox : Mob
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
+        pathSetter = GetComponent<AIDestinationSetter>();
         objectInScene = gameObject;
+
+        GameObject targetObj = new GameObject();
+        target = targetObj.transform;
+        target.position = new Vector3(0, 0, 0);
+        pathSetter.target = target;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-        target = GameObject.Find("Player").transform;//should change logic
+        //add a clock to trigger randomMovement()
+        InvokeRepeating(nameof(randomTargetPos),0.1f,2f);
     }
     
 
@@ -49,6 +57,10 @@ public class Fox : Mob
 
         distance = Vector2.Distance(transform.position, target.position);
 
+        if  (pathSetter.target != target)
+        {
+            pathSetter.target = target;
+        }
         if (distance <= aggroDistance && !isExploding)
         {
             path.enabled = true;
@@ -63,6 +75,16 @@ public class Fox : Mob
             isExploding = true;  
             //StartCoroutine(Explode());
         }
+    }
+
+    void randomTargetPos()
+    {
+        Vector3 pos = new Vector3();
+        pos.x = Random.Range(-3f, 3f);
+        pos.y = Random.Range(-3f, 3f);
+        pos.z = 0f;
+        target.position = pos;
+        
     }
 
     void getAttacked()

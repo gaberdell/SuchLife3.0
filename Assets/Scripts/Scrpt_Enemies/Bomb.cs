@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using NUnit.Framework.Constraints;
 using Pathfinding;
 using UnityEngine;
@@ -12,6 +12,7 @@ public class Bomb : Mob
     [SerializeField] private ParticleSystem particles;
 
     private Transform target;
+    private AIDestinationSetter pathSetter;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
@@ -35,11 +36,12 @@ public class Bomb : Mob
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
+        pathSetter = GetComponent<AIDestinationSetter>();
         target = GameObject.Find("Player").transform;
+        pathSetter.target = target;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-
     }
 
     void Update()
