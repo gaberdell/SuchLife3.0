@@ -210,6 +210,24 @@ public class DataService {
         return true;
     }
 
+    //Loads file through pathname
+    public static bool Load(string path) {
+
+        if (!Directory.Exists(path)) {
+            Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
+            return false;
+        }
+
+        SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
+
+        worldName = saveInfo.name; // currently loaded world name
+        Debug.Log("DataService: World loaded!");
+
+        SceneManager.LoadScene(WORLD_SCENE_NAME);
+
+        return true;
+    }
+
     // TOFIX: loads game at savePath, returns success through a boolean
     public static bool Load(SaveInfo saveInfo) {
         string path = saveInfo.path;

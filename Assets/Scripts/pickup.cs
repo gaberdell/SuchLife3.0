@@ -52,8 +52,6 @@ public class Pickup : MonoBehaviour
 
         if (isBeingPulled && targetPlayer != null)
         {
-            Debug.Log("pulling");
-
             // Move item toward the player
             transform.position = Vector3.MoveTowards(
                 transform.position,
