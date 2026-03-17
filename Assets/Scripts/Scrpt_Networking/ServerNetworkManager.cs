@@ -179,7 +179,7 @@ public class ServerNetworkManager : MonoBehaviour
 
     static void SendToAllWithUdp() {
         using (PacketWrapper packet = new PacketWrapper()) {
-            packet.AddBytes(new byte[1] { 13 });
+            packet.AddBytes(new byte[1] { 14 });
             byte[] data = packet.GetBytes();
 
             foreach (var client in tcpClients.Values) {

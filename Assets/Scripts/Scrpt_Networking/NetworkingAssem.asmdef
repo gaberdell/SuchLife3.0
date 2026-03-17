@@ -1,3 +1,16 @@
 {
-	"name": "NetworkingAssem"
+    "name": "NetworkingAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c103825ea3e47ae4985e226a520ff731"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

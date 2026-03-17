@@ -21,7 +21,7 @@ public class DataService {
     const string WORLD_DATA_SAVE_NAME = "WorldData.save";
     const string ENTITY_SAVE_NAME = "Entity.save";
 
-    private static string WORLD_SCENE_NAME = "TestScene";
+    private static string WORLD_SCENE_NAME = "MainGameplayScene";
 
     const uint currentSaveVersion = 0; //idk deal with 
 
@@ -210,6 +210,22 @@ public class DataService {
         return true;
     }
 
+    public static AsyncOperation LoadAsync(string path) {
+        if (!Directory.Exists(path)) {
+            Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
+            return null;
+        }
+
+        currentSavePath = path;
+
+        SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
+
+        worldName = saveInfo.name; // currently loaded world name
+        Debug.Log("DataService: World loaded!");
+
+        return SceneManager.LoadSceneAsync(WORLD_SCENE_NAME);
+    }
+
     //Loads file through pathname
     public static bool Load(string path) {
 
@@ -217,6 +233,8 @@ public class DataService {
             Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
             return false;
         }
+
+        currentSavePath = path;
 
         SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
 
