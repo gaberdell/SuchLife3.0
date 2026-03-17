@@ -18,7 +18,7 @@ public class MobDrop : MonoBehaviour
         if (health != null)
         {
             health.onDeath.AddListener(AttemptDrop);
-            Debug.Log($"[MobDrop] Subscribed to onDeath on {gameObject.name}");
+            //Debug.Log($"[MobDrop] Subscribed to onDeath on {gameObject.name}");
         }
         else
         {
@@ -28,7 +28,7 @@ public class MobDrop : MonoBehaviour
 
     public void AttemptDrop()
     {
-        Debug.Log($"[MobDrop] AttemptDrop called on {gameObject.name}");
+        //Debug.Log($"[MobDrop] AttemptDrop called on {gameObject.name}");
 
         if (dropItems == null || dropItems.Count == 0)
         {
@@ -61,7 +61,7 @@ public class MobDrop : MonoBehaviour
                 if (dropItem.itemPrefab != null)
                 {
                     Instantiate(dropItem.itemPrefab, transform.position, Quaternion.identity);
-                    Debug.Log($"[MobDrop] Dropped {dropItem.itemPrefab.name} from {gameObject.name}");
+                    //Debug.Log($"[MobDrop] Dropped {dropItem.itemPrefab.name} from {gameObject.name}");
                 }
                 else
                 {

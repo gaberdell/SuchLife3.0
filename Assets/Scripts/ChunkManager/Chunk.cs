@@ -198,6 +198,7 @@ public class Chunk
         groundTilemap.SetTilesBlock(chunkBounds, floorTilesFlat);
         TileBase[] wallTilesFlat = (wallTiles.SelectMany(innerList => innerList).ToList()).ToArray();
         wallTilemap.SetTilesBlock(chunkBounds, wallTilesFlat);
+        syncNewAnimatedTiles(groundTilemap);
         //activate chunk entities 
         for (int i = 0; i < chunkMobs.Count; i++)
         {
@@ -214,6 +215,21 @@ public class Chunk
             }
             
             
+        }
+    }
+
+    public void syncNewAnimatedTiles(Tilemap groundTilemap)
+    {
+        float t = ChunkManager.getAnimationTime();
+        Debug.Log("time: " + t);
+        
+        //set animation time of all tiles in this chunk to 0
+        for(int i = 0;i < size; i++)
+        {
+            for(int j = 0;j < size; j++)
+            {
+                groundTilemap.SetAnimationTime(new Vector3Int(i + worldX - offset, j + worldY - offset, 0), t);
+            }
         }
     }
 

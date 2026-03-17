@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine.WSA;
 using Codice.CM.Common;
+using UnityEngine.Video;
 
 public static class ChunkManager 
 {
@@ -241,6 +242,19 @@ public static class ChunkManager
         return chunkGrid[chunkY][chunkX];
     }
 
+    static public float getAnimationTime()
+    {
+        Vector3Int animTileLoc = new Vector3Int(0, -17);
+        //check if anim tile exists
+        float time = groundTilemap.GetAnimationTime(animTileLoc);
+        if (time == 0)
+        {
+            Debug.Log("no global animation tile found!");
+        }
+        return time;
+    }
+
+
     //RENDERING
 
     //called whenever the player moves into a new chunk
@@ -309,6 +323,6 @@ public static class ChunkManager
 
     }
 
-
+    
     
 }
