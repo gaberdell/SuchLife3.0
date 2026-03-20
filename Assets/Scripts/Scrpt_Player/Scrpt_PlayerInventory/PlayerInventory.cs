@@ -21,6 +21,8 @@ public class PlayerInventory : MonoBehaviour
     public GameObject fullInventory;
     private string fullInventoryTag = "FullInventory";
 
+    private PlayerInfo playerInfo;
+
 
     //List of all the panels in Hotbar and Fullnav.
     public List<GameObject> hotbar = new List<GameObject>(); 
@@ -48,7 +50,7 @@ public class PlayerInventory : MonoBehaviour
         inventory = new List<InventorySlot>();
         //Get panels as hotbar.
 
-      
+        playerInfo = GetComponent<PlayerInfo>();
         
         //Get all children of hotbarPanel (So every hotbar button) and add them to Hotbar.
 

@@ -42,9 +42,12 @@ namespace BlockIteraction
         [SerializeField]
         GameObject droppedBlockItem;
 
+        private PlayerInfo playerInfo;
+
         void Start()
         {
             inputHandler = InputHandler.Instance;
+            playerInfo = GetComponent<PlayerInfo>();
         }
 
         private void OnEnable() {
@@ -146,7 +149,7 @@ namespace BlockIteraction
                         ChunkManager.SetTile(hitVal, tileToPlace, true);
 
                         //remove placed block from inventory
-                        playerInfo.player.GetComponent<PlayerInventory>().RemoveItem(playerInfo.heldItemIndex);
+                        playerInfo.Player.GetComponent<PlayerInventory>().RemoveItem(playerInfo.heldItemIndex);
                     }
                 } else
                 {

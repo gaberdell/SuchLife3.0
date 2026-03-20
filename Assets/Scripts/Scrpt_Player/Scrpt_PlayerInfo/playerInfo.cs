@@ -1,19 +1,25 @@
 using System.Net.Sockets;
 using UnityEngine;
 
-public static class playerInfo 
+public class PlayerInfo : MonoBehaviour
 {
     //data class to store attributes concerning the player so multiple scripts can access
     //put attributes like health in here instead of the health class
 
     //held item info
-    public static GameObject player = GameObject.Find("Player"); //reference to player object so only has to be done once
-    public static string heldType;
-    private static Item heldItem;
-    public static int heldItemIndex = 0;
-    public static PlayerItemHoldView heldItemView = GameObject.Find("ViewInHand").GetComponent<PlayerItemHoldView>();
-    
-    public static Item HeldItem
+    public GameObject Player { get; private set; }
+    private string username;
+    private string heldType;
+    private Item heldItem;
+    public int heldItemIndex = 0;
+    public PlayerItemHoldView heldItemView;
+
+    private void Start()
+    {
+        Player = gameObject;
+        //heldItemView = GameObject.Find("ViewInHand").GetComponent<PlayerItemHoldView>();
+    }
+    public Item HeldItem
     {
         get
         {
