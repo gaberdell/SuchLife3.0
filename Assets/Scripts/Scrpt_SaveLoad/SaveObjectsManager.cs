@@ -25,7 +25,6 @@ public class SaveObjectsManager : MonoBehaviour
 
     Dictionary<byte[], List<MonoBehaviourSaveFields>> PrefabToMonoBehaviorFieldOrder;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
 
@@ -65,7 +64,7 @@ public class SaveObjectsManager : MonoBehaviour
             }
         }
 
-        listToAdd = (List<MonoBehaviour>) listToAdd.OrderBy(comp => ((SaveableComponent)Attribute.GetCustomAttribute(comp.GetType(), typeof(SaveableComponent))).SaveClassName);
+        listToAdd = listToAdd.OrderBy(comp => ((SaveableComponent)Attribute.GetCustomAttribute(comp.GetType(), typeof(SaveableComponent))).SaveClassName).ToList();
 
         saveableMonoBehaviorQuickRetriveDictionary.Add(prefabAdded, listToAdd);
     }

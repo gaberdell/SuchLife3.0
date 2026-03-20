@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Enemy
   - Grid
+  - PlaceTileMap
+  - GameUI
+  - HotbarPanel
+  - FullInventory
+  - CraftingUI
   layers:
   - Default
   - TransparentFX

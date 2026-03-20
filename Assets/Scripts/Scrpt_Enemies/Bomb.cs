@@ -1,6 +1,5 @@
 ﻿using System.Collections;
-using NUnit.Framework.Constraints;
-using Pathfinding;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,6 +11,7 @@ public class Bomb : Mob
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
+    private List<Transform> targets;
     private Transform target;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
@@ -39,12 +39,32 @@ public class Bomb : Mob
     //}
     void Start()
     {
+        targets = new List<Transform>();
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
-        target = GameObject.Find("Player").transform;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
 
+    }
+
+    private void OnEnable() {
+        EventManager.LocalGameObjectPlayerAddedToScene += addPlayerTarget;
+        EventManager.OnlinePlayerJoined += addPlayerTarget;
+        EventManager.OnlinePlayerLeft += removePlayerTarget;
+    }
+
+    private void OnDisable() {
+        EventManager.LocalGameObjectPlayerAddedToScene -= addPlayerTarget;
+        EventManager.OnlinePlayerJoined -= addPlayerTarget;
+        EventManager.OnlinePlayerLeft -= removePlayerTarget;
+    }
+
+    void addPlayerTarget(GameObject player) {
+        targets.Add(player.transform);
+    }
+
+    void removePlayerTarget(GameObject player) {
+        targets.Remove(player.transform);
     }
 
     void Update()
@@ -52,9 +72,19 @@ public class Bomb : Mob
         //updateKnockback(); //inherited from mob parent
         updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
-        distance = Vector2.Distance(transform.position, target.position);
 
-        if (distance <= aggroDistance && !isExploding)
+        float smallestDistance = float.MaxValue;
+        foreach (Transform t in targets) {
+            float newDistance = Vector2.Distance(transform.position, t.position);
+            if (newDistance < smallestDistance) {
+                target = t;
+                smallestDistance = newDistance;
+            }
+        }
+
+        //distance = Vector2.Distance(transform.position, target.position);
+
+        if (smallestDistance <= aggroDistance && !isExploding)
         {
             path.enabled = true;
         }
@@ -63,7 +93,7 @@ public class Bomb : Mob
             animator.SetBool("Walk", true);
         }
 
-        if (distance <= explodeAtDistance && !isExploding)
+        if (smallestDistance <= explodeAtDistance && !isExploding)
         {
             isExploding = true;  
             StartCoroutine(Explode());

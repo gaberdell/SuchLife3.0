@@ -40,6 +40,8 @@ public class NetworkLoadInto : MonoBehaviour
     IEnumerator LoadIntoServerScene(ServerSettings serverSettings) {
         AsyncOperation asyncLoad = DataService.LoadAsync(serverSettings.PathOfLoadInto);
 
+        DataService.IsMultiplayer = true;
+
         if (asyncLoad == null) {
             Debug.LogError("Probably a bad path type can't load into it");
         }

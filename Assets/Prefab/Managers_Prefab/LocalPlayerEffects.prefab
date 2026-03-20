@@ -10363,7 +10363,7 @@ GameObject:
   - component: {fileID: 5568127662593211484}
   m_Layer: 5
   m_Name: HotbarPanel
-  m_TagString: Untagged
+  m_TagString: HotbarPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14325,7 +14325,7 @@ GameObject:
   - component: {fileID: 8115472098908229350}
   m_Layer: 5
   m_Name: GameUI
-  m_TagString: Untagged
+  m_TagString: GameUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20539,7 +20539,7 @@ GameObject:
   - component: {fileID: 6004815929630329327}
   m_Layer: 5
   m_Name: CraftingUI
-  m_TagString: Untagged
+  m_TagString: CraftingUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21302,7 +21302,7 @@ GameObject:
   - component: {fileID: 4175471094415692876}
   m_Layer: 5
   m_Name: FullInventory
-  m_TagString: Untagged
+  m_TagString: FullInventory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -4492,7 +4492,7 @@ GameObject:
   - component: {fileID: 2625295768698388540}
   m_Layer: 7
   m_Name: PlaceableTileMap
-  m_TagString: Untagged
+  m_TagString: PlaceTileMap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

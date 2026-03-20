@@ -26,6 +26,9 @@ public class EventManager : MonoBehaviour
 
     public static event GameObjectSingleDelegate PrefabRemovedFromScene;
 
+    public static event GameObjectSingleDelegate LocalGameObjectPlayerAddedToScene;
+    public static event GameObjectSingleDelegate OnlinePlayerJoined;
+    public static event GameObjectSingleDelegate OnlinePlayerLeft;
 
     public static EventManager Instance;
 
@@ -60,6 +63,19 @@ public class EventManager : MonoBehaviour
     public static void SetPrefabAddedToScene(GameObject gameObject) {
         PrefabAddedToScene?.Invoke(gameObject);
     }
+
+    public static void SetLocalGameObjectPlayerAddedToScene(GameObject player) {
+        LocalGameObjectPlayerAddedToScene?.Invoke(player);
+    }
+
+    public static void SetOnlinePlayerJoined(GameObject player) {
+        OnlinePlayerJoined?.Invoke(player);
+    }
+
+    public static void SetOnlinePlayerLeft(GameObject player) {
+        OnlinePlayerLeft?.Invoke(player);
+    }
+
     void Awake()
     {
         if (Instance != null)

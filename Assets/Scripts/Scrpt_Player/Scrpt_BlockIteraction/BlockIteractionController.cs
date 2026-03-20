@@ -12,6 +12,9 @@ namespace BlockIteraction
         Tilemap placeTileMap;
 
         [SerializeField]
+        string placeTileMapTag = "PlaceTileMap";
+
+        [SerializeField]
         BlockIteractionView playerBlockView;
 
         InputHandler inputHandler;
@@ -44,6 +47,18 @@ namespace BlockIteraction
             inputHandler = InputHandler.Instance;
         }
 
+        private void OnEnable() {
+            EventManager.LocalGameObjectPlayerAddedToScene += linkToScenesTileMapAndBlockInteraction;
+        }
+
+        private void OnDisable() {
+            EventManager.LocalGameObjectPlayerAddedToScene -= linkToScenesTileMapAndBlockInteraction;
+        }
+
+        void linkToScenesTileMapAndBlockInteraction(GameObject player) {
+            playerBlockView = FindFirstObjectByType<BlockIteractionView>();
+            placeTileMap = GameObject.FindGameObjectWithTag(placeTileMapTag).GetComponent<Tilemap>();
+        }
         private void OnDrawGizmos()
         {
             if (listOfStepPoints != null)
@@ -63,7 +78,8 @@ namespace BlockIteraction
 
         void Update()
         {
-            if (inputHandler.IsMouseEnabled == true)
+            //Null guard because it takes a sec for localGameObjectPlayerAddedToScene to be called
+            if (inputHandler.IsMouseEnabled == true && playerBlockView != null)
             {
                 Vector3 mousePos = inputHandler.GetMousePos();
                 mousePos = Camera.main.ScreenToWorldPoint(mousePos);

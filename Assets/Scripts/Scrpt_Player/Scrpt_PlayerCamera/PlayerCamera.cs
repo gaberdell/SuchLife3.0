@@ -21,23 +21,29 @@ public class PlayerCamera : MonoBehaviour
 
     //TODO : Link up to event system to add cam shake
     //TODO : Potentially make a mode where the thing goes infront of the player?
-    /*private void OnEnable()
-    {
-        
+    private void OnEnable() {
+        EventManager.LocalGameObjectPlayerAddedToScene += SetPlayer;
     }
 
-    private void OnDisable()
-    {
-        
-    }*/
+    private void OnDisable() {
+        EventManager.LocalGameObjectPlayerAddedToScene -= SetPlayer;
+    }
 
     void Start()
     {
         inputHandler = InputHandler.Instance;
     }
 
+    void SetPlayer(GameObject player) {
+        target = player.transform;
+    }
+
     void Update()
     {
+        if (target == null) {
+            return;
+        }
+
         //TODO : Maybe add hotkey to toggle this?
         if (inputHandler.IsMouseEnabled == true)
         {

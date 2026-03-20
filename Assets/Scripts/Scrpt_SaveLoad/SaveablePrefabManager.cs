@@ -131,6 +131,8 @@ public class SaveablePrefabManager : MonoBehaviour
 
     void OnSuccessfulAwake()
     {
+        currentlyActiveEntities = new byte[1] { 0 };
+
         PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
         SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
 

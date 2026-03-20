@@ -16,6 +16,9 @@ public struct SaveInfo {
 }
 public class DataService {
 
+    public static bool IsLocalSave = true;
+    public static bool IsMultiplayer = false;
+
     const string SAVES_FOLDER_NAME = "Saves";
     const string BASIC_SAVE_NAME = "Basic.json";
     const string WORLD_DATA_SAVE_NAME = "WorldData.save";
@@ -182,6 +185,14 @@ public class DataService {
         File.WriteAllText(basicSave, JsonUtility.ToJson(saveInfoToResave));
     }
 
+    public static byte[] LoadEntitySaveData() {
+        return File.ReadAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME);
+    }
+
+    public static void SaveEntitySaveData(byte[] saveData) {
+        File.WriteAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME, saveData);
+    }
+
   // saves current scene into savePath + name, returns success through a boolean
   // NOTE: as of 2025-04-04, TestScene is what is saved
     public static bool SaveCurr() {
@@ -210,36 +221,48 @@ public class DataService {
         return true;
     }
 
-    public static AsyncOperation LoadAsync(string path) {
-        if (!Directory.Exists(path)) {
-            Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
-            return null;
+    public static AsyncOperation LoadAsync(string path, bool isLocalSave = false) {
+        IsLocalSave = isLocalSave;
+
+        IsMultiplayer = false;
+
+        //If Data is gotten from server no point in trying to grab local save
+        if (IsLocalSave) {
+            if (!Directory.Exists(path)) {
+                Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
+                return null;
+            }
+
+            currentSavePath = path;
+
+            SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
+
+            worldName = saveInfo.name; // currently loaded world name
+            Debug.Log("DataService: World loaded!");
         }
-
-        currentSavePath = path;
-
-        SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
-
-        worldName = saveInfo.name; // currently loaded world name
-        Debug.Log("DataService: World loaded!");
 
         return SceneManager.LoadSceneAsync(WORLD_SCENE_NAME);
     }
 
     //Loads file through pathname
-    public static bool Load(string path) {
+    public static bool Load(string path, bool isLocalSave = true) {
+        IsLocalSave = isLocalSave;
 
-        if (!Directory.Exists(path)) {
-            Debug.LogError("DataService: \"" + savePath + "\" does not exist!");
-            return false;
+        IsMultiplayer = false;
+
+        if (isLocalSave) {
+            if (!Directory.Exists(path)) {
+                Debug.LogError("DataService string path: \"" + path + "\" does not exist!");
+                return false;
+            }
+
+            currentSavePath = path;
+
+            SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path+"/"+BASIC_SAVE_NAME));
+
+            worldName = saveInfo.name; // currently loaded world name
+            Debug.Log("DataService: World loaded!");
         }
-
-        currentSavePath = path;
-
-        SaveInfo saveInfo = JsonUtility.FromJson<SaveInfo>(File.ReadAllText(path));
-
-        worldName = saveInfo.name; // currently loaded world name
-        Debug.Log("DataService: World loaded!");
 
         SceneManager.LoadScene(WORLD_SCENE_NAME);
 
@@ -247,22 +270,17 @@ public class DataService {
     }
 
     // TOFIX: loads game at savePath, returns success through a boolean
-    public static bool Load(SaveInfo saveInfo) {
-        string path = saveInfo.path;
+    public static bool Load(SaveInfo saveInfo, bool isLocalSave = true) {
+        if (isLocalSave) {
+            string path = saveInfo.path;
 
-        currentSavePath = path;
-
-        if (!Directory.Exists(path)) {
-            Debug.LogError("DataService: \"" + savePath + "\" does not exist!"); 
-            return false;
+            if (!Directory.Exists(path)) {
+                Debug.LogError("DataService: \"" + path + "\" does not exist!"); 
+                return false;
+            }
         }
 
-        worldName = saveInfo.name; // currently loaded world name
-        Debug.Log("DataService: World loaded!");
-
-        SceneManager.LoadScene(WORLD_SCENE_NAME);
-
-        return true;
+        return Load(saveInfo.path, isLocalSave);
     }
   
     // retuns the save directory, which ends with a \

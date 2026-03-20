@@ -97,22 +97,17 @@ GameObject:
   m_Component:
   - component: {fileID: 1388555853973864592}
   - component: {fileID: 6572243479051330681}
-  - component: {fileID: 1002083403083453970}
+  - component: {fileID: 8176172909928076397}
   - component: {fileID: 4676323711992404335}
   - component: {fileID: 4443898094220891813}
-  - component: {fileID: 3652674543495926234}
   - component: {fileID: 8144485322623002897}
   - component: {fileID: 555347601614779550}
   - component: {fileID: 4639531686063886144}
   - component: {fileID: 1763410591183112899}
   - component: {fileID: 3422614386554052806}
   - component: {fileID: 7718391250072885259}
-  - component: {fileID: 3538825002121088653}
-  - component: {fileID: 3057467759802501850}
-  - component: {fileID: 2667954505317031671}
-  - component: {fileID: 7930994084459307035}
   m_Layer: 0
-  m_Name: Player
+  m_Name: OtherPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,7 +186,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1002083403083453970
+--- !u!114 &8176172909928076397
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -200,7 +195,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3096622124833139852}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a88d376725931f044adc1185b2e23054, type: 3}
+  m_Script: {fileID: 11500000, guid: 344a6fbf8e162694bacf335e49cca3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4676323711992404335
@@ -238,26 +233,6 @@ MonoBehaviour:
   playerAnimator: {fileID: 3422614386554052806}
   blendName: IdleToWalk
   speedOfWalkName: AnimWalkSpeed
---- !u!114 &3652674543495926234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3096622124833139852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75201586903ff3f44bdb847a14c6e371, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placeTileMap: {fileID: 0}
-  placeTileMapTag: PlaceTileMap
-  playerBlockView: {fileID: 0}
-  tileToPlace: {fileID: 11400000, guid: ebb44583d311c254180368f9bbc4ef15, type: 2}
-  maxRange: 6
-  placingMinCoolDown: 0.1
-  destroyingMinCoolDown: 0.1
-  droppedBlockItem: {fileID: 5149180284610993495, guid: b4799d7f0a931c447a345539920b0c2b, type: 3}
 --- !u!58 &8144485322623002897
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -5157,80 +5132,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 1000
   currentHealth: 1000
-  showHealthText: 1
+  showHealthText: 0
   onDeath:
     m_PersistentCalls:
       m_Calls: []
   onDamageTaken:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3538825002121088653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3096622124833139852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd216bddb02969b459a2a1427798aae1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackRange: 2
-  attackDamage: 20
-  attackCooldown: 1
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  attackPoint: {fileID: 1388555853973864592}
-  animator: {fileID: 3422614386554052806}
---- !u!114 &3057467759802501850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3096622124833139852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02417d5ba773c454aa08edcf139b5e35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventory: []
-  gameUI: {fileID: 0}
-  hotbarPanel: {fileID: 0}
-  fullInventory: {fileID: 0}
-  hotbar: []
-  fullInv: []
-  selectedItem: -1
-  empty: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  CraftingUI: {fileID: 0}
---- !u!114 &2667954505317031671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3096622124833139852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fdef3e1ffdf885468b9e93538a75aa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7930994084459307035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3096622124833139852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0f78e6ba6cc0d64db0c10f1f6b5d08a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mgBoostIcon: {fileID: 0}
-  timerText: {fileID: 0}
 --- !u!1 &4152069555864584868
 GameObject:
   m_ObjectHideFlags: 0
