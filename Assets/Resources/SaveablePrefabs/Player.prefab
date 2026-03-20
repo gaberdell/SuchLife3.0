@@ -5244,11 +5244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937ae1408b30a9f4db9da1e74c44305b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  username: 
-  heldType: 
   heldItemIndex: 0
-  heldItemView: {fileID: 0}
+  currentlyHeld: {fileID: 8132244114368443803}
+  CurrentlyHeldItem: {fileID: 0}
 --- !u!1 &4152069555864584868
 GameObject:
   m_ObjectHideFlags: 0
