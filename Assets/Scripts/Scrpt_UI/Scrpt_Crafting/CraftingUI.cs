@@ -100,7 +100,7 @@ public class CraftingUI : MonoBehaviour
         
         }
 
-        gameObject.SetActive(false);
+        //Gets set inactive by the local player script PlayerInventory
 
         
     }

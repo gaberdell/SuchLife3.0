@@ -70,12 +70,11 @@ public class PlayerInventory : MonoBehaviour
         hotbarPanel = GameObject.FindGameObjectWithTag(hotbarPanelTag);
         fullInventory = GameObject.FindGameObjectWithTag(fullInventoryTag);
         CraftingUI = GameObject.FindGameObjectWithTag(CraftingUITag);
+        CraftingUI.SetActive(false);
 
         for (int i = 0; i < hotbarPanel.transform.childCount; i++) {
             hotbar.Add(hotbarPanel.transform.GetChild(i).gameObject);
         }
-
-        // Debug.Log(hotbar.Count);
 
         //Do the same for FullInventory and fullInv
         for (int i = 0; i < fullInventory.transform.childCount; i++) {
@@ -196,7 +195,6 @@ public class PlayerInventory : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Q) ){
-            Debug.Log("");
             if (CraftingUI != null && !fullInventory.activeSelf){
                  bool isActive = CraftingUI.activeSelf;
 
