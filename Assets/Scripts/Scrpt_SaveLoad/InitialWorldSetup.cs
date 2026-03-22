@@ -38,6 +38,7 @@ public class InitialWorldSetup : MonoBehaviour
 
         } else {
             player = SaveObjectsManager.LocalPlayerFromSaveData;
+            Debug.Log("Player from save objects manager : " + player);
         }
 
 #if UNITY_EDITOR
@@ -53,9 +54,10 @@ public class InitialWorldSetup : MonoBehaviour
 
     IEnumerator LoadLocalPlayerThings() {
         AsyncInstantiateOperation asyncInstantiateOperation = InstantiateAsync(localPlayerEffects);
-        while (!asyncInstantiateOperation.isDone && player != null) {
+        while (!asyncInstantiateOperation.isDone || player == null) {
             yield return null;
         }
+        Debug.Log("Player : " + player);
         EventManager.SetLocalGameObjectPlayerAddedToScene(player);
     }
 }

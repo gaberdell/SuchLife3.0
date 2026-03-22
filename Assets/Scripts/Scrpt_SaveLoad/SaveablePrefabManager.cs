@@ -119,7 +119,6 @@ public class SaveablePrefabManager : MonoBehaviour
 
     public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation)
     {
-        Debug.Log(StringToPrefabKey[prefabName]);
         return CreatePrefab(StringToPrefabKey[prefabName], position, rotation);
     }
 
@@ -138,6 +137,7 @@ public class SaveablePrefabManager : MonoBehaviour
 
     void OnSuccessfulAwake()
     {
+        SaveablePrefabs = new List<GameObject>();
         currentlyActiveEntities = new byte[1] { 0 };
 
         PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);

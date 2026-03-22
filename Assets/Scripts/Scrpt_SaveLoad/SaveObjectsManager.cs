@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using UnityEditor.Overlays;
 using UnityEngine;
 
 //Small helper class to encapsualte stuff
@@ -18,7 +19,8 @@ public class MonoBehaviourSaveFields {
     public List<FieldInfo> SaveFields;
 }
 
-
+//Thx for this for how to use the OnApplicationQuit and stuff
+//https://gamedev.stackexchange.com/questions/191550/saving-settings-when-exiting-the-application
 public class SaveObjectsManager : MonoBehaviour
 {
     //Note not a reliable way to get local player only when is loaded in through save data
@@ -62,7 +64,14 @@ public class SaveObjectsManager : MonoBehaviour
 
     }
 
-    void OnDestroy() {
+    void OnApplicationPause(bool isPaused) {
+        if (isPaused) {
+            SaveAllPrefabData();
+        }
+
+    }
+
+    void OnApplicationQuit() {
         SaveAllPrefabData();
     }
 
@@ -115,16 +124,29 @@ public class SaveObjectsManager : MonoBehaviour
     void SaveAllPrefabData() {
         Debug.Log("Attempting to save game!");
         if (DataService.IsLocalSave) {
-            DataService.SaveEntitySaveData(GetAllBytesForPrefabData());
+            byte[] saveData = GetAllBytesForPrefabData();
+            
+            Debug.Log("Save byte length : " + saveData.Length);
+
+            DataService.SaveEntitySaveData(saveData);
+
+#if UNITY_EDITOR
+            for (int i = 0; i < saveData.Length; i++) {
+                Debug.Log("Save Byte index (" + i + ") : " + saveData[i]);
+            }
+#endif
         }
     }
 
     byte[] GetAllBytesForPrefabData() {
-        IEnumerable<byte> savePrefab = new byte[0];
-        foreach (GameObject loadedPefab in SaveablePrefabManager.SaveablePrefabs) {
-            savePrefab.Union(PrefabGetByteArray(loadedPefab));
-        }
+        List<byte> savePrefab = new List<byte>();
 
+        Debug.Log("Saveable prefab length : " + SaveablePrefabManager.SaveablePrefabs.Count);
+
+        foreach (GameObject loadedPefab in SaveablePrefabManager.SaveablePrefabs) {
+
+            savePrefab.AddRange(PrefabGetByteArray(loadedPefab));
+        }
         return savePrefab.ToArray();
     }
 
@@ -171,7 +193,7 @@ public class SaveObjectsManager : MonoBehaviour
         GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
         //TODO : Player might not be id one so maybe change later?
-        if (id.Length == 1 && id[0] == 0) {
+        if (id.Length == 1 && id[0] == 1) {
             LocalPlayerFromSaveData = prefab;
         }
         //newStartPos += idDelinatorPosition; Idk this makes more sense to me idk tho
@@ -185,22 +207,23 @@ public class SaveObjectsManager : MonoBehaviour
 
 
 
-    byte[] PrefabGetByteArray(GameObject prefab) {
+    List<byte> PrefabGetByteArray(GameObject prefab) {
         PrefabSaveInfo prefabSaveInfo = prefab.GetComponent<PrefabSaveInfo>();
 
         if (prefabSaveInfo == null) {
             Debug.LogError("Was not able to retrieve PrefabSaveInfo for : " + prefab.name);
         }
 
-        IEnumerable<byte> returnArray = prefabSaveInfo.PrefabId.AsEnumerable<byte>();
+        List<byte> returnArray = prefabSaveInfo.PrefabId.ToList();
 
-        returnArray = returnArray.Append<byte>(0);
+        returnArray.Add(0);
 
         byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
         byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles);
 
-        returnArray = returnArray.Union(prefabPosition).Union(prefabRotation);
-
+        returnArray.AddRange(prefabPosition);
+        returnArray.AddRange(prefabRotation);
+        
         List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabSaveInfo.PrefabId];
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
@@ -209,11 +232,11 @@ public class SaveObjectsManager : MonoBehaviour
             MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
 
             foreach (FieldInfo field in componentType.SaveFields) {
-                returnArray = returnArray.Union((byte[]) ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
+                returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
             }
         }
 
-        return returnArray.ToArray<byte>();
+        return returnArray;
     }
 
     List<MonoBehaviourSaveFields> AddPrefabSavableType(GameObject prefab) {

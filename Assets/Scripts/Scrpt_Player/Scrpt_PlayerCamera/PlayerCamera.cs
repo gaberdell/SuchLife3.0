@@ -36,6 +36,7 @@ public class PlayerCamera : MonoBehaviour
 
     void SetPlayer(GameObject player) {
         target = player.transform;
+        transform.position = new Vector3 (target.position.x, target.position.y, transform.position.z);
     }
 
     void Update()
