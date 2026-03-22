@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -20,13 +21,20 @@ public class MonoBehaviourSaveFields {
 
 public class SaveObjectsManager : MonoBehaviour
 {
+    //Note not a reliable way to get local player only when is loaded in through save data
+    public static GameObject LocalPlayerFromSaveData { get; private set; }
+
 
     Dictionary<GameObject, List<MonoBehaviour>> saveableMonoBehaviorQuickRetriveDictionary;
 
     Dictionary<byte[], List<MonoBehaviourSaveFields>> PrefabToMonoBehaviorFieldOrder;
 
+    private static float MAX_AUTOSAVE_TIME_IN_SECONDS = 300;
+    private static float autoSaveTime;
+
     void Start()
     {
+        autoSaveTime = MAX_AUTOSAVE_TIME_IN_SECONDS;
 
         saveableMonoBehaviorQuickRetriveDictionary = new Dictionary<GameObject, List<MonoBehaviour>>();
 
@@ -38,7 +46,24 @@ public class SaveObjectsManager : MonoBehaviour
                 Debug.LogError("Resource probably improperly loaded");
             PrefabToMonoBehaviorFieldOrder.Add(pair.Key, AddPrefabSavableType(pair.Value));
         }
-        
+
+
+        //Lets get loading!
+        if (DataService.IsLocalSave) {
+#if UNITY_EDITOR
+            byte[] localSaveData = DataService.LoadEntitySaveData();
+            for (int i = 0; i < localSaveData.Length; i++) {
+                Debug.Log("Loaded Byte index (" + i + ") : " + localSaveData[i]);
+            }
+#endif
+
+            LoadAllEntityDataToPrefabs(DataService.LoadEntitySaveData());
+        }
+
+    }
+
+    void OnDestroy() {
+        SaveAllPrefabData();
     }
 
     private void OnEnable() {
@@ -73,26 +98,39 @@ public class SaveObjectsManager : MonoBehaviour
         saveableMonoBehaviorQuickRetriveDictionary.Remove(prefabRemoved);
     }
 
-    void PrefabSetToByteArray(GameObject prefab, byte[] dataToSetTo) {
+    void LoadAllEntityDataToPrefabs(byte[] byteData) {
 
-        int idDelinatorPosition = 0;
-        for (; idDelinatorPosition < dataToSetTo.Length; idDelinatorPosition++) {
-            if (dataToSetTo[idDelinatorPosition] == 0) {
-                break;
-            }
+#if UNITY_EDITOR
+        for (int i = 0; i < byteData.Length; i++) {
+            Debug.Log("Loaded Byte index ("+ i + ") : " + byteData[i]);
+        }
+#endif
+
+        while (byteData.Length > 0) {
+            PrefabCreateFromByteArray(byteData, out int readBytes);
+            byteData = byteData.Skip(readBytes).ToArray();
+        }
+    }
+
+    void SaveAllPrefabData() {
+        Debug.Log("Attempting to save game!");
+        if (DataService.IsLocalSave) {
+            DataService.SaveEntitySaveData(GetAllBytesForPrefabData());
+        }
+    }
+
+    byte[] GetAllBytesForPrefabData() {
+        IEnumerable<byte> savePrefab = new byte[0];
+        foreach (GameObject loadedPefab in SaveablePrefabManager.SaveablePrefabs) {
+            savePrefab.Union(PrefabGetByteArray(loadedPefab));
         }
 
-        byte[] id = (byte[]) dataToSetTo.Take(idDelinatorPosition);
+        return savePrefab.ToArray();
+    }
 
-        int newStartPos = sizeof(float) * 3;
-        prefab.transform.position = (Vector3) ByteConvertor.ConvertBytesToValue(typeof(Vector3), (byte[]) dataToSetTo.Skip(idDelinatorPosition).Take(newStartPos), out int bytesUsed);
-
-        newStartPos += idDelinatorPosition;
-
-        int positionToReadDataFrom = idDelinatorPosition;
-
-        List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[id];
-
+    void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
+        readBytes = 0;
+        List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabId];
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
@@ -100,15 +138,82 @@ public class SaveObjectsManager : MonoBehaviour
             MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
 
             foreach (FieldInfo field in componentType.SaveFields) {
-                field.SetValue(component, ByteConvertor.ConvertBytesToValue(field.FieldType, (byte[])dataToSetTo.Skip(newStartPos), out bytesUsed));
-                newStartPos += bytesUsed;
+                field.SetValue(component, ConvertToByteArray.ConvertBytesToValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed));
+                readBytes += bytesUsed;
             }
 
         }
     }
 
+    GameObject PrefabCreateFromByteArray(byte[] dataToSetTo, out int readBytes) {
+        readBytes = 0;
+
+        for (; readBytes < dataToSetTo.Length; readBytes++) {
+            if (dataToSetTo[readBytes] == 0) {
+                break;
+            }
+        }
+
+        byte[] id = dataToSetTo.Take(readBytes).ToArray();
+
+#if UNITY_EDITOR
+        foreach (byte idNum in id) {
+            Debug.Log("Byte id : " + idNum);
+        }
+#endif
+
+        readBytes++;
+
+
+        Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed);
+        Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes + bytesUsed).ToArray(), out int rotBytesUsed);
+
+        GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
+
+        //TODO : Player might not be id one so maybe change later?
+        if (id.Length == 1 && id[0] == 0) {
+            LocalPlayerFromSaveData = prefab;
+        }
+        //newStartPos += idDelinatorPosition; Idk this makes more sense to me idk tho
+        readBytes += bytesUsed + rotBytesUsed;
+
+        SetAllBytesInAPrefab(prefab, id, dataToSetTo.Skip(readBytes).ToArray(), out int newBytesUsed);
+        readBytes += newBytesUsed;
+
+        return prefab;
+    }
+
+
+
     byte[] PrefabGetByteArray(GameObject prefab) {
-        return new byte[1] {0};
+        PrefabSaveInfo prefabSaveInfo = prefab.GetComponent<PrefabSaveInfo>();
+
+        if (prefabSaveInfo == null) {
+            Debug.LogError("Was not able to retrieve PrefabSaveInfo for : " + prefab.name);
+        }
+
+        IEnumerable<byte> returnArray = prefabSaveInfo.PrefabId.AsEnumerable<byte>();
+
+        returnArray = returnArray.Append<byte>(0);
+
+        byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
+        byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles);
+
+        returnArray = returnArray.Union(prefabPosition).Union(prefabRotation);
+
+        List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabSaveInfo.PrefabId];
+
+        for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
+            MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
+
+            MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
+
+            foreach (FieldInfo field in componentType.SaveFields) {
+                returnArray = returnArray.Union((byte[]) ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
+            }
+        }
+
+        return returnArray.ToArray<byte>();
     }
 
     List<MonoBehaviourSaveFields> AddPrefabSavableType(GameObject prefab) {
@@ -169,11 +274,18 @@ public class SaveObjectsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        autoSaveTime -= Time.deltaTime;
         //Test input to spit something out
-        if (Input.GetKeyDown(KeyCode.RightAlt)) {
-            //Implement dis stuff
-            Debug.Log(saveableMonoBehaviorQuickRetriveDictionary.Count());
+        if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S)) {
+            Debug.Log("Manually saving prefabs");
+            SaveAllPrefabData();
+            autoSaveTime = MAX_AUTOSAVE_TIME_IN_SECONDS;
+        }
+
+
+        if (autoSaveTime < 0) {
+            SaveAllPrefabData();
+            autoSaveTime = MAX_AUTOSAVE_TIME_IN_SECONDS;
         }
     }
 }

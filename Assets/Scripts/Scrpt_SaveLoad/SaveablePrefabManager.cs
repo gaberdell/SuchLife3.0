@@ -31,6 +31,8 @@ public class SaveablePrefabManager : MonoBehaviour
 
     static public Dictionary<string, GameObject> StringToPrefabKey { get; private set; }
 
+    static public List<GameObject> SaveablePrefabs { get; private set; }
+
     static uint MAX_BYTES_FOR_ENTITIES = 1024;
 
     uint numberOfActiveEntities = 0;
@@ -87,6 +89,8 @@ public class SaveablePrefabManager : MonoBehaviour
 
         }
 
+        SaveablePrefabs.Remove(prefab);
+
         EventManager.SetPrefabRemovedFromScene(prefab);
 
         Destroy(prefab);
@@ -101,6 +105,8 @@ public class SaveablePrefabManager : MonoBehaviour
         entity.PrefabId = PrefabToByteKey[prefab];
         entity.EntityId = getUnoccupiedId();
 
+        SaveablePrefabs.Add(newObject);
+
         EventManager.SetPrefabAddedToScene(newObject);
 
         return newObject;
@@ -113,6 +119,7 @@ public class SaveablePrefabManager : MonoBehaviour
 
     public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation)
     {
+        Debug.Log(StringToPrefabKey[prefabName]);
         return CreatePrefab(StringToPrefabKey[prefabName], position, rotation);
     }
 

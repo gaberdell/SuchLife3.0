@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
 
-public class ByteConvertor
+public class ConvertToByteArray
 {
 
 

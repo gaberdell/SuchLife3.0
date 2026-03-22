@@ -10,6 +10,7 @@ public class InitialWorldSetup : MonoBehaviour
 
     GameObject player;
 
+
     //Note initial world set up needs to be called later in order to ensure all other things have been properly set up before its called
     void Start()
     {
@@ -29,11 +30,14 @@ public class InitialWorldSetup : MonoBehaviour
 
 
 
+        StartCoroutine(LoadLocalPlayerThings());
+
         //Change to be if it actually cant find 
         if (entitySaveDataBytes == null || entitySaveDataBytes.Length == 0) {
-            StartCoroutine(LoadLocalPlayerThings());
-
             player = SaveablePrefabManager.CreatePrefab("Player", Vector3.zero, Quaternion.Euler(0,0,0));
+
+        } else {
+            player = SaveObjectsManager.LocalPlayerFromSaveData;
         }
 
 #if UNITY_EDITOR
@@ -49,7 +53,7 @@ public class InitialWorldSetup : MonoBehaviour
 
     IEnumerator LoadLocalPlayerThings() {
         AsyncInstantiateOperation asyncInstantiateOperation = InstantiateAsync(localPlayerEffects);
-        while (!asyncInstantiateOperation.isDone) {
+        while (!asyncInstantiateOperation.isDone && player != null) {
             yield return null;
         }
         EventManager.SetLocalGameObjectPlayerAddedToScene(player);
