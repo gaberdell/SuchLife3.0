@@ -12,7 +12,7 @@ public class Health : MonoBehaviour
     private TextMesh healthTextMesh;
 
     public UnityEvent onDeath;
-    public UnityEvent<int> onDamageTaken;
+    public UnityEvent<int, GameObject> onDamageTaken; // damage amount, attacker
 
     private void Awake()
     {
@@ -24,12 +24,12 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount, bool applyKnockback = true)
+    public void TakeDamage(int amount, bool applyKnockback = true, GameObject attacker = null)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
-        onDamageTaken?.Invoke(amount);
+        onDamageTaken?.Invoke(amount, attacker);
 
         if (showHealthText)
         {

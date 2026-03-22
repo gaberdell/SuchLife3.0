@@ -887,6 +887,7 @@ GameObject:
   - component: {fileID: 4840272284417762212}
   - component: {fileID: 3771696190753557242}
   - component: {fileID: 1380031502883434819}
+  - component: {fileID: -7989358428985003040}
   m_Layer: 0
   m_Name: Fox
   m_TagString: Untagged
@@ -1165,3 +1166,24 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.8
+--- !u!114 &-7989358428985003040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8959371218710664441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958edc781cdbc4430b39d166697d64d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 100
+  showHealthText: 0
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []

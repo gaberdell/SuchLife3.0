@@ -83,7 +83,7 @@ public class PlayerAttack : MonoBehaviour
                 if (enemy.TryGetComponent<Health>(out var health))
                 {
                     int boostedDamage = Mathf.RoundToInt(attackDamage + additiveDamageBoost);
-                    health.TakeDamage(boostedDamage);
+                    health.TakeDamage(boostedDamage, gameObject);
                 }
                 //apply a knockback force to the mob
                 //read force from some value associated with the attack or weapon

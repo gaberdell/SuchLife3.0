@@ -46,7 +46,11 @@ public class Fox : Mob
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
         //add a clock to trigger randomMovement()
-        InvokeRepeating(nameof(randomTargetPos),0.1f,2f);
+        InvokeRepeating(nameof(randomTargetPos),0.1f,3f);
+
+        // Listen on health changes to trigger getAttacked()
+        Health health = GetComponent<Health>();
+        health.onDamageTaken.AddListener(OnDamageTaken); 
     }
     
 
@@ -74,6 +78,18 @@ public class Fox : Mob
         {
             isExploding = true;  
             //StartCoroutine(Explode());
+        }
+    }
+
+    
+    void OnDamageTaken(int damageAmount, GameObject attacker){
+        if (attacker != null && attacker.CompareTag("Player"))
+        {
+            //stop random movement and start chasing player
+            CancelInvoke(nameof(randomTargetPos));
+            target = attacker.transform;
+            pathSetter.target = target;
+            path.enabled = true;
         }
     }
 
