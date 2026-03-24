@@ -31,7 +31,10 @@ public class PlayerInventory : MonoBehaviour
 
     public GameObject CraftingUI;
     int hotbarSize = 8; //amount of panels in hotbar so this can be adjusted
-    
+
+    private EffectManager effectManager;
+    private EffectsDict effectDict;
+
 
     void Start(){
 
@@ -40,8 +43,9 @@ public class PlayerInventory : MonoBehaviour
         inventory = new List<InventorySlot>();
         //Get panels as hotbar.
 
-      
-        
+        effectManager = this.gameObject.GetComponent<EffectManager>();
+        effectDict = this.gameObject.GetComponent<EffectsDict>();
+
         //Get all children of hotbarPanel (So every hotbar button) and add them to Hotbar.
         for (int i = 0; i < hotbarPanel.transform.childCount; i++)
             {
@@ -471,9 +475,11 @@ public class PlayerInventory : MonoBehaviour
             // Damage boost if values are set
             if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
             {
-                //
+                //EffectManager.
+                Debug.Log("using damage potion");
+                effectManager.addEffect(effectDict.getEffect("DamagePotion"), consumable.icon);
                 used = true;
-
+                
                     
                 
             }

@@ -7,12 +7,12 @@ public class EffectEntry
     public Sprite icon;
     public BaseEffect.effectTag effectTag;
 
-    public EffectEntry(StatusEffect Ieffect, float duration, Sprite Iicon, BaseEffect.effectTag t)
+    public EffectEntry(StatusEffect Ieffect, Sprite Iicon)
     {
         effect = Ieffect;
-        timeLeft = duration;
+        timeLeft = Ieffect.getDuration();
         icon = Iicon;
-        effectTag = t;
+        effectTag = Ieffect.getEffectTag();
     }
 
 }

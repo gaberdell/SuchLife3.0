@@ -9,7 +9,7 @@ public class EffectsDict : MonoBehaviour
     Dictionary<string, StatusEffect> generalEffectDict = new Dictionary<string, StatusEffect>();
     [SerializeField] TileBase spikeUpTile;
     [SerializeField] TileBase pitTile;
-    public Dictionary<TileBase, StatusEffect> createTileEffectDict()
+    private Dictionary<TileBase, StatusEffect> createTileEffectDict()
     {
         BaseEffect[] hurtfxs = new BaseEffect[1];
         hurtfxs[0] = new HurtEffect(100, 0);
@@ -24,18 +24,24 @@ public class EffectsDict : MonoBehaviour
         return effectDict;
     }
 
-    public Dictionary<string, StatusEffect> createGeneralEffectDict()
+    private void createGeneralEffectDict()
     {
         BaseEffect[] dmgUpFxs = new BaseEffect[1];
         dmgUpFxs[0] = new DamageBuff(100);
-        StatusEffect damagePotionEffect = new StatusEffect(50, dmgUpFxs, null, null);
+        StatusEffect damagePotionEffect = new StatusEffect(5, dmgUpFxs, null, null);
         generalEffectDict.Add("DamagePotion", damagePotionEffect);
-        return generalEffectDict;
+        
     }
 
     public Dictionary<string, StatusEffect> getGeneralEffectDict()
     {
-        if (effectDict.Count <= 0) return createGeneralEffectDict();
+        if (generalEffectDict.Count <= 0) createGeneralEffectDict();
         return generalEffectDict;
+    }
+
+    public StatusEffect getEffect(string ename)
+    {
+        if (generalEffectDict.Count <= 0) createGeneralEffectDict();
+        return generalEffectDict[ename];
     }
 }

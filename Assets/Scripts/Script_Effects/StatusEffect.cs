@@ -9,22 +9,34 @@ using UnityEngine;
 //when instantiating statuseffects from scripts for tile behaviors and such just declare the effects then.
 public class StatusEffect 
 {
-    [SerializeField] float duration;
-    [SerializeField] Sprite icon;
-    [SerializeReference] BaseEffect[] effects;
-    GameObject target; //declared when effect is applied
+    private float duration;
+    private Sprite icon;
+    private BaseEffect[] effects;
+    private GameObject target; //declared when effect is applied
+    private BaseEffect.effectTag effectTag; //must match tag of all of its effects
     public StatusEffect(float Iduration, BaseEffect[] fx, Sprite Iicon, GameObject Itarget)
     {
         duration = Iduration;
         icon = Iicon;
         effects = fx;
         target = Itarget;
+        effectTag = fx[0].tag;
     }
 
     public void setTarget(GameObject t)
     {
         target = t;
     }
+
+    public float getDuration()
+    {
+        return duration;
+    }
+    public BaseEffect.effectTag getEffectTag()
+    {
+        return effectTag;
+    }
+
     public void ApplyEffects(GameObject t = null)
     {
         foreach (BaseEffect effect in effects)

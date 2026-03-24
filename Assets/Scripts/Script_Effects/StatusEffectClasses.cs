@@ -7,7 +7,7 @@ public class BaseEffect
 {
     public enum effectTag { Attack, Health }
     public effectTag tag;
-    [SerializeField] int duration;
+    public int duration;
     virtual public void ApplyEffect(GameObject target) { }
     virtual public void onEffectRemove(GameObject target) { }
 }
