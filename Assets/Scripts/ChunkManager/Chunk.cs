@@ -221,7 +221,7 @@ public class Chunk
     public void syncNewAnimatedTiles(Tilemap groundTilemap)
     {
         float t = ChunkManager.getAnimationTime();
-        Debug.Log("time: " + t);
+        //Debug.Log("time: " + t);
         
         //set animation time of all tiles in this chunk to 0
         for(int i = 0;i < size; i++)

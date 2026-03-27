@@ -10,6 +10,8 @@ public class BaseEffect
     public int duration;
     virtual public void ApplyEffect(GameObject target) { }
     virtual public void onEffectRemove(GameObject target) { }
+
+
 }
 
 [Serializable]
@@ -38,21 +40,31 @@ public class HurtEffect : BaseEffect
             targetH.TakeDamage(damageAmount);
         }
     }
+    public override int GetHashCode()
+    {
+        return damageAmount.GetHashCode() + intervals.GetHashCode() + duration.GetHashCode();
+    }
 }
 
 [Serializable]
 public class DamageBuff : BaseEffect
 {
+    int buffAmount; // is a percent. e.g. 100 is 100% damage boost
     public DamageBuff(int buffAmount)
     {
         tag = effectTag.Attack;
     }
+
     
-    [SerializeField] int buffAmount; // is a percent. e.g. 100 is 100% damage boost
     public override void ApplyEffect(GameObject target)
     {
-        
+        //buff existing in the manager counts as applied?
     }
-    
+
+    public override int GetHashCode()
+    {
+        return buffAmount.GetHashCode() + duration.GetHashCode();
+    }
+
 }
 

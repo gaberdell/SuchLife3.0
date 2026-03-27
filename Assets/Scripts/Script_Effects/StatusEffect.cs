@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 //[CreateAssetMenu(fileName = "StatusEffect", menuName = "Scriptable Objects/StatusEffect")]
@@ -7,7 +9,7 @@ using UnityEngine;
  */
 
 //when instantiating statuseffects from scripts for tile behaviors and such just declare the effects then.
-public class StatusEffect 
+public class StatusEffect
 {
     private float duration;
     private Sprite icon;
@@ -44,5 +46,22 @@ public class StatusEffect
             if (t != null) target = t;
             effect.ApplyEffect(target);
         }
+    }
+    public override bool Equals(object obj)
+    {
+        
+        var effect = obj as StatusEffect;
+        if (effect == null) return false; //null values cannot be equal to another
+        return Enumerable.SequenceEqual(effects, effect.effects);
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 0;
+        foreach (BaseEffect effect in effects)
+        {
+            hash += effect.GetHashCode();
+        }
+        return hash;
     }
 }

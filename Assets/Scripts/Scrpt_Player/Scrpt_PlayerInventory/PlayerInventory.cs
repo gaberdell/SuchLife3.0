@@ -475,8 +475,6 @@ public class PlayerInventory : MonoBehaviour
             // Damage boost if values are set
             if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
             {
-                //EffectManager.
-                Debug.Log("using damage potion");
                 effectManager.addEffect(effectDict.getEffect("DamagePotion"), consumable.icon);
                 used = true;
                 
@@ -488,7 +486,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 //RemoveItem(item); // Only remove if something was actually used
                 RemoveItem(selectedItem);
-                Debug.Log($"Used {consumable.itemName}");
+                //Debug.Log($"Used {consumable.itemName}");
             }
         }
     }
