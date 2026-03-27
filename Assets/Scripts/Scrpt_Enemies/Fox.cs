@@ -83,8 +83,13 @@ public class Fox : Mob
 
     
     void OnDamageTaken(int damageAmount, GameObject attacker){
+        bool isNotNull = attacker != null;
+        bool isPlayer = isNotNull && attacker.CompareTag("Player");
+
+        Debug.Log($"[Fox] OnDamageTaken: damage={damageAmount}, attacker!=null={isNotNull}, attackerName={(attacker?.name ?? "NULL")}, CompareTag(Player)={isPlayer}");
         if (attacker != null && attacker.CompareTag("Player"))
         {
+            Debug.Log($"[Fox] OnDamageTaken called! Damage: {damageAmount}, Attacker: {attacker?.name}");
             //stop random movement and start chasing player
             CancelInvoke(nameof(randomTargetPos));
             target = attacker.transform;
