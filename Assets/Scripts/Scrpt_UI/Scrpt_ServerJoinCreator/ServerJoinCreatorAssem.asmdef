@@ -1,11 +1,9 @@
 {
-    "name": "PauseMenuAssem",
+    "name": "ServerJoinCreatorAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:81ee7511fd827ae408a2e17d16d4daf4",
-        "GUID:c103825ea3e47ae4985e226a520ff731",
-        "GUID:f58aa23d71e72b14bab58999d573ff5d",
-        "GUID:7d6512b2b31c2904dadf1798c2c2e87d"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c103825ea3e47ae4985e226a520ff731"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

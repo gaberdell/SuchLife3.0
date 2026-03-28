@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 //Small helper class to encapsualte stuff
@@ -78,11 +76,15 @@ public class SaveObjectsManager : MonoBehaviour
     private void OnEnable() {
         EventManager.PrefabAddedToScene += GetAllSaveableMonoBehaviors;
         EventManager.PrefabRemovedFromScene -= RemoveSaveableMonoBehavior;
+
+        EventManager.LocalGameObjectPlayerLeftScene += savePrefabOnLocalPlayerLeave;
     }
 
     private void OnDisable() {
         EventManager.PrefabAddedToScene -= GetAllSaveableMonoBehaviors;
         EventManager.PrefabRemovedFromScene -= RemoveSaveableMonoBehavior;
+
+        EventManager.LocalGameObjectPlayerLeftScene -= savePrefabOnLocalPlayerLeave;
     }
 
 
@@ -119,6 +121,10 @@ public class SaveObjectsManager : MonoBehaviour
             PrefabCreateFromByteArray(byteData, out int readBytes);
             byteData = byteData.Skip(readBytes).ToArray();
         }
+    }
+
+    void savePrefabOnLocalPlayerLeave(GameObject player) {
+        SaveAllPrefabData();
     }
 
     void SaveAllPrefabData() {

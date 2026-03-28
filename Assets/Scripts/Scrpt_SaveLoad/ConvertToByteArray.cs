@@ -1,11 +1,21 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class ConvertToByteArray
 {
+    public static byte[] ConvertValueArrayToBytes(object[] values) {
+        List<byte> byteList = new List<byte>();
 
+        byteList.AddRange(ConvertValueToBytes(values.Length));
+
+        for (int i = 0; i < values.Length; i++) {
+            byteList.AddRange(ConvertValueToBytes(values[i]));
+        }
+
+        return byteList.ToArray();
+    }
 
     public static byte[] ConvertValueToBytes(object value) {
 
@@ -48,6 +58,19 @@ public class ConvertToByteArray
         return null;
     }
 
+
+    public static object[] ConvertBytesToValueArray(Type wantedType, byte[] value, out int bytesUsed) {
+        int lengthOfArray = (int) ConvertBytesToValue(typeof(int), value, out int newBytesUsed);
+        object[] returnArray = new object[lengthOfArray];
+        bytesUsed = newBytesUsed;
+
+        for (int i = 0; i < lengthOfArray; i++) {
+            returnArray[i] = ConvertBytesToValue(wantedType, value.Skip(bytesUsed).ToArray(), out newBytesUsed);
+            bytesUsed += newBytesUsed;
+        }
+
+        return returnArray;
+    }
 
     public static object ConvertBytesToValue(Type wantedType, byte[] value, out int bytesUsed) {
         if (wantedType == typeof(int)) {

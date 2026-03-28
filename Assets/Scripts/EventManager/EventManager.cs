@@ -27,6 +27,7 @@ public class EventManager : MonoBehaviour
     public static event GameObjectSingleDelegate PrefabRemovedFromScene;
 
     public static event GameObjectSingleDelegate LocalGameObjectPlayerAddedToScene;
+    public static event GameObjectSingleDelegate LocalGameObjectPlayerLeftScene;
     public static event GameObjectSingleDelegate OnlinePlayerJoined;
     public static event GameObjectSingleDelegate OnlinePlayerLeft;
 
@@ -66,6 +67,10 @@ public class EventManager : MonoBehaviour
 
     public static void SetLocalGameObjectPlayerAddedToScene(GameObject player) {
         LocalGameObjectPlayerAddedToScene?.Invoke(player);
+    }
+
+    public static void SetLocalGameObjectPlayerLeftScene(GameObject player) {
+        LocalGameObjectPlayerLeftScene?.Invoke(player);
     }
 
     public static void SetOnlinePlayerJoined(GameObject player) {

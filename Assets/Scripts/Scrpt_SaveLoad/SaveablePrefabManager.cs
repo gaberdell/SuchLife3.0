@@ -19,10 +19,12 @@ public class SaveablePrefabManager : MonoBehaviour
     static private string ENEMY_FOLDER = "SaveableEnemyPrefabs/";
 
     static private string PLAYER_PREFAB_NAME = "Player";
+    static private string OTHER_PLAYER_PREFAB_NAME = "OtherPlayer";
     static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER+"Scrombolo_Bombolo";
     static private string ITEM_NAME = "Item";
 
     static GameObject PLAYER_PREFAB;
+    static GameObject OTHER_PLAYER_PREFAB;
     static GameObject SCROMBOLO_BOMBOLO_PREFAB;
 
     //Maybe make this into a two way dictionary type?
@@ -135,17 +137,31 @@ public class SaveablePrefabManager : MonoBehaviour
 
 #endif
 
+    private void OnEnable() {
+        EventManager.LocalGameObjectPlayerAddedToScene += clearSaveablePrefabs;
+    }
+
+    private void OnDisable() {
+        EventManager.LocalGameObjectPlayerAddedToScene -= clearSaveablePrefabs;
+    }
+
+    void clearSaveablePrefabs(GameObject player) {
+        SaveablePrefabs.Clear();
+    }
+
     void OnSuccessfulAwake()
     {
         SaveablePrefabs = new List<GameObject>();
         currentlyActiveEntities = new byte[1] { 0 };
 
         PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
+        OTHER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + OTHER_PLAYER_PREFAB_NAME);
         SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
 
         ByteToPrefabKey = new Dictionary<byte[], GameObject>(new ByteArrayComparer());
         ByteToPrefabKey.Add(new byte[1] { 1 }, PLAYER_PREFAB);
-        ByteToPrefabKey.Add(new byte[1] { 2 }, SCROMBOLO_BOMBOLO_PREFAB);
+        ByteToPrefabKey.Add(new byte[1] { 2 }, OTHER_PLAYER_PREFAB);
+        ByteToPrefabKey.Add(new byte[1] { 3 }, SCROMBOLO_BOMBOLO_PREFAB);
 
         PrefabToByteKey = ByteToPrefabKey.ToDictionary((i) => i.Value, (i) => i.Key);
 

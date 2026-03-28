@@ -103,7 +103,8 @@ public class PauseGame : MonoBehaviour
     {
         if (isPaused)
         {
-            isPaused = togglePause();
+            isPaused = false;
+            PauseTimeHandler.UnPauseGame();
         }
 
         SceneManager.LoadScene(titleScreen);
@@ -111,21 +112,8 @@ public class PauseGame : MonoBehaviour
 
     public bool togglePause()
     {
-        if (!DataService.IsMultiplayer) {
-            if (Time.timeScale == 0f)
-            {
-                Time.timeScale = 1f;
-                return (false);
-            }
-            else
-            {
-                Time.timeScale = 0f;
-                return (true);
-            }
-        }
-        else {
-            return !isPaused;
-        }
+        PauseTimeHandler.TogglePauseGame();
+        return !isPaused;
     }
 
 }

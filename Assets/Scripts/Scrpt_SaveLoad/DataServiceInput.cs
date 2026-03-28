@@ -30,8 +30,6 @@ public class DataServiceInput : MonoBehaviour
 
   // testing DataService based on key input
   private void testDataService() {
-        Debug.Log("Hello!!");
-    Time.timeScale = 0f; // pausing game
     string savePath = DataService.GetSavePath() + "save";
 
     // fetch save files
@@ -49,8 +47,6 @@ public class DataServiceInput : MonoBehaviour
       }
       DataService.Load(list[0]);
     }
-    
-    Time.timeScale = 1f; // unpausing game
   }
 
   void Update() {

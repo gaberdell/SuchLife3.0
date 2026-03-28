@@ -188,7 +188,7 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-                this.GetComponent<helperFunctions>().togglePause();
+                PauseTimeHandler.TogglePauseGame();
 
             }
 
@@ -205,10 +205,10 @@ public class PlayerInventory : MonoBehaviour
                 }
 
                 CraftingUI.SetActive(!isActive);
-                gameUI.SetActive(isActive); 
-                
+                gameUI.SetActive(isActive);
 
-                this.GetComponent<helperFunctions>().togglePause();
+
+                PauseTimeHandler.TogglePauseGame();
 
             }
 
