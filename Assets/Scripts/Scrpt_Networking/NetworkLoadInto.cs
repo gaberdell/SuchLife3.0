@@ -11,31 +11,38 @@ using System.IO;
 struct ServerSettings {
     public string PathOfLoadInto;
     public ushort Port;
+//    public ushort
 }
 
 public class NetworkLoadInto : MonoBehaviour
 {
     //UNITY_STANDALONE is opposite of UNITY_SERVER
-    static string SETTINGS_POSITION_DIRECTORY = Application.persistentDataPath+"/Saves/ServerSettings.json";
+    static string SETTINGS_POSITION_DIRECTORY;
     static ushort DEFAULT_SUCH_LIFE_PORT = 8376;
-//#if UNITY_SERVER
+#if UNITY_SERVER
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        SETTINGS_POSITION_DIRECTORY = Application.persistentDataPath+"/Saves/ServerSettings.json";
+
         if (!File.Exists(SETTINGS_POSITION_DIRECTORY)) {
             ServerSettings newServerSettings = new ServerSettings();
             SaveInfo newSaveWorld = DataService.NewSave("Server World", 0);
             newServerSettings.PathOfLoadInto = newSaveWorld.path;
             newServerSettings.Port = DEFAULT_SUCH_LIFE_PORT;
 
+            DataService.PortOfServerWeAreHosting = newServerSettings.Port;
             File.WriteAllText(SETTINGS_POSITION_DIRECTORY, JsonUtility.ToJson(newServerSettings));
         }
 
-        ServerSettings basicSaveInfo = JsonUtility.FromJson<ServerSettings>(SETTINGS_POSITION_DIRECTORY);
+        Debug.Log(SETTINGS_POSITION_DIRECTORY);
+        ServerSettings basicSaveInfo = JsonUtility.FromJson<ServerSettings>(File.ReadAllText(SETTINGS_POSITION_DIRECTORY));
+        DataService.PortOfServerWeAreHosting = basicSaveInfo.Port;
+        DataService.LoadServer(basicSaveInfo.PathOfLoadInto, true);
 
-        StartCoroutine(LoadIntoServerScene(basicSaveInfo));
+        //StartCoroutine(LoadIntoServerScene(basicSaveInfo));
     }
-//#endif
+#endif
 
     IEnumerator LoadIntoServerScene(ServerSettings serverSettings) {
         AsyncOperation asyncLoad = DataService.LoadAsync(serverSettings.PathOfLoadInto);

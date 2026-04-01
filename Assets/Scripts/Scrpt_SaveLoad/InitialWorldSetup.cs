@@ -15,7 +15,7 @@ public class InitialWorldSetup : MonoBehaviour
     void Start()
     {
         Debug.Log("IsLocalSave? : " + DataService.IsLocalSave);
-        if (!DataService.IsLocalSave) {
+        if (DataService.IsMultiplayer) {
             return;
         }
 

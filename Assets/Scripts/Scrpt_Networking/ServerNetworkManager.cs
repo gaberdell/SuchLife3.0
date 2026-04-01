@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Net;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using UnityEngine;
 
 public class ServerNetworkManager : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class ServerNetworkManager : MonoBehaviour
     private static bool isActivated;
 
     public static void StartServer(ushort port) {
-
+        Debug.Log(String.Format("Starting server with port {0}", port));
         tcpListener = new TcpListener(IPAddress.Any, port);
         tcpListener.Start();
         tcpListener.BeginAcceptSocket(onAcceptTcpClient, null);
@@ -46,6 +46,8 @@ public class ServerNetworkManager : MonoBehaviour
         }
         udpListener?.Close();
         tcpListener?.Stop();
+
+        Application.Quit();
     }
 
     static void onAcceptTcpClient(IAsyncResult result) {
@@ -170,7 +172,7 @@ public class ServerNetworkManager : MonoBehaviour
         using (PacketWrapper packet = new PacketWrapper()) {
             packet.AddBytes(new byte[1] { 13 });
             byte[] data = packet.GetBytes();
-
+            Debug.Log(String.Format("(TCP) Sending packets to {0} clients", tcpClients.Count));
             foreach (var client in tcpClients.Values) {
                 client.Stream.Write(data, 0, data.Length);
             }
@@ -182,6 +184,7 @@ public class ServerNetworkManager : MonoBehaviour
             packet.AddBytes(new byte[1] { 14 });
             byte[] data = packet.GetBytes();
 
+            Debug.Log(String.Format("(UDP) Sending packets to {0} clients", tcpClients.Count));
             foreach (var client in tcpClients.Values) {
                 if (client.EndPoint != null) {
                     udpListener.BeginSend(data, data.Length, client.EndPoint, null, null);
@@ -201,10 +204,12 @@ public class ServerNetworkManager : MonoBehaviour
 
     void Start()
     {
-        if (instance == null) {
+        if (instance == null && DataService.IsMultiplayer && DataService.IsLocalSave) {
             instance = this;
             tcpClients = new Dictionary<int, TcpClientData>();
             clientsLock = new object();
+
+            StartServer(DataService.PortOfServerWeAreHosting);
         }
         else {
             Destroy(instance);
@@ -214,13 +219,13 @@ public class ServerNetworkManager : MonoBehaviour
     void Update()
     {
         if (isActivated) {
-            if (Input.GetKeyDown("X")) {
+            if (Input.GetKeyDown(KeyCode.X)) {
                 StopServer();
             }
-            else if (Input.GetKeyDown("T")) {
+            else if (Input.GetKeyDown(KeyCode.Y)) {
                 SendToAllWithTcp();
             }
-            else if (Input.GetKeyDown("U")) {
+            else if (Input.GetKeyDown(KeyCode.U)) {
                 SendToAllWithUdp();
             }
         }

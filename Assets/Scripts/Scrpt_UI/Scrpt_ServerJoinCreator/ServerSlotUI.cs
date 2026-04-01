@@ -98,6 +98,7 @@ public class ServerSlotUI : MonoBehaviour
     {
         currentServerInfo = newSaveInfo;
         tmpInputField.text = newSaveInfo.name;
+        ipField.text = newSaveInfo.ip;
     }
 
     public ServerInfo GetSaveInfo() {

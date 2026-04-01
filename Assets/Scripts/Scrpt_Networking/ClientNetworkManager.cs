@@ -17,23 +17,24 @@ public class ClientNetworkManager : MonoBehaviour
 
     public void StartClient(string ip, ushort port) {
         try {
+            Debug.Log(String.Format("Joining server Ip of server : {0}, Port is {1}", ip, port));
             isActivated = true;
 
             tcpClient = new TcpClient(ip, port);
-            tcpClient.Connect(ip, port);
             tcpStream = tcpClient.GetStream();
             recieveBuffer = new byte[MAX_TCP_RECIEVE_BUFFER];
 
             tcpStream.BeginRead(recieveBuffer, 0, MAX_TCP_RECIEVE_BUFFER, onRecieveDataTcp, null);
-
-            udpClient = new UdpClient();
-            udpClient.Connect(ip, port);
-
+            udpClient = new UdpClient(ip, port);
             udpClient.BeginReceive(onRecieveDataUdp, null);
         }
         catch (Exception e) {
             Debug.LogError(e.Message);
         }
+    }
+
+    public void OnApplicationQuit() {
+        StopClient();
     }
 
     public void StopClient() {
@@ -46,7 +47,27 @@ public class ClientNetworkManager : MonoBehaviour
 
     void Start()
     {
-        
+        if (!DataService.IsLocalSave && DataService.IsMultiplayer) {
+            if (!Uri.TryCreate(DataService.IpOfServer, UriKind.Absolute, out Uri urlWithIpAndPort)) {
+                Debug.Log("Try with http?");
+                Debug.Log("http://" + DataService.IpOfServer);
+
+                Uri.TryCreate("http://" + DataService.IpOfServer, UriKind.Absolute, out urlWithIpAndPort);
+            }
+
+
+            if (IPAddress.TryParse(urlWithIpAndPort.Host, out IPAddress ip)) {
+
+                Debug.Log("Looking for host : " + urlWithIpAndPort.Host);
+                Debug.Log("Looking for port : " + (ushort)urlWithIpAndPort.Port);
+
+                StartClient(urlWithIpAndPort.Host, (ushort)urlWithIpAndPort.Port);
+            }
+            
+        }
+        else {
+            Destroy(this);
+        }
     }
 
     private void onRecieveDataTcp(IAsyncResult result) {
@@ -134,13 +155,13 @@ public class ClientNetworkManager : MonoBehaviour
     void Update()
     {
         if (isActivated) {
-            if (Input.GetKeyDown("X")) {
+            if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();
             }
-            else if (Input.GetKeyDown("T")) {
+            else if (Input.GetKeyDown(KeyCode.T)) {
                 sendDataWithTcp();
             }
-            else if (Input.GetKeyDown("U")) {
+            else if (Input.GetKeyDown(KeyCode.U)) {
                 sendDataWithUdp();
             }
         }

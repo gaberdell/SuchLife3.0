@@ -54,6 +54,7 @@ public class DataService {
     private static string currentSavePath = null; // path of current world's save file
 
     public static string IpOfServer { get; private set; } = null;
+    public static ushort PortOfServerWeAreHosting { get; set; } = 0;
 
     private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
@@ -246,12 +247,12 @@ public class DataService {
         saveName = EnsureUniqueName(serverSavePath, saveName);
 
 
-        string finishedPath = serverSavePath+saveName;
-        Directory.CreateDirectory(finishedPath);
+        string finishedPath = serverSavePath+saveName+".json";
 
         ServerInfo saveInfo = new ServerInfo();
         saveInfo.path = finishedPath;
         saveInfo.name = worldName;
+        saveInfo.ip = "127.0.0.1";
         saveInfo.uuid = Guid.NewGuid();
         saveInfo.order = order;
         saveInfo.saveVersion = currentSaveVersion;
@@ -365,7 +366,7 @@ public class DataService {
             Debug.Log("DataService: World loaded!");
         }
         else {
-            if (!Directory.Exists(path)) {
+            if (!File.Exists(path)) {
                 Debug.LogError("DataService server info string path: \"" + path + "\" does not exist!");
                 return false;
             }

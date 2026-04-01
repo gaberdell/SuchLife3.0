@@ -1766,8 +1766,8 @@ GameObject:
   - component: {fileID: 1028713813}
   - component: {fileID: 1028713812}
   - component: {fileID: 1028713811}
-  - component: {fileID: 1028713815}
   - component: {fileID: 1028713816}
+  - component: {fileID: 1028713815}
   m_Layer: 5
   m_Name: WorldCreatorCanvas
   m_TagString: Untagged
@@ -1871,13 +1871,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1028713810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d662582e8a711f34889eebad7c0b4bf9, type: 3}
+  m_Script: {fileID: 11500000, guid: e10fda9344b03fd49b2c71b3ee7eaaf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveSlotUIPrefab: {fileID: 198436552338841487, guid: 28850184108fe124896098061c57265d, type: 3}
-  parentToAddThemTo: {fileID: 2025672997}
-  createNewWorldButton: {fileID: 1453643127}
-  newWorldInputField: {fileID: 694414319}
+  UIWithDeleteObjects: {fileID: 669970079}
+  deleteMessageText: {fileID: 756175335}
+  deleteButtonText: {fileID: 1476015637}
+  deleteButton: {fileID: 2097605355}
+  goBackButton: {fileID: 555879944}
 --- !u!114 &1028713816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1887,14 +1888,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1028713810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 150f5aa104b9885499ffcbcae6fa790a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6250c715087db7644b75f57ebfa9bd8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIWithDeleteObjects: {fileID: 669970079}
-  deleteMessageText: {fileID: 756175335}
-  deleteButtonText: {fileID: 1476015637}
-  deleteButton: {fileID: 2097605355}
-  goBackButton: {fileID: 555879944}
+  serverSlotUIPrefab: {fileID: 5835942054629337207, guid: 080de5836e0bbc14dabe3e8bc9d17f22, type: 3}
+  parentToAddThemTo: {fileID: 2025672997}
+  createNewWorldButton: {fileID: 1453643127}
+  newWorldInputField: {fileID: 694414319}
 --- !u!1 &1117735537
 GameObject:
   m_ObjectHideFlags: 0
