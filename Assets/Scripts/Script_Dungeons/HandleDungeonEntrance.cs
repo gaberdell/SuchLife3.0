@@ -10,6 +10,7 @@ public class HandleDungeonEntrance : MonoBehaviour
     GameObject dungeonGrid;
     [SerializeField] TextAsset optionsFile;
     DungeonOptions opts;
+    GameObject grid; 
 
     private void Start()
     {
@@ -18,6 +19,7 @@ public class HandleDungeonEntrance : MonoBehaviour
         playerInRange = false;
         opts = JsonUtility.FromJson<DungeonOptions>(optionsFile.text);
         rendered = false;
+        grid = GameObject.FindGameObjectWithTag("Grid");
 
     }
     private void Update()
@@ -25,10 +27,10 @@ public class HandleDungeonEntrance : MonoBehaviour
         //trigger on true -> false (when key is let go)
         if(interact == true && inputHandler.InteractTriggered == false && playerInRange == true){
             //generate dungeon if none exists 
-            GameObject dungeonGrid = GameObject.Find("Grid");
             if (!rendered)
             {
-                dungeonGrid.GetComponent<RenderDungeon>().StartRender(gameObject, opts.dungeonOffsetX, opts.dungeonOffsetY, opts);
+                Debug.Log("Sus46 : " + dungeonGrid);
+                grid.GetComponent<RenderDungeon>().StartRender(gameObject, opts.dungeonOffsetX, opts.dungeonOffsetY, opts);
                 rendered = true;
                 enterDungeon();
             } else
@@ -44,7 +46,7 @@ public class HandleDungeonEntrance : MonoBehaviour
     {
         //triggered from event manager
         //move player to starting room in dungeon (0,0 point)
-        GameObject.Find("Player").transform.position = GameObject.Find("Grid").transform.position + new Vector3Int(opts.dungeonOffsetX + 5, opts.dungeonOffsetY + 5, 0);
+        GameObject.Find("Player").transform.position = grid.transform.position + new Vector3Int(opts.dungeonOffsetX + 5, opts.dungeonOffsetY + 5, 0);
         //ChunkManager.renderChunks(GameObject.Find("Player").transform.position);
         //ChunkManager.renderAll();
         //ChunkManager.renderPlayerChunks();

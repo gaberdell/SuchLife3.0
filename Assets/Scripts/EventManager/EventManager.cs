@@ -21,6 +21,15 @@ public class EventManager : MonoBehaviour
     public delegate void UpdateSlotPositionDelegate(string pathName, uint position);
     public static event UpdateSlotPositionDelegate UpdateSlotPosition;
 
+    public delegate void GameObjectSingleDelegate(GameObject gameObject);
+    public static event GameObjectSingleDelegate PrefabAddedToScene;
+
+    public static event GameObjectSingleDelegate PrefabRemovedFromScene;
+
+    public static event GameObjectSingleDelegate LocalGameObjectPlayerAddedToScene;
+    public static event GameObjectSingleDelegate LocalGameObjectPlayerLeftScene;
+    public static event GameObjectSingleDelegate OnlinePlayerJoined;
+    public static event GameObjectSingleDelegate OnlinePlayerLeft;
 
     public static EventManager Instance;
 
@@ -47,6 +56,29 @@ public class EventManager : MonoBehaviour
     public static void SetUpdateSlotPosition(string pathName, uint position)
     {
         UpdateSlotPosition?.Invoke(pathName, position);
+    }
+
+    public static void SetPrefabRemovedFromScene(GameObject gameObject) {
+        PrefabRemovedFromScene?.Invoke(gameObject);
+    }
+    public static void SetPrefabAddedToScene(GameObject gameObject) {
+        PrefabAddedToScene?.Invoke(gameObject);
+    }
+
+    public static void SetLocalGameObjectPlayerAddedToScene(GameObject player) {
+        LocalGameObjectPlayerAddedToScene?.Invoke(player);
+    }
+
+    public static void SetLocalGameObjectPlayerLeftScene(GameObject player) {
+        LocalGameObjectPlayerLeftScene?.Invoke(player);
+    }
+
+    public static void SetOnlinePlayerJoined(GameObject player) {
+        OnlinePlayerJoined?.Invoke(player);
+    }
+
+    public static void SetOnlinePlayerLeft(GameObject player) {
+        OnlinePlayerLeft?.Invoke(player);
     }
 
     void Awake()

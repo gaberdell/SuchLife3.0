@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerMovement : MonoBehaviour
 {
 
     [Header("Input")]
     [SerializeField]
-    PlayerInput input;
+    AbstractPlayerMovementGetter input; //like this so a player could be controlled by a bot or something else theoretically
 
     [SerializeField] 
     float deadZone = 0.1f; //When we start to apply stopping friction
@@ -52,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
     {
         plrCollider = plrCollider ? plrCollider : GetComponent<CircleCollider2D>();
         rigidBody = rigidBody ? rigidBody : GetComponent<Rigidbody2D>();
+        input = input ? input : GetComponent<AbstractPlayerMovementGetter>();
 
         contactPoints = new List<ContactPoint2D>();
 
@@ -81,11 +83,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleMovement()
     {
-        Vector3 plrMoveInput = inputHandler.MoveInput;
+        Vector2 plrMoveInput = input.MovementInput;
 
         if (plrMoveInput.magnitude > deadZone)
         {
-            plrVelocity = Vector3.ClampMagnitude(plrVelocity + plrMoveInput * accel * Time.deltaTime, maxSpeed);
+            plrVelocity = Vector3.ClampMagnitude(plrVelocity + (Vector3)plrMoveInput * accel * Time.deltaTime, maxSpeed);
         }
         else
         {
@@ -106,6 +108,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void handleRotation()
     {
+
+        goalRot = Mathf.Rad2Deg * Mathf.Atan2(input.MousePositionUnitVector.y, input.MousePositionUnitVector.x) + 90f;
+        /*
         if (inputHandler.IsMouseEnabled == true)
         {
             Vector3 mousePos = inputHandler.GetMousePos();
@@ -116,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             goalRot = plrVelocity.magnitude == 0.0f ? goalRot : 90f + Mathf.Rad2Deg * Mathf.Atan2(plrVelocity.y, plrVelocity.x);
-        }
+        }*/
 
         goalRot = MathHelper.RotationTo180Scale(goalRot);
         
