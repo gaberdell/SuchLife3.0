@@ -1,34 +1,31 @@
 fileFormatVersion: 2
-guid: b8682203b74113f448be45bcafedf38c
+guid: e8450c2985029b54090ab3f9d99523c2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -370784492238213476
-    second: bat_foe_v4_0
+      213: -470865284406602639
+    second: sizing_fox_foe_v7_0
   - first:
-      213: -5095011414973682992
-    second: bat_foe_v4_1
+      213: 7398462813980275991
+    second: sizing_fox_foe_v7_1
   - first:
-      213: 2181504412366861928
-    second: bat_foe_v4_2
+      213: 2394004976280678071
+    second: sizing_fox_foe_v7_2
   - first:
-      213: -9070035270329649750
-    second: bat_foe_v4_3
+      213: -6686372059210990415
+    second: sizing_fox_foe_v7_3
   - first:
-      213: 1871697682150727249
-    second: bat_foe_v4_4
+      213: -3309046953397189297
+    second: sizing_fox_foe_v7_4
   - first:
-      213: -2162560486565548972
-    second: bat_foe_v4_5
+      213: -6724807605298506299
+    second: sizing_fox_foe_v7_5
   - first:
-      213: -781724065569385937
-    second: bat_foe_v4_6
+      213: -8732520488728848946
+    second: sizing_fox_foe_v7_6
   - first:
-      213: -5258486932315043081
-    second: bat_foe_v4_7
-  - first:
-      213: 3426377772054597743
-    second: bat_foe_v4_8
+      213: 5747291280544894574
+    second: sizing_fox_foe_v7_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,13 +121,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bat_foe_v4_0
+      name: sizing_fox_foe_v7_0
       rect:
         serializedVersion: 2
-        x: 38
-        y: 61
-        width: 42
-        height: 42
+        x: 4
+        y: 4
+        width: 64
+        height: 153
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -139,20 +136,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c9eeae30875badaf0800000000000000
-      internalID: -370784492238213476
+      spriteID: 17491e1c4862779f0800000000000000
+      internalID: -470865284406602639
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_1
+      name: sizing_fox_foe_v7_1
       rect:
         serializedVersion: 2
-        x: 102
-        y: 94
-        width: 14
-        height: 13
+        x: 85
+        y: 70
+        width: 46
+        height: 77
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,20 +158,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0daeee3dc12ea49b0800000000000000
-      internalID: -5095011414973682992
+      spriteID: 7153b370bbe9ca660800000000000000
+      internalID: 7398462813980275991
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_2
+      name: sizing_fox_foe_v7_2
       rect:
         serializedVersion: 2
-        x: 115
-        y: 68
-        width: 74
-        height: 32
+        x: 133
+        y: 92
+        width: 26
+        height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -183,20 +180,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 866f21774b2464e10800000000000000
-      internalID: 2181504412366861928
+      spriteID: 7be2ab987d6393120800000000000000
+      internalID: 2394004976280678071
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_3
+      name: sizing_fox_foe_v7_3
       rect:
         serializedVersion: 2
-        x: 80
-        y: 78
-        width: 14
-        height: 14
+        x: 85
+        y: 7
+        width: 46
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -205,20 +202,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: aa5bcbb0af2c02280800000000000000
-      internalID: -9070035270329649750
+      spriteID: 1bcb1aeb90c3533a0800000000000000
+      internalID: -6686372059210990415
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_4
+      name: sizing_fox_foe_v7_4
       rect:
         serializedVersion: 2
-        x: 86
-        y: 73
-        width: 14
-        height: 6
+        x: 135
+        y: 64
+        width: 22
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -227,18 +224,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 15e148f002b99f910800000000000000
-      internalID: 1871697682150727249
+      spriteID: f450ca5f357e312d0800000000000000
+      internalID: -3309046953397189297
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_5
+      name: sizing_fox_foe_v7_5
       rect:
         serializedVersion: 2
-        x: 98
-        y: 66
+        x: 137
+        y: 44
         width: 18
         height: 17
       alignment: 0
@@ -249,20 +246,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 45ce6f8f1ba0df1e0800000000000000
-      internalID: -2162560486565548972
+      spriteID: 5c5565fcc1faca2a0800000000000000
+      internalID: -6724807605298506299
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_6
+      name: sizing_fox_foe_v7_6
       rect:
         serializedVersion: 2
-        x: 99
-        y: 59
-        width: 7
-        height: 8
+        x: 133
+        y: 34
+        width: 14
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,20 +268,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f22dc57aa12c625f0800000000000000
-      internalID: -781724065569385937
+      spriteID: ec51f73e1eadfc680800000000000000
+      internalID: -8732520488728848946
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bat_foe_v4_7
+      name: sizing_fox_foe_v7_7
       rect:
         serializedVersion: 2
-        x: 108
-        y: 59
-        width: 7
-        height: 8
+        x: 133
+        y: 20
+        width: 14
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -293,30 +290,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7fa0457eef91607b0800000000000000
-      internalID: -5258486932315043081
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: bat_foe_v4_8
-      rect:
-        serializedVersion: 2
-        x: 9
-        y: 2
-        width: 180
-        height: 49
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f60db911e60fc8f20800000000000000
-      internalID: 3426377772054597743
+      spriteID: e6e049d18fa72cf40800000000000000
+      internalID: 5747291280544894574
       vertices: []
       indices: 
       edges: []
@@ -335,15 +310,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bat_foe_v4_0: -370784492238213476
-      bat_foe_v4_1: -5095011414973682992
-      bat_foe_v4_2: 2181504412366861928
-      bat_foe_v4_3: -9070035270329649750
-      bat_foe_v4_4: 1871697682150727249
-      bat_foe_v4_5: -2162560486565548972
-      bat_foe_v4_6: -781724065569385937
-      bat_foe_v4_7: -5258486932315043081
-      bat_foe_v4_8: 3426377772054597743
+      sizing_fox_foe_v7_0: -470865284406602639
+      sizing_fox_foe_v7_1: 7398462813980275991
+      sizing_fox_foe_v7_2: 2394004976280678071
+      sizing_fox_foe_v7_3: -6686372059210990415
+      sizing_fox_foe_v7_4: -3309046953397189297
+      sizing_fox_foe_v7_5: -6724807605298506299
+      sizing_fox_foe_v7_6: -8732520488728848946
+      sizing_fox_foe_v7_7: 5747291280544894574
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
