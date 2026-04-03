@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using NUnit.Framework.Constraints;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[SaveableComponent("Scrombolo Bombolo")]
 public class Bomb : Mob
 {
     [SerializeField] private CircleCollider2D enemyCollider;
@@ -11,7 +11,6 @@ public class Bomb : Mob
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
 
-    private List<Transform> targets;
     private Transform target;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
@@ -19,11 +18,7 @@ public class Bomb : Mob
     [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
 
-    public void testFunction() { }
-
-    [Saveable("Distance")]
     private float distance;
-    [Saveable("IsExploding")]
     private bool isExploding = false;
 
     [SerializeField] private Tilemap blockTilemap;
@@ -39,32 +34,12 @@ public class Bomb : Mob
     //}
     void Start()
     {
-        targets = new List<Transform>();
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
+        target = GameObject.Find("Player").transform;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
 
-    }
-
-    private void OnEnable() {
-        EventManager.LocalGameObjectPlayerAddedToScene += addPlayerTarget;
-        EventManager.OnlinePlayerJoined += addPlayerTarget;
-        EventManager.OnlinePlayerLeft += removePlayerTarget;
-    }
-
-    private void OnDisable() {
-        EventManager.LocalGameObjectPlayerAddedToScene -= addPlayerTarget;
-        EventManager.OnlinePlayerJoined -= addPlayerTarget;
-        EventManager.OnlinePlayerLeft -= removePlayerTarget;
-    }
-
-    void addPlayerTarget(GameObject player) {
-        targets.Add(player.transform);
-    }
-
-    void removePlayerTarget(GameObject player) {
-        targets.Remove(player.transform);
     }
 
     void Update()
@@ -72,19 +47,9 @@ public class Bomb : Mob
         //updateKnockback(); //inherited from mob parent
         updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
+        distance = Vector2.Distance(transform.position, target.position);
 
-        float smallestDistance = float.MaxValue;
-        foreach (Transform t in targets) {
-            float newDistance = Vector2.Distance(transform.position, t.position);
-            if (newDistance < smallestDistance) {
-                target = t;
-                smallestDistance = newDistance;
-            }
-        }
-
-        //distance = Vector2.Distance(transform.position, target.position);
-
-        if (smallestDistance <= aggroDistance && !isExploding)
+        if (distance <= aggroDistance && !isExploding)
         {
             path.enabled = true;
         }
@@ -93,7 +58,7 @@ public class Bomb : Mob
             animator.SetBool("Walk", true);
         }
 
-        if (smallestDistance <= explodeAtDistance && !isExploding)
+        if (distance <= explodeAtDistance && !isExploding)
         {
             isExploding = true;  
             StartCoroutine(Explode());
@@ -114,12 +79,14 @@ public class Bomb : Mob
 
         particles.Play();
 
+        // ✅ Damage nearby entities on explosion (NO knockback)
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
+                // ✅ Pass "false" to avoid extra knockback
                 health.TakeDamage(damage, false);
             }
         }
@@ -138,6 +105,7 @@ public class Bomb : Mob
             Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
             mobHealth.onDeath?.Invoke();
 
+            // ✅ Stop all physics so body doesn’t move after death
             OnDeath();
 
             // Hide health bar if it still exists

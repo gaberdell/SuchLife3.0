@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
+using UnityEngine.iOS;
 using UnityEngine.SceneManagement;
+using UnityEngine.tvOS;
 
 //Code from this fantastic tutorial by SpeedTutor
 //https://www.youtube.com/watch?v=lclDl-NGUMg

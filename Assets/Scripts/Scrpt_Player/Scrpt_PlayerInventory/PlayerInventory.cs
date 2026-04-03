@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
 
 
@@ -9,19 +10,11 @@ public class PlayerInventory : MonoBehaviour
 
     public List<InventorySlot> inventory; 
 
-    public GameObject gameUI;
-
-    private string gameUITag = "GameUI";
+    public GameObject gameUI; 
     
     //Parent objects.
-    public GameObject hotbarPanel;
-    private string hotbarPanelTag = "HotbarPanel";
-
-
-    public GameObject fullInventory;
-    private string fullInventoryTag = "FullInventory";
-
-    private PlayerInfo playerInfo;
+    public GameObject hotbarPanel; 
+    public GameObject fullInventory; 
 
 
     //List of all the panels in Hotbar and Fullnav.
@@ -37,14 +30,11 @@ public class PlayerInventory : MonoBehaviour
     public Sprite empty; 
 
     public GameObject CraftingUI;
-    private string CraftingUITag = "CraftingUI";
-
     int hotbarSize = 8; //amount of panels in hotbar so this can be adjusted
 
     private EffectManager effectManager;
     private EffectsDict effectDict;
 
-    private bool isConnectedWithUI = false;
 
     void Start(){
 
@@ -56,85 +46,71 @@ public class PlayerInventory : MonoBehaviour
         effectManager = this.gameObject.GetComponent<EffectManager>();
         effectDict = this.gameObject.GetComponent<EffectsDict>();
 
-        playerInfo = GetComponent<PlayerInfo>();
-        
         //Get all children of hotbarPanel (So every hotbar button) and add them to Hotbar.
+        for (int i = 0; i < hotbarPanel.transform.childCount; i++)
+            {
+                hotbar.Add(hotbarPanel.transform.GetChild(i).gameObject);
 
+    
 
-    }
+            }    
 
-    private void OnEnable() {
-        EventManager.LocalGameObjectPlayerAddedToScene += grabUI;
-    }
-
-    private void OnDisable() {
-        EventManager.LocalGameObjectPlayerAddedToScene -= grabUI;
-    }
-
-    private void grabUI(GameObject player) {
-        gameUI = GameObject.FindGameObjectWithTag(gameUITag);
-        hotbarPanel = GameObject.FindGameObjectWithTag(hotbarPanelTag);
-        fullInventory = GameObject.FindGameObjectWithTag(fullInventoryTag);
-        CraftingUI = GameObject.FindGameObjectWithTag(CraftingUITag);
-        CraftingUI.SetActive(false);
-
-        for (int i = 0; i < hotbarPanel.transform.childCount; i++) {
-            hotbar.Add(hotbarPanel.transform.GetChild(i).gameObject);
-        }
+           // Debug.Log(hotbar.Count);
 
         //Do the same for FullInventory and fullInv
-        for (int i = 0; i < fullInventory.transform.childCount; i++) {
-            fullInv.Add(fullInventory.transform.GetChild(i).gameObject);
+        for (int i = 0; i < fullInventory.transform.childCount; i++)
+            {
+                fullInv.Add(fullInventory.transform.GetChild(i).gameObject);
+            
 
-
-        }
+            }   
 
         fullInventory.SetActive(false);
-        for (int i = 0; i < inventorySize; i++) {
-            InventorySlot slot = new InventorySlot();
+        for(int i = 0; i < inventorySize; i++)
+        {
+            InventorySlot slot = new InventorySlot(); 
             slot.isEmpty = true;
-            inventory.Add(slot);
+            inventory.Add(slot); 
         }
 
 
         //Making all the quantity texts blank for both the hotbar and the fullinv.
 
-        foreach (GameObject panel in hotbar) {
+        foreach (GameObject panel in hotbar)
+        {
             if (panel.transform.childCount > 0) // Ensure it has a child
             {
                 Transform textChild = panel.transform.GetChild(0); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
-                tmp.text = "";
-                tmp.color = new Color32(255, 255, 225, 100);
+                tmp.text = ""; 
+                tmp.color = new Color32(255,255,225,100);
 
             }
-
+        
         }
 
-        foreach (GameObject panel in fullInv) {
+        foreach (GameObject panel in fullInv)
+        {
             if (panel.transform.childCount > 0) // Ensure it has a child
             {
                 Transform textChild = panel.transform.GetChild(0); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
-                tmp.text = "";
-                tmp.color = new Color32(255, 255, 225, 100);
+                tmp.text = ""; 
+                tmp.color = new Color32(255,255,225,100);
 
 
             }
-
+        
         }
 
-        isConnectedWithUI = true;
+
     }
+
 
     void Update()
     {
-        if (!isConnectedWithUI) {
-            return;
-        }
-
         for (int i = 0; i < hotbarSize+1; i++)
         {
    
@@ -194,13 +170,14 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-                PauseTimeHandler.TogglePauseGame();
+                this.GetComponent<helperFunctions>().togglePause();
 
             }
 
         }
 
         if (Input.GetKeyDown(KeyCode.Q) ){
+
             if (CraftingUI != null && !fullInventory.activeSelf){
                  bool isActive = CraftingUI.activeSelf;
 
@@ -211,10 +188,10 @@ public class PlayerInventory : MonoBehaviour
                 }
 
                 CraftingUI.SetActive(!isActive);
-                gameUI.SetActive(isActive);
+                gameUI.SetActive(isActive); 
+                
 
-
-                PauseTimeHandler.TogglePauseGame();
+                this.GetComponent<helperFunctions>().togglePause();
 
             }
 

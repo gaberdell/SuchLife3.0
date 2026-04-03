@@ -61,17 +61,6 @@ namespace BlockIteraction
             }
         }
 
-        private void OnEnable() {
-            EventManager.LocalGameObjectPlayerAddedToScene += setPlayerGameObject;
-        }
-
-        private void OnDisable() {
-            EventManager.LocalGameObjectPlayerAddedToScene -= setPlayerGameObject;
-        }
-
-        void setPlayerGameObject(GameObject newPlayer) {
-            player = newPlayer;
-        }
 
         void Start()
         {

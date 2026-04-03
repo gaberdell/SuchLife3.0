@@ -1,7 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
+//using static UnityEngine.Rendering.DebugUI;
+//using static Unity.Burst.Intrinsics.X86.Avx; //what are these for?
+using System;
 
 
 //Right now, 
@@ -78,7 +82,7 @@ public class CraftingUI : MonoBehaviour
             }   
 
 
-      inventory = null;
+      inventory = player.GetComponent<PlayerInventory>().inventory;
    
       for(int i = 0; i < 9; i++)
         {
@@ -100,22 +104,9 @@ public class CraftingUI : MonoBehaviour
         
         }
 
-        //Gets set inactive by the local player script PlayerInventory
+        gameObject.SetActive(false);
 
         
-    }
-
-    private void OnEnable() {
-        EventManager.LocalGameObjectPlayerAddedToScene += setPlayer;
-    }
-
-    private void OnDisable() {
-        EventManager.LocalGameObjectPlayerAddedToScene -= setPlayer;
-    }
-
-    void setPlayer(GameObject newPlayer) {
-        player = newPlayer;
-        inventory = player.GetComponent<PlayerInventory>().inventory;
     }
 
     void onEnable(){
@@ -171,9 +162,7 @@ public class CraftingUI : MonoBehaviour
     void Update()
     {
         //breaks in main scene without this line but works in crafting scene without it... ???
-        if (inventory == null) {
-            return;
-        }
+        inventory = player.GetComponent<PlayerInventory>().inventory;
 
         //Coudl rewrite to use game events. Currently, this checks the panels of the Inventory and updates them to match every second.
         int count = 0;
@@ -311,8 +300,6 @@ public class CraftingUI : MonoBehaviour
 
         if (firstButtonPress.type == null){ //If nothing has been selected yet
             //ignore selections of nothing - swapping when selecting nothing first is buggy and confusing behavior
-            Debug.Log(inventory);
-            Debug.Log(inventory[index]);
             if (inventory[index].isEmpty)
             {
                 firstButtonPress.type = null;

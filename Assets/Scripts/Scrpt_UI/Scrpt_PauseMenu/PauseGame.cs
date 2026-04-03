@@ -1,5 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseGame : MonoBehaviour
 {
@@ -103,8 +105,7 @@ public class PauseGame : MonoBehaviour
     {
         if (isPaused)
         {
-            isPaused = false;
-            PauseTimeHandler.UnPauseGame();
+            isPaused = togglePause();
         }
 
         SceneManager.LoadScene(titleScreen);
@@ -112,8 +113,16 @@ public class PauseGame : MonoBehaviour
 
     public bool togglePause()
     {
-        PauseTimeHandler.TogglePauseGame();
-        return !isPaused;
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = 1f;
+            return (false);
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            return (true);
+        }
     }
 
 }
