@@ -85,6 +85,7 @@ public class Bomb : Mob
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
+            if (hit.gameObject == gameObject) continue; // skip self, won't knockback self first.
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
