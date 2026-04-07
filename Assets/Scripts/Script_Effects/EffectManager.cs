@@ -24,9 +24,14 @@ public class EffectManager : MonoBehaviour
     private GameObject Player;
     [SerializeField] bool isLocalPlayer = false; //whether this effect manager is on the local player or not; local player effects will be displayed on the UI
     [SerializeField] GameObject effectUIPanel; //prefab for effect panel
-    [SerializeField] GameObject effectUIParent; //parent holding panel objects in the scene's canvas; should be canvas/GameUI/EffectsList
+    GameObject effectUIParent; //parent holding panel objects in the scene's canvas; should be canvas/GameUI/EffectsList
     public void addEffect(StatusEffect effect, Sprite icon)
     {
+        if(effectUIParent == null)
+        {
+            //when this is being called the ui is guaranteed to be instantiated
+            effectUIParent = GameObject.Find("EffectsPanelsParent"); //find it because ui and player are instantiated at runtime
+        }
         //check if effect is already present in the manager
         if (hasEffect(effect))
         {
@@ -69,6 +74,7 @@ public class EffectManager : MonoBehaviour
         //instance = this;
         Player = this.gameObject;
         DontDestroyOnLoad(gameObject);
+        
     }
 
     

@@ -59,11 +59,18 @@ public class HandleDungeonEntrance : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       nearbyPlayer = collision.gameObject;
+        if(collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = collision.gameObject;
+        }
+       
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-       nearbyPlayer = null;
+        if (collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = null;
+        }
     }
 
 

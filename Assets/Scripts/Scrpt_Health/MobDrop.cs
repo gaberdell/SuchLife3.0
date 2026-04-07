@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class DropItem
 {
     public GameObject itemPrefab;
+    public int minQuantity = 1;
+    public int maxQuantity = 1;
     [Range(0f, 1f)] public float dropChance; // This is a relative weight, not strict probability.
 }
 
@@ -60,7 +62,15 @@ public class MobDrop : MonoBehaviour
             {
                 if (dropItem.itemPrefab != null)
                 {
-                    Instantiate(dropItem.itemPrefab, transform.position, Quaternion.identity);
+                    int quant = Random.Range(dropItem.minQuantity, dropItem.maxQuantity);
+                    for(int i = 0; i < quant; i++)
+                    {
+                        //randomize dropped item pos a bit for variety
+                        float randXOffset = Random.Range(-10, 10) * .10f;
+                        float randYOffset = Random.Range(-10, 10) * .10f;
+                        Instantiate(dropItem.itemPrefab, transform.position + new Vector3(randXOffset, randYOffset, 0), Quaternion.identity);
+                    }
+
                     //Debug.Log($"[MobDrop] Dropped {dropItem.itemPrefab.name} from {gameObject.name}");
                 }
                 else
