@@ -245,7 +245,7 @@ public static class ChunkManager
         float time = groundTilemap.GetAnimationTime(animTileLoc);
         if (time == 0)
         {
-            Debug.Log("no global animation tile found!");
+            //Debug.Log("no global animation tile found!");
         }
         return time;
     }
