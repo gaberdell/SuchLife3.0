@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Pathfinding {
 	/// <summary>
@@ -20,10 +21,19 @@ namespace Pathfinding {
 
 		void Start()
         {
-            target = GameObject.Find("Player").transform;
+			GameObject player = GameObject.Find("Player");
+
+			if (player != null) {
+				target = GameObject.Find("Player").transform;
+			}
+			else {
+				target = null;
+			}
+
         }
 
-		void OnEnable () {
+
+        void OnEnable () {
 			ai = GetComponent<IAstarAI>();
 			// Update the destination right before searching for a path as well.
 			// This is enough in theory, but this script will also update the destination every

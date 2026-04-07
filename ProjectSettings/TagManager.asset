@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - Grid
+  - PlaceTileMap
+  - GameUI
+  - HotbarPanel
+  - FullInventory
+  - CraftingUI
   layers:
   - Default
   - TransparentFX
