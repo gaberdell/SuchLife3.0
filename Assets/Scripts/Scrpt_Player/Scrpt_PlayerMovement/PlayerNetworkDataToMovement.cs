@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class PlayerNetworkDataToMovement : AbstractPlayerMovementGetter {
@@ -6,5 +7,12 @@ public class PlayerNetworkDataToMovement : AbstractPlayerMovementGetter {
     {
         MovementInput = Vector2.zero;
         MousePositionUnitVector = Vector2.up;
+    }
+
+    public void SetFromNetworkBytes(byte[] bytes) {
+        float xValue = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes, out int bytesUsed);
+        float yValue = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(bytesUsed).ToArray(), out int _);
+
+        MovementInput = new Vector2(xValue, yValue);
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ServerNetworkManager : MonoBehaviour
 {
@@ -20,6 +22,8 @@ public class ServerNetworkManager : MonoBehaviour
     private static object clientsLock;
 
     private static bool isActivated;
+
+    private static Dictionary<int, GameObject> players;
 
     public static void StartServer(ushort port) {
         Debug.Log(String.Format("Starting server with port {0}", port));
@@ -78,6 +82,9 @@ public class ServerNetworkManager : MonoBehaviour
 
             //using end accept client will end it sob emoji gotta call it again
             tcpListener.BeginAcceptTcpClient(onAcceptTcpClient, null);
+
+            GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", Vector3.zero, Quaternion.identity);
+            players.Add(clientId, newPlayer);
         }
         catch (Exception e) {
             Debug.LogError("Error handeling tcpAccept lmao : " + e.Message);
@@ -111,7 +118,7 @@ public class ServerNetworkManager : MonoBehaviour
                 IPEndPoint clientEndPoint = (IPEndPoint)data.Client.Client.RemoteEndPoint;
 
                 Debug.Log("Peacefully lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
-
+                SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
                 data.Client.Close();
             }
         }
@@ -124,7 +131,7 @@ public class ServerNetworkManager : MonoBehaviour
             IPEndPoint clientEndPoint = (IPEndPoint)data.Client.Client.RemoteEndPoint;
 
             Debug.LogError("Unexpectedly lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
-
+            SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
             data.Client.Close();
         }
     }
@@ -136,11 +143,7 @@ public class ServerNetworkManager : MonoBehaviour
 
             byte[] recievedData = udpListener.EndReceive(result, ref udpEndPoint);
 
-            using (PacketWrapper packet = new PacketWrapper(recievedData)) {
-                //TODO : Text processing suff ig
-                //Make me print a pretty message to da screen
-                Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
-            }
+            TcpClientData clientData = null;
 
             foreach (var client in tcpClients.Values) {
                 if (client.EndPoint != null) {
@@ -149,9 +152,19 @@ public class ServerNetworkManager : MonoBehaviour
                 IPEndPoint tcpEndPoint = (IPEndPoint)client.Client.Client.RemoteEndPoint;
                 if (tcpEndPoint.Address.Equals(udpEndPoint.Address)) {
                     //Found matching client by IP adress. set udp endpoint
+                    clientData = client;
                     client.EndPoint = udpEndPoint;
+                    break;
                 }
             }
+
+            using (PacketWrapper packet = new PacketWrapper(recievedData)) {
+                //TODO : make this less jank oml
+                //Make me print a pretty message to da screen
+                Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
+                players[clientData.ClientId].GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(packet.GetBytes());
+            }
+
 
             udpListener.BeginReceive(onRecieveDataUdp, null);
         }
@@ -168,9 +181,9 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-    static void SendToAllWithTcp() {
+    static void SendToAllWithTcp(byte[] bytesToAdd) {
         using (PacketWrapper packet = new PacketWrapper()) {
-            packet.AddBytes(new byte[1] { 13 });
+            packet.AddBytes(bytesToAdd);
             byte[] data = packet.GetBytes();
             Debug.Log(String.Format("(TCP) Sending packets to {0} clients", tcpClients.Count));
             foreach (var client in tcpClients.Values) {
@@ -207,6 +220,7 @@ public class ServerNetworkManager : MonoBehaviour
         if (instance == null && DataService.IsMultiplayer && DataService.IsLocalSave) {
             instance = this;
             tcpClients = new Dictionary<int, TcpClientData>();
+            players = new Dictionary<int, GameObject>();
             clientsLock = new object();
 
             StartServer(DataService.PortOfServerWeAreHosting);
@@ -219,11 +233,12 @@ public class ServerNetworkManager : MonoBehaviour
     void Update()
     {
         if (isActivated) {
+
             if (Input.GetKeyDown(KeyCode.X)) {
                 StopServer();
             }
             else if (Input.GetKeyDown(KeyCode.Y)) {
-                SendToAllWithTcp();
+                SendToAllWithTcp(new byte[] {0 });
             }
             else if (Input.GetKeyDown(KeyCode.U)) {
                 SendToAllWithUdp();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.FilePathAttribute;
 
 //https://stackoverflow.com/questions/4854207/get-a-specific-bit-from-byte
 //Gotten from this with a lil modification
@@ -10,8 +11,7 @@ using UnityEngine;
 //https://stackoverflow.com/questions/10966331/two-way-bidirectional-dictionary-in-c
 //Got the flip Dictionary part from this Hasan Baidoun
 
-public class SaveablePrefabManager : MonoBehaviour
-{
+public class SaveablePrefabManager : MonoBehaviour {
     static private SaveablePrefabManager instance;
 
     static private string RESOURCE_LOCATION = "SaveablePrefabs/";
@@ -20,7 +20,7 @@ public class SaveablePrefabManager : MonoBehaviour
 
     static private string PLAYER_PREFAB_NAME = "Player";
     static private string OTHER_PLAYER_PREFAB_NAME = "OtherPlayer";
-    static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER+"Scrombolo_Bombolo";
+    static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER + "Scrombolo_Bombolo";
     static private string ITEM_NAME = "Item";
 
     static GameObject PLAYER_PREFAB;
@@ -34,6 +34,8 @@ public class SaveablePrefabManager : MonoBehaviour
     static public Dictionary<string, GameObject> StringToPrefabKey { get; private set; }
 
     static public List<GameObject> SaveablePrefabs { get; private set; }
+
+    static public Dictionary<uint, GameObject> NetworkIdsPrefabs {get; private set;}
 
     static uint MAX_BYTES_FOR_ENTITIES = 1024;
 
@@ -81,6 +83,11 @@ public class SaveablePrefabManager : MonoBehaviour
         return unoccupiedId;
     }
 
+    static public void DeletePrefab(uint id) {
+        //Prob should build a hash set for this later omg :skull:
+        //GameObject.FindObjectsByType()
+    }
+
     static public void DeletePrefab(GameObject prefab)
     {
         PrefabSaveInfo entity = prefab.GetComponent<PrefabSaveInfo>();
@@ -98,14 +105,26 @@ public class SaveablePrefabManager : MonoBehaviour
         Destroy(prefab);
     }
 
-    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation)
+    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, uint? id = null)
     {
         //Maybe use object pooling
         GameObject newObject = Instantiate(prefab, position, rotation);
 
         PrefabSaveInfo entity = newObject.gameObject.AddComponent<PrefabSaveInfo>();
         entity.PrefabId = PrefabToByteKey[prefab];
-        entity.EntityId = getUnoccupiedId();
+
+        if (id == null) {
+            entity.EntityId = getUnoccupiedId();
+        }
+        else {
+            uint idReal = (uint)id;
+
+            if (retrieveIsActiveEntity(idReal)) {
+                throw new Exception("Already exsists exception :sob:");
+            }
+            addLocation(idReal);
+            entity.EntityId = idReal;
+        }
 
         SaveablePrefabs.Add(newObject);
 
@@ -114,19 +133,19 @@ public class SaveablePrefabManager : MonoBehaviour
         return newObject;
     }
 
-    static public GameObject CreatePrefab(string prefabName)
+    static public GameObject CreatePrefab(string prefabName, uint? id = null)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity);
+        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity, id);
     }
 
-    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation)
+    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation, uint? id = null)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], position, rotation);
+        return CreatePrefab(StringToPrefabKey[prefabName], position, rotation, id);
     }
 
-    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation)
+    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation, uint? id = null)
     {
-        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation);
+        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation, id);
     }
 
 #if UNITY_EDITOR

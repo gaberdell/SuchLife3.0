@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class ClientNetworkManager : MonoBehaviour
     private bool isActivated;
     private byte[] recieveBuffer;
 
-
+    bool playerCreated;
     public void StartClient(string ip, ushort port) {
         try {
             Debug.Log(String.Format("Joining server Ip of server : {0}, Port is {1}", ip, port));
@@ -137,10 +138,10 @@ public class ClientNetworkManager : MonoBehaviour
         }
     }
 
-    private void sendDataWithUdp() {
+    private void sendDataWithUdp(byte[] bytes) {
         try {
             using (PacketWrapper packet = new PacketWrapper()) {
-                packet.AddBytes(new byte[1] { 12 });
+                packet.AddBytes(bytes);
                 byte[] data = packet.GetBytes();
 
                 udpClient.Send(data, data.Length);
@@ -155,15 +156,23 @@ public class ClientNetworkManager : MonoBehaviour
     void Update()
     {
         if (isActivated) {
-            if (Input.GetKeyDown(KeyCode.X)) {
+            float xValue = InputHandler.Instance.MoveInput.x;
+            float yValue = InputHandler.Instance.MoveInput.y;
+            byte[] xBytes = ConvertToByteArray.ConvertValueToBytes(xValue);
+            byte[] yBytes = ConvertToByteArray.ConvertValueToBytes(yValue);
+
+            sendDataWithUdp(xBytes.Concat(yBytes).ToArray());
+
+            // sendDataWithUdp(;
+            /*if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();
             }
             else if (Input.GetKeyDown(KeyCode.T)) {
                 sendDataWithTcp();
             }
             else if (Input.GetKeyDown(KeyCode.U)) {
-                sendDataWithUdp();
-            }
+              //  sendDataWithUdp();
+            }*/
         }
     }
 }

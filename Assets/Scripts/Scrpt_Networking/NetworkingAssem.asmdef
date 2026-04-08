@@ -2,7 +2,9 @@
     "name": "NetworkingAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:c103825ea3e47ae4985e226a520ff731"
+        "GUID:c103825ea3e47ae4985e226a520ff731",
+        "GUID:ab3d8b8bf6104414c900204372f8ebf7",
+        "GUID:f58aa23d71e72b14bab58999d573ff5d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
