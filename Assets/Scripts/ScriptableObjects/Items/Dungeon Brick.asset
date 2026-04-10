@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82f33b68939a98043bae850294612226, type: 3}
-  m_Name: Apple
+  m_Name: Dungeon Brick
   m_EditorClassIdentifier: 
-  itemName: Apple
-  useFlag: 0
-  icon: {fileID: 7144823286502424392, guid: 817a0b4657cdb75488449dba6c3e9e00, type: 3}
-  tileThisPlaces: {fileID: 0}
-  information:
-  - This is an apple!
+  itemName: Dungeon Brick
+  useFlag: 2
+  icon: {fileID: 1087584280, guid: 13384dfef597a044189f6d59f8f44ac4, type: 3}
+  tileThisPlaces: {fileID: 11400000, guid: fa56c7c51fb9406488034b0951da08ea, type: 2}
+  information: []

@@ -200,6 +200,7 @@ public class Chunk
         wallTilemap.SetTilesBlock(chunkBounds, wallTilesFlat);
         syncNewAnimatedTiles(groundTilemap);
         //activate chunk entities 
+ 
         for (int i = 0; i < chunkMobs.Count; i++)
         {
             GameObject currMob = chunkMobs[i];

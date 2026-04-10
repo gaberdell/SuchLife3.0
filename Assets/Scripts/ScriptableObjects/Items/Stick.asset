@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82f33b68939a98043bae850294612226, type: 3}
-  m_Name: Fruit Salad
+  m_Name: Stick
   m_EditorClassIdentifier: 
-  itemName: Fruit Salad
+  itemName: Stick
   useFlag: 0
-  icon: {fileID: -306787472437928336, guid: 7cad9827c0428a6448a5f0fe45af6d7f, type: 3}
+  icon: {fileID: 9079665947234297571, guid: cf84b7bc8b501b54c9151890e58f5003, type: 3}
   tileThisPlaces: {fileID: 0}
   information: []

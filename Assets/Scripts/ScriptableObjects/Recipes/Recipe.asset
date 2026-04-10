@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 950f493a267cdb549907d0f0ceeb0c83, type: 3}
   m_Name: Recipe
   m_EditorClassIdentifier: 
-  recipe_details: []
-  result: {fileID: 0}
-  anyOrder: 0
+  recipe_details:
+  - {fileID: 11400000, guid: 1839a23fb7a4b154db86220114e04de8, type: 2}
+  result: {fileID: 11400000, guid: 7b525d9ab2765d744ad0b99ed33c7a12, type: 2}
+  anyOrder: 1
   emptyitem: {fileID: 0}

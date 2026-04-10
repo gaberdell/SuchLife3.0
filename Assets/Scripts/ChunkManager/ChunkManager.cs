@@ -12,8 +12,8 @@ public static class ChunkManager
     // tileChanges will be sorted into 'chunks' of size n
     // dungeons will be handled as instances with their own chunks
 
-    const int chunkSize = 4; //width & height of chunk in tiles;
-    const int renderDistance = 4; //amount of chunks away from player's chunk to render (e.g. if 2, then render 8 chunks around player's chunk)
+    const int chunkSize = 32; //width & height of chunk in tiles;
+    const int renderDistance = 2; //amount of chunks away from player's chunk to render (e.g. if 2, then render 8 chunks around player's chunk)
     const int offset = 500; //add this number to world positions read into and from this manager; used to offset the 0,0 point of the manager so negative cases don't need to be considered.
     static Vector3Int worldPos = new Vector3Int(0, 0, 0); //position of chunk manager in world (should match the tilemaps'
     static List<List<Chunk>> chunkGrid = new List<List<Chunk>>(); //container for world chunks
