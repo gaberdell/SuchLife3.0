@@ -84,8 +84,8 @@ public class SaveablePrefabManager : MonoBehaviour {
     }
 
     static public void DeletePrefab(uint id) {
-        //Prob should build a hash set for this later omg :skull:
-        //GameObject.FindObjectsByType()
+        GameObject prefab = NetworkIdsPrefabs[id];
+        DeletePrefab(prefab);
     }
 
     static public void DeletePrefab(GameObject prefab)
@@ -94,11 +94,12 @@ public class SaveablePrefabManager : MonoBehaviour {
 
         if (entity != null)
         {
-            removeLocation(entity.EntityId);
+            removeLocation(entity.NetworkId);
 
         }
 
         SaveablePrefabs.Remove(prefab);
+        NetworkIdsPrefabs.Remove(entity.NetworkId);
 
         EventManager.SetPrefabRemovedFromScene(prefab);
 
@@ -114,7 +115,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         entity.PrefabId = PrefabToByteKey[prefab];
 
         if (id == null) {
-            entity.EntityId = getUnoccupiedId();
+            entity.NetworkId = getUnoccupiedId();
         }
         else {
             uint idReal = (uint)id;
@@ -123,10 +124,11 @@ public class SaveablePrefabManager : MonoBehaviour {
                 throw new Exception("Already exsists exception :sob:");
             }
             addLocation(idReal);
-            entity.EntityId = idReal;
+            entity.NetworkId = idReal;
         }
 
         SaveablePrefabs.Add(newObject);
+        NetworkIdsPrefabs.Add(entity.NetworkId, newObject);
 
         EventManager.SetPrefabAddedToScene(newObject);
 

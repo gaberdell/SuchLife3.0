@@ -75,7 +75,7 @@ public class SaveObjectsManager : MonoBehaviour
 
     private void OnEnable() {
         EventManager.PrefabAddedToScene += GetAllSaveableMonoBehaviors;
-        EventManager.PrefabRemovedFromScene -= RemoveSaveableMonoBehavior;
+        EventManager.PrefabRemovedFromScene += RemoveSaveableMonoBehavior;
 
         EventManager.LocalGameObjectPlayerLeftScene += savePrefabOnLocalPlayerLeave;
     }
@@ -156,8 +156,13 @@ public class SaveObjectsManager : MonoBehaviour
         return savePrefab.ToArray();
     }
 
-    void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
+    public void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
         readBytes = 0;
+
+        if (prefabId == null) {
+            prefabId = prefab.GetComponent<PrefabSaveInfo>().PrefabId;
+        }
+
         List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabId];
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
@@ -213,16 +218,20 @@ public class SaveObjectsManager : MonoBehaviour
 
 
 
-    List<byte> PrefabGetByteArray(GameObject prefab) {
+    public List<byte> PrefabGetByteArray(GameObject prefab, bool addId = true) {
         PrefabSaveInfo prefabSaveInfo = prefab.GetComponent<PrefabSaveInfo>();
 
         if (prefabSaveInfo == null) {
             Debug.LogError("Was not able to retrieve PrefabSaveInfo for : " + prefab.name);
         }
 
-        List<byte> returnArray = prefabSaveInfo.PrefabId.ToList();
+        List<byte> returnArray = new List<byte>();
 
-        returnArray.Add(0);
+        if (addId) {
+            returnArray = prefabSaveInfo.PrefabId.ToList();
+
+            returnArray.Add(0);
+        }
 
         byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
         byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles);

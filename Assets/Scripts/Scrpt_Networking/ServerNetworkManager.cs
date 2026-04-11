@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEditor.PackageManager;
@@ -24,6 +25,9 @@ public class ServerNetworkManager : MonoBehaviour
     private static bool isActivated;
 
     private static Dictionary<int, GameObject> players;
+
+    //TODO : Decouple this from the other thing but for rn just getting it working
+    private SaveObjectsManager currentSaveManager;
 
     public static void StartServer(ushort port) {
         Debug.Log(String.Format("Starting server with port {0}", port));
@@ -85,6 +89,15 @@ public class ServerNetworkManager : MonoBehaviour
 
             GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", Vector3.zero, Quaternion.identity);
             players.Add(clientId, newPlayer);
+
+            foreach (var clientPair in tcpClients) {
+                if (clientPair.Key == clientId) {
+
+                }
+                else {
+
+                }
+            }
         }
         catch (Exception e) {
             Debug.LogError("Error handeling tcpAccept lmao : " + e.Message);
@@ -181,6 +194,16 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
+    static void SendToTcp(int client, byte[] bytesToAdd) {
+        using (PacketWrapper packet = new PacketWrapper()) {
+            packet.AddBytes(bytesToAdd);
+            byte[] data = packet.GetBytes();
+            Debug.Log(String.Format("(TCP) Sending packets to {0} clients", tcpClients.Count));
+            tcpClients[client].Stream.Write(data, 0, data.Length);
+        }
+    }
+
+
     static void SendToAllWithTcp(byte[] bytesToAdd) {
         using (PacketWrapper packet = new PacketWrapper()) {
             packet.AddBytes(bytesToAdd);
@@ -192,9 +215,9 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-    static void SendToAllWithUdp() {
+    static void SendToAllWithUdp(byte[] bytes) {
         using (PacketWrapper packet = new PacketWrapper()) {
-            packet.AddBytes(new byte[1] { 14 });
+            packet.AddBytes(bytes);
             byte[] data = packet.GetBytes();
 
             Debug.Log(String.Format("(UDP) Sending packets to {0} clients", tcpClients.Count));
@@ -214,6 +237,17 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
+    private void Awake() {
+        currentSaveManager = GameObject.FindFirstObjectByType<SaveObjectsManager>();
+    }
+
+    private void OnEnable() {
+        EventManager.PrefabAddedToScene += addTcpObject;
+    }
+
+    private void OnDisable() {
+        EventManager.PrefabAddedToScene -= addTcpObject;
+    }
 
     void Start()
     {
@@ -230,6 +264,14 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
+    void addTcpObject(GameObject prefabToAdd) {
+        PrefabSaveInfo saveInfo = prefabToAdd.GetComponent<PrefabSaveInfo>();
+        byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(saveInfo.NetworkId);
+        byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.position);
+        byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.rotation.eulerAngles);
+        SendToAllWithTcp(networkBytes.Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).ToArray());
+    }
+
     void Update()
     {
         if (isActivated) {
@@ -238,11 +280,17 @@ public class ServerNetworkManager : MonoBehaviour
                 StopServer();
             }
             else if (Input.GetKeyDown(KeyCode.Y)) {
-                SendToAllWithTcp(new byte[] {0 });
+                Debug.Log("Summoning Scrombolo Bombolo");
+                SaveablePrefabManager.CreatePrefab("Scrombolo_Bombolo", Vector3.zero, Quaternion.identity);
             }
             else if (Input.GetKeyDown(KeyCode.U)) {
-                SendToAllWithUdp();
             }
+        }
+
+        foreach (KeyValuePair<uint, GameObject> item in SaveablePrefabManager.NetworkIdsPrefabs) {
+            List<byte> serializedData = currentSaveManager.PrefabGetByteArray(item.Value, false);
+            byte[] uintByte = ConvertToByteArray.ConvertValueToBytes(item.Key);
+            SendToAllWithUdp(uintByte.Concat(serializedData).ToArray());
         }
     }
 }

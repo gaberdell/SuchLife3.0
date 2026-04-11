@@ -9,6 +9,10 @@ public class ClientNetworkManager : MonoBehaviour
 {
     private static int MAX_TCP_RECIEVE_BUFFER = 4096;
 
+    //TODO : Decouple this from the other thing but for rn just getting it working
+    private SaveObjectsManager currentSaveManager;
+    private InitialWorldSetup initialWorldSetup;
+
     private UdpClient udpClient;
     private TcpClient tcpClient;
     private NetworkStream tcpStream;
@@ -16,6 +20,9 @@ public class ClientNetworkManager : MonoBehaviour
     private byte[] recieveBuffer;
 
     bool playerCreated;
+
+    private uint prefabNetworkId;
+
     public void StartClient(string ip, ushort port) {
         try {
             Debug.Log(String.Format("Joining server Ip of server : {0}, Port is {1}", ip, port));
@@ -44,6 +51,12 @@ public class ClientNetworkManager : MonoBehaviour
         tcpClient?.Close();
         isActivated = false;
         Debug.Log("Client Shut Down");
+    }
+
+
+    private void Awake() {
+        currentSaveManager = GameObject.FindFirstObjectByType<SaveObjectsManager>();
+        initialWorldSetup = GameObject.FindFirstObjectByType<InitialWorldSetup>();
     }
 
     void Start()
@@ -84,6 +97,39 @@ public class ClientNetworkManager : MonoBehaviour
                     //TODO : Make Client processing stuff
                     //Make me print a pretty message to da screen
                     Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
+                    byte[] packetBytes = packet.GetBytes();
+                    prefabNetworkId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes.Skip(1).ToArray(), out int bytesForUInt);
+                    Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1+ bytesForUInt).ToArray(), out int bytesUsedForPos);
+                    Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1 + bytesForUInt + bytesUsedForPos).ToArray(), out int rotBytesUsed);
+                    int totalBytesUsed = 1 + bytesForUInt + bytesUsedForPos + rotBytesUsed;
+                    //Player OP-CODE
+                    if (packetBytes[0] == 0) {
+                        if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(prefabNetworkId)) {
+                            SaveablePrefabManager.DeletePrefab(prefabNetworkId);
+                        }
+                        GameObject newPlayer = SaveablePrefabManager.CreatePrefab("Player", prefabPosition, Quaternion.Euler(eulerRotation), prefabNetworkId);
+                    }
+                    //Add object OP-CODE
+                    else if(packetBytes[0] == 1) {
+                        if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(prefabNetworkId)) {
+                            //Idk do somethig maybe
+                        }
+                        else {
+
+                            int zeroByte = 0;
+                            for (int i = totalBytesUsed; i < packetBytes.Length; i++) {
+                                if (packetBytes[i] == 0) {
+                                    zeroByte = i;
+                                    break;
+                                }
+                            }
+                            GameObject newPrefab = SaveablePrefabManager.CreatePrefab(packetBytes.Skip(totalBytesUsed).Take(zeroByte- totalBytesUsed - 1).ToArray(), prefabPosition, Quaternion.Euler(eulerRotation), prefabNetworkId);
+                        }
+                    }
+                    //Remove object OP-CODE
+                    else if (packetBytes[0] == 1) {
+                        SaveablePrefabManager.DeletePrefab(prefabNetworkId);
+                    }
                 }
             }
             else {
@@ -117,6 +163,20 @@ public class ClientNetworkManager : MonoBehaviour
                 //TODO : Text processing suff ig
                 //Make me print a pretty message to da screen
                 Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
+                byte[] packetBytes = packet.GetBytes();
+
+                uint objectUIntIdToUpdate = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes, out int skipAmount);
+
+                Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount).ToArray(), out int bytesUsed);
+                Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
+
+                GameObject gO = SaveablePrefabManager.NetworkIdsPrefabs[objectUIntIdToUpdate];
+                gO.transform.position = prefabPosition;
+                gO.transform.rotation = Quaternion.Euler(eulerRotation);
+
+                if (objectUIntIdToUpdate != prefabNetworkId) {
+                    currentSaveManager.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[objectUIntIdToUpdate], null, packetBytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray(), out int _);
+                }
             }
         }
         catch (Exception e) {
