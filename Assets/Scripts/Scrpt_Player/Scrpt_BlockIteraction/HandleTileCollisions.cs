@@ -43,7 +43,7 @@ public class HandleTileCollisions : MonoBehaviour
             if (groundTilemap.HasTile(cellp))
             {
                 Vector3 tileWorldPos = groundTilemap.GetCellCenterWorld(cellp);
-                //Debug.Log(groundTilemap.GetTile(cellp).name + Vector3.Distance(this.gameObject.transform.position, tileWorldPos));
+                //Debug.Log(groundTilemap.GetTile(cellp).name +" dist: " + Vector3.Distance(this.gameObject.transform.position, tileWorldPos));
                 if(Vector3.Distance(this.gameObject.transform.position, tileWorldPos) < playerRadius)
                 {
                     TileBase t = groundTilemap.GetTile(cellp);

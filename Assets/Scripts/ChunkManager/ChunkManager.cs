@@ -240,10 +240,10 @@ public static class ChunkManager
 
     static public float getAnimationTime()
     {
-        Vector3Int animTileLoc = new Vector3Int(-20, 0, 0);
+        Vector3Int animTileLoc = new Vector3Int(0, -90, 0);
         //check if anim tile exists
         float time = groundTilemap.GetAnimationTime(animTileLoc);
-        //groundTilemap.SetTile(new Vector3Int(-10, 0, 0), null);
+        //groundTilemap.SetTile(new Vector3Int(0, -60, 0), null);
         if (time == 0)
         {
             Debug.Log("no global animation tile found!");
