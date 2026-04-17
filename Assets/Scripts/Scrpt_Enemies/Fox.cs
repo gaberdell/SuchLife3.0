@@ -10,6 +10,7 @@ public class Fox : Mob
     //[SerializeField] private AIPath path;
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
+    private EnemyAttack enemyAttack;
 
     private Transform target;
     [SerializeField] private float aggroDistance;
@@ -43,6 +44,7 @@ public class Fox : Mob
         target = targetObj.transform;
         target.position = new Vector3(0, 0, 0);
         pathSetter.target = target;
+        enemyAttack = GetComponent<EnemyAttack>(); // later set target if get attacked
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
         //add a clock to trigger randomMovement()
@@ -95,6 +97,12 @@ public class Fox : Mob
             target = attacker.transform;
             pathSetter.target = target;
             path.enabled = true;
+
+            // Set the attack target flag in EnemyAttack
+            if (enemyAttack != null)
+            {
+                enemyAttack.hasAttackTarget = true;
+            }
         }
     }
 

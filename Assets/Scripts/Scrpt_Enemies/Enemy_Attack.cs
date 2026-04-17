@@ -10,9 +10,11 @@ public class EnemyAttack : MonoBehaviour
     public float dashDuration = 0.12f;
     public float returnDuration = 0.2f;
     public float hitTime = 0.08f;
+    public bool hasAttackTarget = false;
 
     private bool playerInRange = false;
     private bool canAttack = true;
+    
 
     private Health targetHealth;
     private bool isAttacking = false;
@@ -27,12 +29,12 @@ public class EnemyAttack : MonoBehaviour
     }
 
     void Update()
-{
-    if (playerInRange && canAttack && !isAttacking)
     {
-        StartCoroutine(AttackRoutine());
+        if (playerInRange && hasAttackTarget && canAttack && !isAttacking)
+        {
+            StartCoroutine(AttackRoutine());
+        }
     }
-}
 
     public void DealDamage()
     {

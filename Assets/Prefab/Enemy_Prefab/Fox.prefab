@@ -1224,7 +1224,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1
+  m_Radius: 1.5
 --- !u!114 &-7407428555158405315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1239,3 +1239,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   attackCooldown: 1
+  dashDistance: 0.8
+  dashDuration: 0.12
+  returnDuration: 0.2
+  hitTime: 0.08
+  hasAttackTarget: 0

@@ -77,6 +77,8 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
+            // ignore triggers and non-enemy layers
+            if (enemy.isTrigger) continue;
             //only attack living entities
             if (enemy.TryGetComponent<Mob>(out var mob))
             {
