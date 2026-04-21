@@ -422,6 +422,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       TestBlueTiles_0: 1741349078
+      TestBlueTiles_1: -522439647
+      TestBlueTiles_10: 904556490
+      TestBlueTiles_11: -1918004644
       TestBlueTiles_12: -1742541408
       TestBlueTiles_13: 548771510
       TestBlueTiles_2: -2073361118
@@ -435,4 +438,5 @@ TextureImporter:
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
+  assetBundleName: 
   assetBundleVariant: 
