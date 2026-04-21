@@ -242,11 +242,15 @@ public class ServerNetworkManager : MonoBehaviour
     }
 
     private void OnEnable() {
-        EventManager.PrefabAddedToScene += addTcpObject;
+        if (DataService.IsMultiplayer) {
+            EventManager.PrefabAddedToScene += addTcpObject;
+        }
     }
 
     private void OnDisable() {
-        EventManager.PrefabAddedToScene -= addTcpObject;
+        if (DataService.IsMultiplayer) {
+            EventManager.PrefabAddedToScene -= addTcpObject;
+        }
     }
 
     void Start()
@@ -285,12 +289,12 @@ public class ServerNetworkManager : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.U)) {
             }
-        }
 
-        foreach (KeyValuePair<uint, GameObject> item in SaveablePrefabManager.NetworkIdsPrefabs) {
-            List<byte> serializedData = currentSaveManager.PrefabGetByteArray(item.Value, false);
-            byte[] uintByte = ConvertToByteArray.ConvertValueToBytes(item.Key);
-            SendToAllWithUdp(uintByte.Concat(serializedData).ToArray());
+            foreach (KeyValuePair<uint, GameObject> item in SaveablePrefabManager.NetworkIdsPrefabs) {
+                List<byte> serializedData = currentSaveManager.PrefabGetByteArray(item.Value, false);
+                byte[] uintByte = ConvertToByteArray.ConvertValueToBytes(item.Key);
+                SendToAllWithUdp(uintByte.Concat(serializedData).ToArray());
+            }
         }
     }
 }
