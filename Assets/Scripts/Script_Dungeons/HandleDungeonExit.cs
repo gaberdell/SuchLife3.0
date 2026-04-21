@@ -6,25 +6,25 @@ public class HandleDungeonExit : MonoBehaviour
     GameObject entrance;
     InputHandler inputHandler;
     bool interact;
-    bool playerInRange;
+    GameObject nearbyPlayer;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void setEntrance(GameObject entrance)
     {
         this.entrance = entrance;
         inputHandler = InputHandler.Instance;
         interact = false;
-        playerInRange = false;
+        
     }
 
     private void Update()
     {
         //trigger on true -> false (when key is let go)
-        if (interact == true && inputHandler.InteractTriggered == false && playerInRange == true)
+        if (interact == true && inputHandler.InteractTriggered == false && nearbyPlayer != null)
         {
             //move player back to entrance
             //newDungeon.StartRender();
             //gameObject.SetActive(false);
-            GameObject.Find("Player").transform.position = entrance.transform.position;
+            nearbyPlayer.transform.position = entrance.transform.position;
             EventManager.SetPlayerExitDungeon();
         }
         interact = inputHandler.InteractTriggered;
@@ -32,10 +32,17 @@ public class HandleDungeonExit : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        playerInRange = true;
+        if(collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = collision.gameObject;
+        }
+        
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        playerInRange = false;
+        if (collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = null;
+        }
     }
 }

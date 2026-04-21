@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f33b68939a98043bae850294612226, type: 3}
+  m_Name: Dungeon Brick
+  m_EditorClassIdentifier: 
+  itemName: Dungeon Brick
+  useFlag: 2
+  icon: {fileID: 1087584280, guid: 13384dfef597a044189f6d59f8f44ac4, type: 3}
+  tileThisPlaces: {fileID: 11400000, guid: fa56c7c51fb9406488034b0951da08ea, type: 2}
+  information: []

@@ -41,6 +41,9 @@ public class PlayerInventory : MonoBehaviour
 
     int hotbarSize = 8; //amount of panels in hotbar so this can be adjusted
 
+    private EffectManager effectManager;
+    private EffectsDict effectDict;
+
     private bool isConnectedWithUI = false;
 
     void Start(){
@@ -49,6 +52,9 @@ public class PlayerInventory : MonoBehaviour
 
         inventory = new List<InventorySlot>();
         //Get panels as hotbar.
+
+        effectManager = this.gameObject.GetComponent<EffectManager>();
+        effectDict = this.gameObject.GetComponent<EffectsDict>();
 
         playerInfo = GetComponent<PlayerInfo>();
         
@@ -492,26 +498,18 @@ public class PlayerInventory : MonoBehaviour
             // Damage boost if values are set
             if (consumable.damageBoostAmount > 0 && consumable.boostDuration > 0)
             {
-                PlayerAttack playerAttack = GetComponent<PlayerAttack>();
-                if (playerAttack != null)
-                {
-                    playerAttack.ApplyDamageBoost(consumable.damageBoostAmount, consumable.boostDuration);
-                    used = true;
-
-                    // Show MG Boost Icon for the buff duration
-                    PlayerBuffUI buffUI = GetComponent<PlayerBuffUI>();
-                    if (buffUI != null)
-                    {
-                        buffUI.ShowMgBoostIcon(consumable.boostDuration);
-                    }
-                }
+                effectManager.addEffect(effectDict.getEffect("DamagePotion"), consumable.icon);
+                used = true;
+                
+                    
+                
             }
 
             if (used)
             {
                 //RemoveItem(item); // Only remove if something was actually used
                 RemoveItem(selectedItem);
-                Debug.Log($"Used {consumable.itemName}");
+                //Debug.Log($"Used {consumable.itemName}");
             }
         }
     }

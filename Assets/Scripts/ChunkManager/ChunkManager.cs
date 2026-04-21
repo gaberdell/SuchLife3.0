@@ -12,8 +12,8 @@ public static class ChunkManager
     // tileChanges will be sorted into 'chunks' of size n
     // dungeons will be handled as instances with their own chunks
 
-    const int chunkSize = 4; //width & height of chunk in tiles;
-    const int renderDistance = 4; //amount of chunks away from player's chunk to render (e.g. if 2, then render 8 chunks around player's chunk)
+    const int chunkSize = 32; //width & height of chunk in tiles;
+    const int renderDistance = 2; //amount of chunks away from player's chunk to render (e.g. if 2, then render 8 chunks around player's chunk)
     const int offset = 500; //add this number to world positions read into and from this manager; used to offset the 0,0 point of the manager so negative cases don't need to be considered.
     static Vector3Int worldPos = new Vector3Int(0, 0, 0); //position of chunk manager in world (should match the tilemaps'
     static List<List<Chunk>> chunkGrid = new List<List<Chunk>>(); //container for world chunks
@@ -230,13 +230,27 @@ public static class ChunkManager
         //if out of bounds return null
         if (chunkGrid.Count <= chunkY || chunkGrid[chunkY].Count <= chunkX)
         {
-            Debug.Log("getting out of bounds chunk from world!");
+            //Debug.Log("getting out of bounds chunk from world!");
             return null;
         }
 
 
         return chunkGrid[chunkY][chunkX];
     }
+
+    static public float getAnimationTime()
+    {
+        Vector3Int animTileLoc = new Vector3Int(0, -90, 0);
+        //check if anim tile exists
+        float time = groundTilemap.GetAnimationTime(animTileLoc);
+        //groundTilemap.SetTile(new Vector3Int(0, -60, 0), null);
+        if (time == 0)
+        {
+            Debug.Log("no global animation tile found!");
+        }
+        return time;
+    }
+
 
     //RENDERING
 
@@ -306,6 +320,6 @@ public static class ChunkManager
 
     }
 
-
+    
     
 }

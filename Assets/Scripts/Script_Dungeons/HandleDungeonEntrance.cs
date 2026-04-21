@@ -1,3 +1,4 @@
+using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 
 public class HandleDungeonEntrance : MonoBehaviour
@@ -5,18 +6,17 @@ public class HandleDungeonEntrance : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     InputHandler inputHandler;
     bool interact;
-    bool playerInRange;
     bool rendered;
     GameObject dungeonGrid;
     [SerializeField] TextAsset optionsFile;
     DungeonOptions opts;
-    GameObject grid; 
+    GameObject grid;
+    GameObject nearbyPlayer;
 
     private void Start()
     {
         inputHandler = InputHandler.Instance;
         interact = false;
-        playerInRange = false;
         opts = JsonUtility.FromJson<DungeonOptions>(optionsFile.text);
         rendered = false;
         grid = GameObject.FindGameObjectWithTag("Grid");
@@ -25,7 +25,7 @@ public class HandleDungeonEntrance : MonoBehaviour
     private void Update()
     {
         //trigger on true -> false (when key is let go)
-        if(interact == true && inputHandler.InteractTriggered == false && playerInRange == true){
+        if(interact == true && inputHandler.InteractTriggered == false && nearbyPlayer != null){
             //generate dungeon if none exists 
             if (!rendered)
             {
@@ -44,9 +44,14 @@ public class HandleDungeonEntrance : MonoBehaviour
 
     private void enterDungeon()
     {
+        if(nearbyPlayer == null)
+        {
+            Debug.LogError("trying to enter dungeon while no player is detected nearby!");
+            return;
+        }
         //triggered from event manager
         //move player to starting room in dungeon (0,0 point)
-        GameObject.Find("Player").transform.position = grid.transform.position + new Vector3Int(opts.dungeonOffsetX + 5, opts.dungeonOffsetY + 5, 0);
+        nearbyPlayer.transform.position = grid.transform.position + new Vector3Int(opts.dungeonOffsetX + 5, opts.dungeonOffsetY + 5, 0);
         //ChunkManager.renderChunks(GameObject.Find("Player").transform.position);
         //ChunkManager.renderAll();
         //ChunkManager.renderPlayerChunks();
@@ -54,11 +59,18 @@ public class HandleDungeonEntrance : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       playerInRange = true;
+        if(collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = collision.gameObject;
+        }
+       
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-       playerInRange = false;
+        if (collision.gameObject.tag == "Player")
+        {
+            nearbyPlayer = null;
+        }
     }
 
 

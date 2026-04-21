@@ -1,4 +1,5 @@
 ﻿// Health.cs
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,9 @@ public class Health : MonoBehaviour
     public UnityEvent onDeath;
     public UnityEvent<int> onDamageTaken;
 
+    public float IFrameLength = 1f;
+    private bool canBeHurt = true;
+
     private void Awake()
     {
 
@@ -24,8 +28,27 @@ public class Health : MonoBehaviour
         }
     }
 
+    public IEnumerator waitForIFrames()
+    {
+        canBeHurt = false; //start iframe indicator
+        SpriteRenderer thisSprite = gameObject.GetComponent<SpriteRenderer>();
+        if (thisSprite != null)
+        {
+            thisSprite.color = Color.red;
+            yield return new WaitForSeconds(IFrameLength);
+            thisSprite.color = Color.white;
+        }
+        else
+        {
+            yield return new WaitForSeconds(IFrameLength);
+        }
+        
+        canBeHurt = true;
+    }
+
     public void TakeDamage(int amount, bool applyKnockback = true)
     {
+        if (!canBeHurt) return;
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
@@ -36,7 +59,7 @@ public class Health : MonoBehaviour
             UpdateHealthText();
         }
 
-        // ✅ Only apply knockback if explicitly allowed
+        // Only apply knockback if explicitly allowed
         if (applyKnockback)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -51,6 +74,9 @@ public class Health : MonoBehaviour
         {
             Die();
         }
+
+        StartCoroutine(waitForIFrames());
+
     }
 
     public void Heal(int amount)

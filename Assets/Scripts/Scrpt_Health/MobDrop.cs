@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class DropItem
 {
     public GameObject itemPrefab;
+    public int minQuantity = 1;
+    public int maxQuantity = 1;
     [Range(0f, 1f)] public float dropChance; // This is a relative weight, not strict probability.
 }
 
@@ -18,7 +20,7 @@ public class MobDrop : MonoBehaviour
         if (health != null)
         {
             health.onDeath.AddListener(AttemptDrop);
-            Debug.Log($"[MobDrop] Subscribed to onDeath on {gameObject.name}");
+            //Debug.Log($"[MobDrop] Subscribed to onDeath on {gameObject.name}");
         }
         else
         {
@@ -28,7 +30,7 @@ public class MobDrop : MonoBehaviour
 
     public void AttemptDrop()
     {
-        Debug.Log($"[MobDrop] AttemptDrop called on {gameObject.name}");
+        //Debug.Log($"[MobDrop] AttemptDrop called on {gameObject.name}");
 
         if (dropItems == null || dropItems.Count == 0)
         {
@@ -60,8 +62,16 @@ public class MobDrop : MonoBehaviour
             {
                 if (dropItem.itemPrefab != null)
                 {
-                    Instantiate(dropItem.itemPrefab, transform.position, Quaternion.identity);
-                    Debug.Log($"[MobDrop] Dropped {dropItem.itemPrefab.name} from {gameObject.name}");
+                    int quant = Random.Range(dropItem.minQuantity, dropItem.maxQuantity);
+                    for(int i = 0; i < quant; i++)
+                    {
+                        //randomize dropped item pos a bit for variety
+                        float randXOffset = Random.Range(-10, 10) * .10f;
+                        float randYOffset = Random.Range(-10, 10) * .10f;
+                        Instantiate(dropItem.itemPrefab, transform.position + new Vector3(randXOffset, randYOffset, 0), Quaternion.identity);
+                    }
+
+                    //Debug.Log($"[MobDrop] Dropped {dropItem.itemPrefab.name} from {gameObject.name}");
                 }
                 else
                 {

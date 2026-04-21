@@ -18,6 +18,7 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] TextAsset roomsFile;
     [SerializeField] Tile grassTile;
     [SerializeField] RuleTile wallTile;
+    [SerializeField] RuleTile spikeTile;
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
@@ -292,6 +293,11 @@ public class RenderDungeon : MonoBehaviour
                     case 'F':
                         //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
                         ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile, false);
+                        break;
+                    case 'S':
+                        //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), grassTile);
+                        ChunkManager.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), spikeTile, false);
+                        //Debug.Log("placing psike");
                         break;
                     case 'X':
                         //groundTilemap.SetTile(new Vector3Int(prevRoom.drawXPos + j + offsetX + dungeonOffsetX, prevRoom.drawYPos + i + offsetY + dungeonOffsetY, 0), null);

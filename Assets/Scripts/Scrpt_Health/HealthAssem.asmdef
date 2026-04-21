@@ -1,9 +1,7 @@
 {
     "name": "HealthAssem",
     "rootNamespace": "",
-    "references": [
-        "GUID:6504a31fc89c6d041aecc3d7be8ea4af"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

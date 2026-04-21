@@ -206,4 +206,6 @@ public class PlayerMovement : MonoBehaviour
             chunkPos = currChunkPos;
         }
     }
+
+    
 }
