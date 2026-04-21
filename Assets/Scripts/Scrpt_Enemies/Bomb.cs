@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
+using NUnit.Framework.Constraints;
+using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -13,6 +14,7 @@ public class Bomb : Mob
 
     private List<Transform> targets;
     private Transform target;
+    private AIDestinationSetter pathSetter;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
@@ -41,10 +43,12 @@ public class Bomb : Mob
     {
         targets = new List<Transform>();
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
+        pathSetter = GetComponent<AIDestinationSetter>();
+        target = GameObject.Find("Player").transform;
+        pathSetter.target = target;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-
     }
 
     private void OnEnable() {
@@ -117,6 +121,7 @@ public class Bomb : Mob
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
+            if (hit.gameObject == gameObject) continue; // skip self, won't knockback self first.
             Health health = hit.GetComponent<Health>();
             if (health != null)
             {
