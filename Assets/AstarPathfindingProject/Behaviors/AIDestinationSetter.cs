@@ -21,15 +21,7 @@ namespace Pathfinding {
 
 		void Start()
         {
-			GameObject player = GameObject.Find("Player");
-
-			if (player != null) {
-				target = GameObject.Find("Player").transform;
-			}
-			else {
-				target = null;
-			}
-
+			//target = GameObject.Find("Player").transform;
         }
 
 

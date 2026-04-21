@@ -10,7 +10,7 @@
 - Optionally, enable `showHealthText` to display health in the scene.
 
 ### **2. Use the Public Methods**
-- **`TakeDamage(int amount)`**: Reduces the object's health by the specified amount.
+- **`TakeDamage(int amount, bool applyKnockback, GameObject attacker)`**: Reduces the object's health by the specified amount, trigger onDamageTaken event.
 - **`Heal(int amount)`**: Restores the object's health by the specified amount.
 - The `onDeath` and `onDamageTaken` UnityEvents can be hooked up in the Inspector to trigger actions when these events occur.
 
@@ -31,6 +31,6 @@
 | `currentHealth`  | `int`        | Current health of the GameObject (automatically updated). |
 | `showHealthText` | `bool`       | If true, a health text is displayed in the scene. |
 | `onDeath`        | `UnityEvent` | Event triggered when the object dies. |
-| `onDamageTaken`  | `UnityEvent<int>` | Event triggered when damage is taken, passing the damage amount. |
+| `onDamageTaken`  | `UnityEvent<int>` | Event triggered when damage is taken, passing the damage amount and the attacker's GameObject. |
 
 

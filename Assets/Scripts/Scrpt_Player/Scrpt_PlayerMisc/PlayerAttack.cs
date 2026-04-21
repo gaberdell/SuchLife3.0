@@ -77,25 +77,25 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
+            // ignore triggers and non-enemy layers
+            if (enemy.isTrigger) continue;
             //only attack living entities
             if (enemy.TryGetComponent<Mob>(out var mob))
             {
                 if (enemy.TryGetComponent<Health>(out var health))
                 {
                     int boostedDamage = Mathf.RoundToInt(attackDamage + additiveDamageBoost);
-                    health.TakeDamage(boostedDamage);
+                    health.TakeDamage(boostedDamage, true, gameObject);
                 }
                 //apply a knockback force to the mob
                 //read force from some value associated with the attack or weapon
                 float knockbackForce = 10f;
                 Vector2 knockbackDir = (enemy.transform.position - transform.position).normalized;
                 Vector2 knockbackVector = knockbackDir * knockbackForce;
-
                 mob.applyKnockback(knockbackVector, knockbackForce);
                 //Debug.Log("push");
                 //Debug.Log(knockbackVector);
-            }
-
+            }         
         }
     }
 

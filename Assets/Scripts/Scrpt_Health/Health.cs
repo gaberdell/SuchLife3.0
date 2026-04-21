@@ -13,7 +13,7 @@ public class Health : MonoBehaviour
     private TextMesh healthTextMesh;
 
     public UnityEvent onDeath;
-    public UnityEvent<int> onDamageTaken;
+    public UnityEvent<int, GameObject> onDamageTaken; // damage amount, attacker
 
     public float IFrameLength = 1f;
     private bool canBeHurt = true;
@@ -28,6 +28,7 @@ public class Health : MonoBehaviour
         }
     }
 
+    // should test this part on main!!!
     public IEnumerator waitForIFrames()
     {
         canBeHurt = false; //start iframe indicator
@@ -46,13 +47,14 @@ public class Health : MonoBehaviour
         canBeHurt = true;
     }
 
-    public void TakeDamage(int amount, bool applyKnockback = true)
+
+    public void TakeDamage(int amount, bool applyKnockback = true, GameObject attacker = null)
     {
-        if (!canBeHurt) return;
+        Debug.Log($"Health.TakeDamage called on {gameObject.name} with amount: {amount}, applyKnockback: {applyKnockback}, attacker: {attacker?.name}");
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
-        onDamageTaken?.Invoke(amount);
+        onDamageTaken?.Invoke(amount, attacker);
 
         if (showHealthText)
         {
