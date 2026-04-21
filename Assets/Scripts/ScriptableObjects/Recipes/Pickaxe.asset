@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   recipe_details:
-  - {fileID: 11400000, guid: 5a00c28d538e23b48b9cf2bde9de0bc8, type: 2}
-  - {fileID: 11400000, guid: 5a00c28d538e23b48b9cf2bde9de0bc8, type: 2}
+  - {fileID: 11400000, guid: 7b525d9ab2765d744ad0b99ed33c7a12, type: 2}
   - {fileID: 11400000, guid: 7b525d9ab2765d744ad0b99ed33c7a12, type: 2}
   result: {fileID: 11400000, guid: c6e725557ebfdf94da0fd48f7da4fd1f, type: 2}
   anyOrder: 1

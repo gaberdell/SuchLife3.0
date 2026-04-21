@@ -41973,6 +41973,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6258266300033474545, guid: 8b696e6ac9b21554b9a9991c5957f8a6, type: 3}
+      propertyPath: dropItems.Array.data[0].itemPrefab
+      value: 
+      objectReference: {fileID: 5149180284610993495, guid: a57604d93d37313408e9ee99e5e419e6, type: 3}
+    - target: {fileID: 6258266300033474545, guid: 8b696e6ac9b21554b9a9991c5957f8a6, type: 3}
+      propertyPath: dropItems.Array.data[1].itemPrefab
+      value: 
+      objectReference: {fileID: 5149180284610993495, guid: a57604d93d37313408e9ee99e5e419e6, type: 3}
+    - target: {fileID: 6258266300033474545, guid: 8b696e6ac9b21554b9a9991c5957f8a6, type: 3}
       propertyPath: dropItems.Array.data[0].maxQuantity
       value: 3
       objectReference: {fileID: 0}
