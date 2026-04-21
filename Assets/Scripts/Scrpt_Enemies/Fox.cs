@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework.Constraints;
 using Pathfinding;
 using UnityEngine;
@@ -39,7 +40,7 @@ public class Fox : Mob
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
         pathSetter = GetComponent<AIDestinationSetter>();
         objectInScene = gameObject;
-
+        animator = GetComponent<Animator>();
         GameObject targetObj = new GameObject();
         target = targetObj.transform;
         target.position = new Vector3(0, 0, 0);
