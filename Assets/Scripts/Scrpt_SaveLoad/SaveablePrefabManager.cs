@@ -189,8 +189,6 @@ public class SaveablePrefabManager : MonoBehaviour {
         StringToPrefabKey = new Dictionary<string, GameObject>();
         StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
-
-        NetworkIdsPrefabs = new Dictionary<uint, GameObject>();
     }
     void Awake()
     {

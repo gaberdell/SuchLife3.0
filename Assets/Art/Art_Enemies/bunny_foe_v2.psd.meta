@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a9c3774e43025954b86b43ae9bd48aca
+guid: 10021f1ce2360a543a58871e74f17b13
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3964193602467686371
-    second: pickaxe_v3_0
+      213: -4930480312068212162
+    second: bunny_foe_v2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pickaxe_v3_0
+      name: bunny_foe_v2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 16
+        x: 26
+        y: 36
+        width: 104
+        height: 77
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3e766f70415a30730800000000000000
-      internalID: 3964193602467686371
+      spriteID: e3afd1b674a639bb0800000000000000
+      internalID: -4930480312068212162
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pickaxe_v3_0: 3964193602467686371
+      bunny_foe_v2_0: -4930480312068212162
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
