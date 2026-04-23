@@ -105,7 +105,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         Destroy(prefab);
     }
 
-    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, uint? id = null)
+    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
     {
         //Maybe use object pooling
         GameObject newObject = Instantiate(prefab, position, rotation);
@@ -129,24 +129,26 @@ public class SaveablePrefabManager : MonoBehaviour {
         SaveablePrefabs.Add(newObject);
         NetworkIdsPrefabs.Add(entity.NetworkId, newObject);
 
-        EventManager.SetPrefabAddedToScene(newObject);
+        if (!isQuiet) {
+            EventManager.SetPrefabAddedToScene(newObject);
+        }
 
         return newObject;
     }
 
-    static public GameObject CreatePrefab(string prefabName, uint? id = null)
+    static public GameObject CreatePrefab(string prefabName, uint? id = null, bool isQuiet = false)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity, id);
+        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity, id, isQuiet);
     }
 
-    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation, uint? id = null)
+    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], position, rotation, id);
+        return CreatePrefab(StringToPrefabKey[prefabName], position, rotation, id, isQuiet);
     }
 
-    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation, uint? id = null)
+    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
     {
-        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation, id);
+        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation, id, isQuiet);
     }
 
 #if UNITY_EDITOR

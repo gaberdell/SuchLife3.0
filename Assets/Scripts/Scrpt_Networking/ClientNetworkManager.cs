@@ -68,6 +68,7 @@ public class ClientNetworkManager : MonoBehaviour
     {
         if (!DataService.IsLocalSave && DataService.IsMultiplayer) {
             ExecuteOtherThreadRequestQueue = new ConcurrentQueue<NetworkMainThreadStruct>();
+            initialWorldSetup = GameObject.FindAnyObjectByType<InitialWorldSetup>();
             if (!Uri.TryCreate(DataService.IpOfServer, UriKind.Absolute, out Uri urlWithIpAndPort)) {
                 Debug.Log("Try with http?");
                 Debug.Log("http://" + DataService.IpOfServer);
@@ -174,21 +175,28 @@ public class ClientNetworkManager : MonoBehaviour
             using (PacketWrapper packet = new PacketWrapper(recievedData)) {
                 //TODO : Text processing suff ig
                 //Make me print a pretty message to da screen
+                if (packet.GetBytes() == null || packet.GetBytes().Length == 0) {
+                    Debug.Log("Something bad has happened in the Data recieve UDP as we have a udp of zero byte!?");
+                    return;
+                }
                 Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
                 byte[] packetBytes = packet.GetBytes();
+
+                NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
+                newCommand.networkOpCode = NetworkOpCodeEnum.UPDATE_PREFAB;
 
                 uint objectUIntIdToUpdate = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes, out int skipAmount);
 
                 Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount).ToArray(), out int bytesUsed);
                 Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
 
-                GameObject gO = SaveablePrefabManager.NetworkIdsPrefabs[objectUIntIdToUpdate];
-                gO.transform.position = prefabPosition;
-                gO.transform.rotation = Quaternion.Euler(eulerRotation);
+                newCommand.networkId = objectUIntIdToUpdate;
+                newCommand.prefabPosition = prefabPosition;
+                newCommand.prefabRotation = eulerRotation;
 
-                if (objectUIntIdToUpdate != localPlayerPrefabNetworkId) {
-                    currentSaveManager.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[objectUIntIdToUpdate], null, packetBytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray(), out int _);
-                }
+                newCommand.idOfPrefab = packetBytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();//Overcharged here to instead be the values to set it too
+
+                ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
             }
         }
         catch (Exception e) {
@@ -231,18 +239,34 @@ public class ClientNetworkManager : MonoBehaviour
             if (isNotBlocked) {
                 switch (newCommand.networkOpCode) {
                     case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
+                        Debug.Log("Did we actually add local player?");
                         if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(newCommand.networkId)) {
                             SaveablePrefabManager.DeletePrefab(newCommand.networkId);
                         }
 
                         localPlayerPrefabNetworkId = newCommand.networkId;
                         GameObject newPlayer = SaveablePrefabManager.CreatePrefab("Player", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), newCommand.networkId);
+                        initialWorldSetup.AddPlayerToGame(newPlayer);
                         break;
                     case NetworkOpCodeEnum.ADD_PREFAB:
                         GameObject newPrefab = SaveablePrefabManager.CreatePrefab(newCommand.idOfPrefab, newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), newCommand.networkId);
                         break;
                     case NetworkOpCodeEnum.REMOVE_PREFAB:
                         SaveablePrefabManager.DeletePrefab(newCommand.networkId);
+                        break;
+                    case NetworkOpCodeEnum.UPDATE_PREFAB:
+                        if (SaveablePrefabManager.NetworkIdsPrefabs.TryGetValue(newCommand.networkId, out GameObject gO)) {
+                            gO.transform.position = newCommand.prefabPosition;
+                            gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
+
+                            if (newCommand.networkId != localPlayerPrefabNetworkId) {
+                                currentSaveManager.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[newCommand.networkId], null, newCommand.idOfPrefab, out int _);
+                            }
+                        }
+                        else {
+                            Debug.Log("UDP Packet recieved! However this object seems to not exsist yet sorry!");
+                            return;
+                        }
                         break;
                 }
             }

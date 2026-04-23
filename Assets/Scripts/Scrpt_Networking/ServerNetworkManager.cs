@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class ServerNetworkManager : MonoBehaviour
@@ -189,7 +188,14 @@ public class ServerNetworkManager : MonoBehaviour
                 //TODO : make this less jank oml
                 //Make me print a pretty message to da screen
                 Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
-                players[clientData.ClientId].GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(packet.GetBytes());
+
+                NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
+                newCommand.networkOpCode = NetworkOpCodeEnum.UPDATE_PREFAB;
+
+                newCommand.tcpOriginId = clientData.ClientId;
+                newCommand.idOfPrefab = packet.GetBytes();
+
+                ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
             }
 
 
@@ -257,14 +263,14 @@ public class ServerNetworkManager : MonoBehaviour
     }
 
     private void OnEnable() {
-        if (DataService.IsMultiplayer) {
+        if (DataService.IsMultiplayer && DataService.IsLocalSave) {
             EventManager.PrefabAddedToScene += addTcpObject;
             EventManager.PrefabRemovedFromScene += removeTcpObject;
         }
     }
 
     private void OnDisable() {
-        if (DataService.IsMultiplayer) {
+        if (DataService.IsMultiplayer && DataService.IsLocalSave) {
             EventManager.PrefabAddedToScene -= addTcpObject;
             EventManager.PrefabRemovedFromScene -= removeTcpObject;
         }
@@ -276,6 +282,7 @@ public class ServerNetworkManager : MonoBehaviour
             instance = this;
             tcpClients = new Dictionary<int, TcpClientData>();
             players = new Dictionary<int, GameObject>();
+            ExecuteOtherThreadRequestQueue = new ConcurrentQueue<NetworkMainThreadStruct>();
             clientsLock = new object();
 
             StartServer(DataService.PortOfServerWeAreHosting);
@@ -311,7 +318,7 @@ public class ServerNetworkManager : MonoBehaviour
             if (isNotBlocked) {
                 switch (newCommand.networkOpCode) {
                     case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
-                        GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation));
+                        GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), null, true);
                         players.Add(newCommand.tcpOriginId, newPlayer);
 
                         foreach (var clientPair in tcpClients) {
@@ -333,6 +340,9 @@ public class ServerNetworkManager : MonoBehaviour
                         byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.prefabRotation);
                         byte[] sendBytes = networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(newCommand.idOfPrefab).ToArray();
                         SendToTcp(newCommand.tcpOriginId, sendBytes);
+                        break;
+                    case NetworkOpCodeEnum.UPDATE_PREFAB:
+                        players[newCommand.tcpOriginId].GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
                         break;
                 }
             }

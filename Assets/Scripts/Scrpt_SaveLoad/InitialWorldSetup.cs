@@ -60,9 +60,17 @@ public class InitialWorldSetup : MonoBehaviour
 #endif
     }
 
-    void AddPlayerToGame(uint id) {
-        LoadLocalPlayerThings();
-        player = SaveablePrefabManager.CreatePrefab("Player", Vector3.zero, Quaternion.Euler(0, 0, 0), id);
+    public void AddPlayerToGame(GameObject localPlayerPrefab) {
+        player = localPlayerPrefab;
+        LoadLocalPlayerThingsServer();
+    }
+
+    IEnumerator LoadLocalPlayerThingsServer() {
+        AsyncInstantiateOperation asyncInstantiateOperation = InstantiateAsync(localPlayerEffects);
+        while (!asyncInstantiateOperation.isDone) {
+            yield return null;
+        }
+        EventManager.SetLocalGameObjectPlayerAddedToScene(player);
     }
 
     IEnumerator LoadLocalPlayerThings() {
