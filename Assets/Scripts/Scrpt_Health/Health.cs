@@ -16,7 +16,7 @@ public class Health : MonoBehaviour
     public UnityEvent onDeath;
     public UnityEvent<int, GameObject> onDamageTaken; // damage amount, attacker
 
-    public float IFrameLength = 1f;
+    private float IFrameLength = 0.5f; //in seconds
     private bool canBeHurt = true;
 
     private void Awake()
@@ -29,22 +29,24 @@ public class Health : MonoBehaviour
         }
     }
 
-    // should test this part on main!!!
+    
     public IEnumerator waitForIFrames()
     {
         canBeHurt = false; //start iframe indicator
         SpriteRenderer thisSprite = gameObject.GetComponent<SpriteRenderer>();
-        if (thisSprite != null)
-        {
-            thisSprite.color = Color.red;
-            yield return new WaitForSeconds(IFrameLength);
-            thisSprite.color = Color.white;
-        }
-        else
-        {
-            yield return new WaitForSeconds(IFrameLength);
-        }
+        SpriteRenderer[] spriteComponents = gameObject.GetComponentsInChildren<SpriteRenderer>();
         
+        if (thisSprite != null){ thisSprite.color = Color.red; }
+        foreach (SpriteRenderer s in spriteComponents)
+        {
+            s.color = Color.red;
+        }
+        yield return new WaitForSeconds(IFrameLength);
+        foreach (SpriteRenderer s in spriteComponents)
+        {
+            s.color = Color.white; //assuming default color for components is white...
+        }
+        if (thisSprite != null){ thisSprite.color = Color.white; }
         canBeHurt = true;
     }
 
