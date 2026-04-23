@@ -52,6 +52,7 @@ public class Health : MonoBehaviour
     public void TakeDamage(int amount, bool applyKnockback = true, GameObject attacker = null)
     {
         Debug.Log($"Health.TakeDamage called on {gameObject.name} with amount: {amount}, applyKnockback: {applyKnockback}, attacker: {attacker?.name}");
+        if (!canBeHurt) return; //dont take damage while iframes are up
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 

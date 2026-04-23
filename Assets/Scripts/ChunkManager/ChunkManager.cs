@@ -161,9 +161,13 @@ public static class ChunkManager
     */
     static public void updateEntityPos(Vector2 prevChunk, Vector2 currChunk, GameObject entity)
     {
-        Debug.Log("updating enemy position");
+        //Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
+        Debug.Log("H: " + chunkGrid.Count + " W: " + chunkGrid[(int)currChunk.x].Count);
+        Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
         chunkGrid[(int)prevChunk.y][(int)prevChunk.x].removeEntity(entity);
+        Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
         chunkGrid[(int)currChunk.y][(int)currChunk.x].addEntity(entity);
+
     }
 
 

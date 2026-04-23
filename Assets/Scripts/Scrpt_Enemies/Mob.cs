@@ -23,6 +23,8 @@ public class Mob : MonoBehaviour
             Debug.LogError("Rigidbody2D missing on Mob!");
         if (path == null)
             Debug.LogWarning("AIPath missing on Mob!");
+        //set chunk pos on spawn
+        chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene != null ? objectInScene.transform.position : transform.position);
     }
 
     public void applyKnockback(Vector3 knockbackVector, float knockbackForce)
@@ -59,7 +61,8 @@ public class Mob : MonoBehaviour
     public void updateChunkPos()
     {
         Vector3 currentPos = objectInScene != null ? objectInScene.transform.position : transform.position;
-
+        Debug.Log("current mob pos: " + currentPos);
+        Debug.Log("object in scene: " + objectInScene);
         Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(currentPos);
 
         if (currChunkPos != chunkPos)

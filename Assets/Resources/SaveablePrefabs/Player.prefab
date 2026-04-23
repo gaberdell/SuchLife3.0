@@ -5237,7 +5237,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLocalPlayer: 1
   effectUIPanel: {fileID: 4797938654642483900, guid: 58939baa09c3e8447b706ff6cb5c2758, type: 3}
-  effectUIParent: {fileID: 0}
 --- !u!114 &4823984029649075873
 MonoBehaviour:
   m_ObjectHideFlags: 0
