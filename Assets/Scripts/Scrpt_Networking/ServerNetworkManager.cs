@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEditor.PackageManager;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ServerNetworkManager : MonoBehaviour
 {
@@ -28,6 +28,8 @@ public class ServerNetworkManager : MonoBehaviour
 
     //TODO : Decouple this from the other thing but for rn just getting it working
     private SaveObjectsManager currentSaveManager;
+
+    private static ConcurrentQueue<NetworkMainThreadStruct> ExecuteOtherThreadRequestQueue;
 
     public static void StartServer(ushort port) {
         Debug.Log(String.Format("Starting server with port {0}", port));
@@ -87,16 +89,28 @@ public class ServerNetworkManager : MonoBehaviour
             //using end accept client will end it sob emoji gotta call it again
             tcpListener.BeginAcceptTcpClient(onAcceptTcpClient, null);
 
-            GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", Vector3.zero, Quaternion.identity);
-            players.Add(clientId, newPlayer);
+            NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
 
-            foreach (var clientPair in tcpClients) {
-                if (clientPair.Key == clientId) {
+            newCommand.networkOpCode = NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
+            newCommand.prefabPosition = Vector3.zero;
+            newCommand.prefabRotation = Vector3.zero;
+            newCommand.tcpOriginId = clientId; //Gets overrided with the clientID in this case
+            newCommand.idOfPrefab = null;
 
-                }
-                else {
+            ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
 
-                }
+            foreach (var saveObject in SaveablePrefabManager.SaveablePrefabs) {
+                NetworkMainThreadStruct addForEachSavePrefabBefore = new NetworkMainThreadStruct();
+                PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
+
+                addForEachSavePrefabBefore.networkOpCode = NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
+                addForEachSavePrefabBefore.prefabPosition = saveObject.transform.position;
+                addForEachSavePrefabBefore.prefabRotation = saveObject.transform.rotation.eulerAngles;
+                addForEachSavePrefabBefore.networkId = saveInfo.NetworkId;
+                addForEachSavePrefabBefore.idOfPrefab = saveInfo.PrefabId;
+                addForEachSavePrefabBefore.tcpOriginId = clientId; //Gets overrided with the clientID in this case
+
+                ExecuteOtherThreadRequestQueue.Enqueue(addForEachSavePrefabBefore);
             }
         }
         catch (Exception e) {
@@ -239,17 +253,20 @@ public class ServerNetworkManager : MonoBehaviour
 
     private void Awake() {
         currentSaveManager = GameObject.FindFirstObjectByType<SaveObjectsManager>();
+        ExecuteOtherThreadRequestQueue = new ConcurrentQueue<NetworkMainThreadStruct>();
     }
 
     private void OnEnable() {
         if (DataService.IsMultiplayer) {
             EventManager.PrefabAddedToScene += addTcpObject;
+            EventManager.PrefabRemovedFromScene += removeTcpObject;
         }
     }
 
     private void OnDisable() {
         if (DataService.IsMultiplayer) {
             EventManager.PrefabAddedToScene -= addTcpObject;
+            EventManager.PrefabRemovedFromScene -= removeTcpObject;
         }
     }
 
@@ -268,12 +285,58 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-    void addTcpObject(GameObject prefabToAdd) {
+    byte[] addTcpBasic(GameObject prefabToAdd) {
         PrefabSaveInfo saveInfo = prefabToAdd.GetComponent<PrefabSaveInfo>();
+        byte[] networkIdType = new byte[1] { (byte)NetworkOpCodeEnum.ADD_PREFAB };
         byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(saveInfo.NetworkId);
         byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.position);
         byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.rotation.eulerAngles);
-        SendToAllWithTcp(networkBytes.Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).ToArray());
+        return networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).ToArray();
+    }
+
+    void addTcpObject(GameObject prefabToAdd) {
+        SendToAllWithTcp(addTcpBasic(prefabToAdd));
+    }
+
+    void removeTcpObject(GameObject prefabToRemove) {
+        PrefabSaveInfo saveInfo = prefabToRemove.GetComponent<PrefabSaveInfo>();
+        byte[] networkIdType = new byte[1] { (byte)NetworkOpCodeEnum.REMOVE_PREFAB };
+        byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(saveInfo.NetworkId);
+        SendToAllWithTcp(networkIdType.Concat(networkBytes).ToArray());
+    }
+
+    void DispatchCommandsOnMainThread() {
+        while (ExecuteOtherThreadRequestQueue.Count > 0) {
+            bool isNotBlocked = ExecuteOtherThreadRequestQueue.TryDequeue(out NetworkMainThreadStruct newCommand);
+            if (isNotBlocked) {
+                switch (newCommand.networkOpCode) {
+                    case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
+                        GameObject newPlayer = SaveablePrefabManager.CreatePrefab("OtherPlayer", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation));
+                        players.Add(newCommand.tcpOriginId, newPlayer);
+
+                        foreach (var clientPair in tcpClients) {
+                            if (clientPair.Key == newCommand.tcpOriginId) {
+                                byte[] bytesToSendToTellLocalClient = addTcpBasic(newPlayer);
+                                bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
+                                SendToTcp(clientPair.Key, bytesToSendToTellLocalClient);
+                            }
+                            else {
+                                byte[] bytesToSendToTellLocalClient = addTcpBasic(newPlayer);
+                                SendToTcp(clientPair.Key, bytesToSendToTellLocalClient);
+                            }
+                        }
+                        break;
+                    case NetworkOpCodeEnum.ADD_PREFAB:
+                        byte[] networkIdType = new byte[1] { (byte)NetworkOpCodeEnum.ADD_PREFAB };
+                        byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.networkId);
+                        byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.prefabPosition);
+                        byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.prefabRotation);
+                        byte[] sendBytes = networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(newCommand.idOfPrefab).ToArray();
+                        SendToTcp(newCommand.tcpOriginId, sendBytes);
+                        break;
+                }
+            }
+        }
     }
 
     void Update()
@@ -295,6 +358,8 @@ public class ServerNetworkManager : MonoBehaviour
                 byte[] uintByte = ConvertToByteArray.ConvertValueToBytes(item.Key);
                 SendToAllWithUdp(uintByte.Concat(serializedData).ToArray());
             }
+
+            DispatchCommandsOnMainThread();
         }
     }
 }

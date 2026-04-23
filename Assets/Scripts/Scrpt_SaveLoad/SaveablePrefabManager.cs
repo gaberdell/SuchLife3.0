@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
 
 //https://stackoverflow.com/questions/4854207/get-a-specific-bit-from-byte
 //Gotten from this with a lil modification
@@ -179,6 +178,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         OTHER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + OTHER_PLAYER_PREFAB_NAME);
         SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
 
+      
         ByteToPrefabKey = new Dictionary<byte[], GameObject>(new ByteArrayComparer());
         ByteToPrefabKey.Add(new byte[1] { 1 }, PLAYER_PREFAB);
         ByteToPrefabKey.Add(new byte[1] { 2 }, OTHER_PLAYER_PREFAB);
@@ -186,8 +186,10 @@ public class SaveablePrefabManager : MonoBehaviour {
 
         PrefabToByteKey = ByteToPrefabKey.ToDictionary((i) => i.Value, (i) => i.Key);
 
+        //TODO : Automate creation of this too prone to error otherwise
         StringToPrefabKey = new Dictionary<string, GameObject>();
         StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
+        StringToPrefabKey.Add(OTHER_PLAYER_PREFAB_NAME, OTHER_PLAYER_PREFAB);
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
 
         NetworkIdsPrefabs = new Dictionary<uint, GameObject>();
