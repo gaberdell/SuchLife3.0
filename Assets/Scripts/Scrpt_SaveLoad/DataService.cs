@@ -33,6 +33,7 @@ public class DataService {
 
     public static bool IsLocalSave = true;
     public static bool IsMultiplayer = false;
+    public static Guid localPlayerUUID = Guid.Empty;
 
     const string SAVES_FOLDER_NAME = "Saves";
     const string BASIC_SAVE_NAME = "Basic.json";
@@ -374,6 +375,7 @@ public class DataService {
             ServerInfo serverInfo = JsonUtility.FromJson<ServerInfo>(File.ReadAllText(path));
 
             IpOfServer = serverInfo.ip;
+            localPlayerUUID = serverInfo.uuid;
         }
 
         return true;

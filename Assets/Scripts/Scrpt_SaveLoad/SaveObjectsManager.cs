@@ -168,7 +168,18 @@ public class SaveObjectsManager : MonoBehaviour
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
 
-            MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
+            MonoBehaviour component;
+            //ARE THESE SUPPOSED TO BE ZERO CHANGE IT BACK IF IM WRONG :SKULL:
+            if (saveableMonoBehaviorQuickRetriveDictionary.TryGetValue(prefab, out List<MonoBehaviour> saveableMonobehaviors)) {
+                component = saveableMonobehaviors[i];
+            }
+            else {
+                GetAllSaveableMonoBehaviors(prefab);
+
+                component = saveableMonoBehaviorQuickRetriveDictionary[prefab][i];
+            }
+
+            
 
             foreach (FieldInfo field in componentType.SaveFields) {
                 field.SetValue(component, ConvertToByteArray.ConvertBytesToValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed));
@@ -244,7 +255,17 @@ public class SaveObjectsManager : MonoBehaviour
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
 
-            MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
+            MonoBehaviour component;
+            if (saveableMonoBehaviorQuickRetriveDictionary.TryGetValue(prefab, out List<MonoBehaviour> saveableMonobehaviors)) {
+                component = saveableMonobehaviors[0];
+            }
+            else {
+                GetAllSaveableMonoBehaviors(prefab);
+
+                component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
+            }
+
+            //MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
 
             foreach (FieldInfo field in componentType.SaveFields) {
                 returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));

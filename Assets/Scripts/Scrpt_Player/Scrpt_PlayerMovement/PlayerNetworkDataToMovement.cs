@@ -14,5 +14,6 @@ public class PlayerNetworkDataToMovement : AbstractPlayerMovementGetter {
         float yValue = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(bytesUsed).ToArray(), out int _);
 
         MovementInput = new Vector2(xValue, yValue);
+        Debug.Log("Movement input being set to : " + MovementInput.ToString());
     }
 }

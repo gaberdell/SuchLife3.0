@@ -73,7 +73,6 @@ public class EffectManager : MonoBehaviour
     {
         //instance = this;
         Player = this.gameObject;
-        DontDestroyOnLoad(gameObject);
         
     }
 

@@ -62,7 +62,7 @@ public class InitialWorldSetup : MonoBehaviour
 
     public void AddPlayerToGame(GameObject localPlayerPrefab) {
         player = localPlayerPrefab;
-        LoadLocalPlayerThingsServer();
+        StartCoroutine(LoadLocalPlayerThingsServer());
     }
 
     IEnumerator LoadLocalPlayerThingsServer() {

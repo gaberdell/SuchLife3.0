@@ -69,21 +69,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-
         handleMovement();
         handleRotation();
         handleChunkPosition();
-        //handleCollision();
-
-        /*if (inputHandler.InteractTriggered)
-        {
-            Debug.Log("Oh my oh my");
-        }*/
     }
 
     private void handleMovement()
     {
         Vector2 plrMoveInput = input.MovementInput;
+        Debug.Log("Player movement input : " + input.MovementInput.ToString());
 
         if (plrMoveInput.magnitude > deadZone)
         {

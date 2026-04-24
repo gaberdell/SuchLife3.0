@@ -19,12 +19,14 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     static private string PLAYER_PREFAB_NAME = "Player";
     static private string OTHER_PLAYER_PREFAB_NAME = "OtherPlayer";
+    static private string SERVER_PLAYER_PREFAB_NAME = "ServerPlayer";
     static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER + "Scrombolo_Bombolo";
     static private string ITEM_NAME = "Item";
 
     static GameObject PLAYER_PREFAB;
     static GameObject OTHER_PLAYER_PREFAB;
     static GameObject SCROMBOLO_BOMBOLO_PREFAB;
+    static GameObject SERVER_PLAYER_PREFAB;
 
     //Maybe make this into a two way dictionary type?
     static public Dictionary<byte[], GameObject> ByteToPrefabKey { get; private set; }
@@ -179,12 +181,14 @@ public class SaveablePrefabManager : MonoBehaviour {
         PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
         OTHER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + OTHER_PLAYER_PREFAB_NAME);
         SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
+        SERVER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SERVER_PLAYER_PREFAB_NAME);
 
-      
+
         ByteToPrefabKey = new Dictionary<byte[], GameObject>(new ByteArrayComparer());
         ByteToPrefabKey.Add(new byte[1] { 1 }, PLAYER_PREFAB);
         ByteToPrefabKey.Add(new byte[1] { 2 }, OTHER_PLAYER_PREFAB);
-        ByteToPrefabKey.Add(new byte[1] { 3 }, SCROMBOLO_BOMBOLO_PREFAB);
+        ByteToPrefabKey.Add(new byte[1] { 3 }, SERVER_PLAYER_PREFAB);
+        ByteToPrefabKey.Add(new byte[1] { 4 }, SCROMBOLO_BOMBOLO_PREFAB);
 
         PrefabToByteKey = ByteToPrefabKey.ToDictionary((i) => i.Value, (i) => i.Key);
 
@@ -192,6 +196,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         StringToPrefabKey = new Dictionary<string, GameObject>();
         StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
         StringToPrefabKey.Add(OTHER_PLAYER_PREFAB_NAME, OTHER_PLAYER_PREFAB);
+        StringToPrefabKey.Add(SERVER_PLAYER_PREFAB_NAME, SERVER_PLAYER_PREFAB);
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
 
         NetworkIdsPrefabs = new Dictionary<uint, GameObject>();

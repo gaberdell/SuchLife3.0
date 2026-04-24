@@ -1,3 +1,4 @@
+using System;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -17,6 +18,9 @@ public class PlayerInfo : MonoBehaviour
 
     public Item CurrentlyHeldItem;
 
+    //Unique behavior of NOT being replicated between clients
+    //Server grabs GUID from a tcp request but never shares it to other clients
+    public Guid playerGuid;
 
     private void Start()
     {

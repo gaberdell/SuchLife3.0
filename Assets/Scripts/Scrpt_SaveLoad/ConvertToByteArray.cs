@@ -53,6 +53,10 @@ public class ConvertToByteArray
 
             return returnBytes;
         }
+        else if (value.GetType() == typeof(Guid)) {
+            //Tested it is in fact 16!
+            return ((Guid)value).ToByteArray();
+        }
 
         Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
         return null;
@@ -110,9 +114,14 @@ public class ConvertToByteArray
             return new Vector3(BitConverter.ToSingle(xBytes), BitConverter.ToSingle(yBytes),
                                BitConverter.ToSingle(zBytes));
         }
+        else if (wantedType == typeof(Guid)) {
+            //TODO: Big assumtion that the GUID will always be 16 bytes
+            bytesUsed = 16;
+            return new Guid(value.Take(16).ToArray());
+        }
 
 
-        Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
+            Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
         bytesUsed = 0;
         return null;
     }

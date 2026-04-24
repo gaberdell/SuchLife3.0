@@ -6,11 +6,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.XR;
 
 
 public class ClientNetworkManager : MonoBehaviour
 {
     private static int MAX_TCP_RECIEVE_BUFFER = 4096;
+
+    private float MAX_TIME_BEFORE_WE_RESYNC_PLAYER = 3.0f;
 
     //TODO : Decouple this from the other thing but for rn just getting it working
     private SaveObjectsManager currentSaveManager;
@@ -28,6 +31,8 @@ public class ClientNetworkManager : MonoBehaviour
 
     private ConcurrentQueue<NetworkMainThreadStruct> ExecuteOtherThreadRequestQueue;
 
+    private float lastTimeUpdatedPlayerPos = 0;
+
     public void StartClient(string ip, ushort port) {
         try {
             Debug.Log(String.Format("Joining server Ip of server : {0}, Port is {1}", ip, port));
@@ -40,6 +45,8 @@ public class ClientNetworkManager : MonoBehaviour
             tcpStream.BeginRead(recieveBuffer, 0, MAX_TCP_RECIEVE_BUFFER, onRecieveDataTcp, null);
             udpClient = new UdpClient(ip, port);
             udpClient.BeginReceive(onRecieveDataUdp, null);
+
+            sendDataWithTcp(DataService.localPlayerUUID.ToByteArray());
         }
         catch (Exception e) {
             Debug.LogError(e.Message);
@@ -179,7 +186,6 @@ public class ClientNetworkManager : MonoBehaviour
                     Debug.Log("Something bad has happened in the Data recieve UDP as we have a udp of zero byte!?");
                     return;
                 }
-                Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
                 byte[] packetBytes = packet.GetBytes();
 
                 NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
@@ -202,12 +208,14 @@ public class ClientNetworkManager : MonoBehaviour
         catch (Exception e) {
             Debug.LogError(e.Message);
         }
+
+        udpClient.BeginReceive(onRecieveDataUdp, null);
     }
 
-    private void sendDataWithTcp() {
+    private void sendDataWithTcp(byte[] bytes) {
         try {
             using (PacketWrapper packet = new PacketWrapper()) {
-                packet.AddBytes(new byte[1] { 11 });
+                packet.AddBytes(bytes);
                 byte[] data = packet.GetBytes();
 
                 tcpStream.Write(data, 0, data.Length);
@@ -239,7 +247,6 @@ public class ClientNetworkManager : MonoBehaviour
             if (isNotBlocked) {
                 switch (newCommand.networkOpCode) {
                     case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
-                        Debug.Log("Did we actually add local player?");
                         if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(newCommand.networkId)) {
                             SaveablePrefabManager.DeletePrefab(newCommand.networkId);
                         }
@@ -256,11 +263,19 @@ public class ClientNetworkManager : MonoBehaviour
                         break;
                     case NetworkOpCodeEnum.UPDATE_PREFAB:
                         if (SaveablePrefabManager.NetworkIdsPrefabs.TryGetValue(newCommand.networkId, out GameObject gO)) {
-                            gO.transform.position = newCommand.prefabPosition;
-                            gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
 
                             if (newCommand.networkId != localPlayerPrefabNetworkId) {
+                                gO.transform.position = newCommand.prefabPosition;
+                                gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
+
                                 currentSaveManager.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[newCommand.networkId], null, newCommand.idOfPrefab, out int _);
+                            }
+                            else {
+                                if (Time.time - lastTimeUpdatedPlayerPos > MAX_TIME_BEFORE_WE_RESYNC_PLAYER) {
+                                    lastTimeUpdatedPlayerPos = Time.time;
+                                    gO.transform.position = newCommand.prefabPosition;
+                                    gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
+                                }
                             }
                         }
                         else {
@@ -282,7 +297,6 @@ public class ClientNetworkManager : MonoBehaviour
             byte[] yBytes = ConvertToByteArray.ConvertValueToBytes(yValue);
 
             sendDataWithUdp(xBytes.Concat(yBytes).ToArray());
-
             // sendDataWithUdp(;
             if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();
