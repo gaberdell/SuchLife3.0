@@ -39,15 +39,14 @@ public class ConvertToByteArray
 
             byte[] returnBytes = new byte[3 * sizeof(float)];
 
-            int i = 0;
-            for (; i < sizeof(float); i++) {
+            for (int i = 0; i < sizeof(float); i++) {
                 returnBytes[i] = xBytes[i];
             }
-            for (; i < sizeof(float); i++) {
-                returnBytes[i] = yBytes[i];
+            for (int i = 0; i < sizeof(float); i++) {
+                returnBytes[i + sizeof(float)] = yBytes[i];
             }
-            for (; i < sizeof(float); i++) {
-                returnBytes[i] = zBytes[i];
+            for (int i = 0; i < sizeof(float); i++) {
+                returnBytes[i + 2*sizeof(float)] = zBytes[i];
             }
 
 
@@ -98,15 +97,14 @@ public class ConvertToByteArray
             byte[] yBytes = new byte[sizeof(float)];
             byte[] zBytes = new byte[sizeof(float)];
 
-            int i = 0;
-            for (; i < sizeof(float); i++) {
+            for (int i = 0; i < sizeof(float); i++) {
                 xBytes[i] = value[i];
             }
-            for (; i < sizeof(float); i++) {
-                yBytes[i] = value[i];
+            for (int i = 0; i < sizeof(float); i++) {
+                yBytes[i] = value[i + sizeof(float)];
             }
-            for (; i < sizeof(float); i++) {
-                zBytes[i] = value[i];
+            for (int i = 0; i < sizeof(float); i++) {
+                zBytes[i] = value[i + 2 * sizeof(float)];
             }
 
             bytesUsed = 3*sizeof(float);

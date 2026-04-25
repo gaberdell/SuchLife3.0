@@ -77,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
     private void handleMovement()
     {
         Vector2 plrMoveInput = input.MovementInput;
-        Debug.Log("Player movement input : " + input.MovementInput.ToString());
 
         if (plrMoveInput.magnitude > deadZone)
         {

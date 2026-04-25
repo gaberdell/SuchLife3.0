@@ -13,7 +13,7 @@ public class ClientNetworkManager : MonoBehaviour
 {
     private static int MAX_TCP_RECIEVE_BUFFER = 4096;
 
-    private float MAX_TIME_BEFORE_WE_RESYNC_PLAYER = 3.0f;
+    private float MAX_TIME_BEFORE_WE_RESYNC_PLAYER = 0.0f;
 
     //TODO : Decouple this from the other thing but for rn just getting it working
     private SaveObjectsManager currentSaveManager;
@@ -43,6 +43,7 @@ public class ClientNetworkManager : MonoBehaviour
             recieveBuffer = new byte[MAX_TCP_RECIEVE_BUFFER];
 
             tcpStream.BeginRead(recieveBuffer, 0, MAX_TCP_RECIEVE_BUFFER, onRecieveDataTcp, null);
+
             udpClient = new UdpClient(ip, port);
             udpClient.BeginReceive(onRecieveDataUdp, null);
 
@@ -105,13 +106,12 @@ public class ClientNetworkManager : MonoBehaviour
                 byte[] data = new byte[bytesRead];
                 for (int i = 0; i < bytesRead; i++) {
                     data[i] = recieveBuffer[i];
-                    Debug.Log(String.Format("Packet index i {0} : {1}", i, data[i]));
+                    //Debug.Log(String.Format("Packet index i {0} : {1}", i, data[i]));
                 }
 
                 using (PacketWrapper packet = new PacketWrapper(data)) {
                     //TODO : Make Client processing stuff
                     //Make me print a pretty message to da screen
-                    Debug.Log("UDP Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
                     byte[] packetBytes = packet.GetBytes();
 
                     NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
@@ -231,7 +231,6 @@ public class ClientNetworkManager : MonoBehaviour
             using (PacketWrapper packet = new PacketWrapper()) {
                 packet.AddBytes(bytes);
                 byte[] data = packet.GetBytes();
-
                 udpClient.Send(data, data.Length);
             }
         }
@@ -274,7 +273,8 @@ public class ClientNetworkManager : MonoBehaviour
                                 if (Time.time - lastTimeUpdatedPlayerPos > MAX_TIME_BEFORE_WE_RESYNC_PLAYER) {
                                     lastTimeUpdatedPlayerPos = Time.time;
                                     gO.transform.position = newCommand.prefabPosition;
-                                    gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
+                                    //TODO : Sync rotation
+                                    //gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
                                 }
                             }
                         }

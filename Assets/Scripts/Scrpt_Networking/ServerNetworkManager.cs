@@ -38,7 +38,7 @@ public class ServerNetworkManager : MonoBehaviour
 
         udpListener = new UdpClient(port);
         udpListener.BeginReceive(onRecieveDataUdp, null);
-
+        Debug.Log("Estabilished udp listener");
         isActivated = true;
     }
 
@@ -122,6 +122,10 @@ public class ServerNetworkManager : MonoBehaviour
                         byte[] bytesToSendToTellLocalClient = addTcpBasic(saveObject);
 
                         PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
+                        if (playerInfo != null) {
+                            Debug.Log("Current Player Info string : " + playerInfo.guid.ToString());
+                            Debug.Log("Incoming TCP Info string : " + new Guid(packet.GetBytes()).ToString());
+                        }
                         if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes())) {
                             doesPlayerAlreadyExsistInScene = true;
                             players.Add(data.ClientId, saveObject);
@@ -142,8 +146,6 @@ public class ServerNetworkManager : MonoBehaviour
 
                         ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
                     }
-
-                    Debug.Log("Packet recieved! First packet byte is : " + packet.GetBytes()[0]);
                 }
 
                 data.Buffer = new byte[MAX_TCP_BUFFER_ALLOCATION];
@@ -155,6 +157,7 @@ public class ServerNetworkManager : MonoBehaviour
 
                 Debug.Log("Peacefully lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
                 SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
+                players.Remove(data.ClientId);
                 data.Client.Close();
             }
         }
@@ -168,23 +171,22 @@ public class ServerNetworkManager : MonoBehaviour
 
             Debug.LogError("Unexpectedly lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
             SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
+            players.Remove(data.ClientId);
             data.Client.Close();
         }
     }
 
     static void onRecieveDataUdp(IAsyncResult result) {
-        //try {
-
+        try {
             IPEndPoint udpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
             byte[] recievedData = udpListener.EndReceive(result, ref udpEndPoint);
 
+            udpListener.BeginReceive(onRecieveDataUdp, null);
+
             TcpClientData clientData = null;
 
             foreach (var client in tcpClients.Values) {
-                if (client.EndPoint != null) {
-                    continue;
-                }
                 IPEndPoint tcpEndPoint = (IPEndPoint)client.Client.Client.RemoteEndPoint;
                 if (tcpEndPoint.Address.Equals(udpEndPoint.Address)) {
                     //Found matching client by IP adress. set udp endpoint
@@ -195,32 +197,35 @@ public class ServerNetworkManager : MonoBehaviour
             }
 
             using (PacketWrapper packet = new PacketWrapper(recievedData)) {
+
+            byte[] packetBytes = packet.GetBytes();
+                string printString = "";
+                foreach (var byt in packetBytes) {
+                    printString += "{" + byt.ToString() + "},";
+                }
+
                 //TODO : make this less jank oml
                 //Make me print a pretty message to da screen
-
                 NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
                 newCommand.networkOpCode = NetworkOpCodeEnum.UPDATE_PREFAB;
-
                 newCommand.tcpOriginId = clientData.ClientId;
-                newCommand.idOfPrefab = packet.GetBytes();
+                newCommand.idOfPrefab = packetBytes;
 
                 ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
             }
 
-
-            udpListener.BeginReceive(onRecieveDataUdp, null);
-       // }
-        //catch (ObjectDisposedException) {
+        }
+        catch (ObjectDisposedException) {
             //Object gone ig
-        //}
-        //catch (Exception e) {
+        }
+        catch (Exception e) {
             //Debug.LogError("Unexpectedly got error : " + e.Message);
 
-           // if (isActivated) {
+            if (isActivated) {
                 //Keep going either way!!
-          //      udpListener.BeginReceive(onRecieveDataUdp, null);
-          //  }
-       // }
+                udpListener.BeginReceive(onRecieveDataUdp, null);
+            }
+        }
     }
 
     static void SendToTcp(int client, byte[] bytesToAdd) {
@@ -253,6 +258,15 @@ public class ServerNetworkManager : MonoBehaviour
             foreach (var client in tcpClients.Values) {
                 if (client.EndPoint != null) {
                     udpListener.BeginSend(data, data.Length, client.EndPoint, null, null);
+
+                    uint objectUIntIdToUpdate = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), data, out int skipAmount);
+
+                    Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), data.Skip(skipAmount).ToArray(), out int bytesUsed);
+                    Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), data.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
+
+                    Debug.Log("ObjectUIntID To Update : " + objectUIntIdToUpdate.ToString());
+                    Debug.Log("Prefab position To Update : " + prefabPosition.ToString());
+                    Debug.Log("Prefab rotation To Update : " + eulerRotation.ToString());
                 }
             }
         }
