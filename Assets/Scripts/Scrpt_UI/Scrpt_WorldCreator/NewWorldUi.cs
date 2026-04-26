@@ -115,7 +115,7 @@ public class NewWorldUI : MonoBehaviour
 
     public static void DeleteSlot(SaveSlotUI slot) {
         saveSlotUIs.Remove(slot);
-        slot.transform.parent = null;
+        slot.transform.SetParent(null);
 
         recalcPositions();
     }

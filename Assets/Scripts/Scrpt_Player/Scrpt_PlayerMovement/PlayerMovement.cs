@@ -65,12 +65,13 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         EventManager.SetPlayerAnimSpeedTrue(plrVelocity.magnitude);
+
+        handleMovement();
+        handleRotation();
     }
 
     void Update()
     {
-        handleMovement();
-        handleRotation();
         handleChunkPosition();
     }
 

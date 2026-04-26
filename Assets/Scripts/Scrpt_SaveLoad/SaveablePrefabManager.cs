@@ -161,12 +161,14 @@ public class SaveablePrefabManager : MonoBehaviour {
 
 #endif
 
-    private void OnEnable() {
+    //wtf this here?!
+    /*private void OnEnable() {
         EventManager.LocalGameObjectPlayerAddedToScene += clearSaveablePrefabs;
     }
-
+    */
     private void OnDisable() {
-        EventManager.LocalGameObjectPlayerAddedToScene -= clearSaveablePrefabs;
+        //EventManager.LocalGameObjectPlayerAddedToScene -= clearSaveablePrefabs;
+        SaveablePrefabs.Clear();
     }
 
     void clearSaveablePrefabs(GameObject player) {
@@ -207,7 +209,6 @@ public class SaveablePrefabManager : MonoBehaviour {
         {
             instance = this;
             OnSuccessfulAwake();
-            DontDestroyOnLoad(gameObject);
         }
         else
         {

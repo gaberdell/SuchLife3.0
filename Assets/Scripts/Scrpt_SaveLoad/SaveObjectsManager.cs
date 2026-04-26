@@ -124,7 +124,9 @@ public class SaveObjectsManager : MonoBehaviour
     }
 
     void savePrefabOnLocalPlayerLeave(GameObject player) {
+        Debug.Log("Hello??");
         SaveAllPrefabData();
+        EventManager.SetPlayerExitedGameSoSafeToLeave();
     }
 
     void SaveAllPrefabData() {
@@ -153,6 +155,7 @@ public class SaveObjectsManager : MonoBehaviour
 
             savePrefab.AddRange(PrefabGetByteArray(loadedPefab));
         }
+
         return savePrefab.ToArray();
     }
 

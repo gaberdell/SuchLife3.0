@@ -78,7 +78,6 @@ public class InitialWorldSetup : MonoBehaviour
         while (!asyncInstantiateOperation.isDone || player == null) {
             yield return null;
         }
-        Debug.Log("Player : " + player);
         EventManager.SetLocalGameObjectPlayerAddedToScene(player);
     }
 }

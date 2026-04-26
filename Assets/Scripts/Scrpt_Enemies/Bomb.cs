@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework.Constraints;
-using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -15,7 +14,7 @@ public class Bomb : Mob
 
     private List<Transform> targets;
     private Transform target;
-    private AIDestinationSetter pathSetter;
+    //private AIDestinationSetter pathSetter;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
@@ -44,9 +43,9 @@ public class Bomb : Mob
     {
         targets = new List<Transform>();
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
-        pathSetter = GetComponent<AIDestinationSetter>();
+        //pathSetter = GetComponent<AIDestinationSetter>();
         target = GameObject.Find("Player").transform;
-        pathSetter.target = target;
+        //pathSetter.target = target;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
@@ -91,12 +90,12 @@ public class Bomb : Mob
 
         if (smallestDistance <= aggroDistance && !isExploding)
         {
-            path.enabled = true;
+            //path.enabled = true;
         }
 
-        if (path.desiredVelocity.magnitude > 0) {
+        /*if (path.desiredVelocity.magnitude > 0) {
             animator.SetBool("Walk", true);
-        }
+        }*/
 
         if (smallestDistance <= explodeAtDistance && !isExploding)
         {
@@ -112,7 +111,7 @@ public class Bomb : Mob
         yield return new WaitForSeconds(explosionDelay);
 
         enemyCollider.isTrigger = true;
-        path.enabled = false;
+        //path.enabled = false;
         animator.Play("scrombolo_bombolo_exploding");
 
         yield return new WaitForSeconds(.35f);

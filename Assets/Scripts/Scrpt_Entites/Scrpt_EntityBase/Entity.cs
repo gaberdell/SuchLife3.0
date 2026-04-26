@@ -5,13 +5,10 @@ using UnityEngine;
  * Every MonoBehavior has transform which handles position, and rotation
  */
 
-public abstract class Entity : MonoBehaviour, ISaveable
+public abstract class Entity : MonoBehaviour
 {
     protected Vector2 velocity;
     protected Vector2 angularVelocity;
-
-    abstract public SaveFileFormat Save();
-    abstract public void Load(SaveFileFormat saveFile);
 
     virtual public void SetVelocity(float x, float y)
     {

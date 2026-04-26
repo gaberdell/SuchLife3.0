@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework.Constraints;
-using Pathfinding;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -19,7 +18,7 @@ public class Fox : Mob
     [SerializeField] private float explosionRadius;
     [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
-    private AIDestinationSetter pathSetter;
+    //private AIDestinationSetter pathSetter;
 
     private float distance;
     private bool isExploding = false;
@@ -38,13 +37,13 @@ public class Fox : Mob
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
-        pathSetter = GetComponent<AIDestinationSetter>();
+        //pathSetter = GetComponent<AIDestinationSetter>();
         objectInScene = gameObject;
         animator = GetComponent<Animator>();
         GameObject targetObj = new GameObject();
         target = targetObj.transform;
         target.position = new Vector3(0, 0, 0);
-        pathSetter.target = target;
+        //pathSetter.target = target;
         enemyAttack = GetComponent<EnemyAttack>(); // later set target if get attacked
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
@@ -64,7 +63,7 @@ public class Fox : Mob
 
         distance = Vector2.Distance(transform.position, target.position);
 
-        if  (pathSetter.target != target)
+        /*if  (pathSetter.target != target)
         {
             pathSetter.target = target;
         }
@@ -75,7 +74,7 @@ public class Fox : Mob
 
         if (path.desiredVelocity.magnitude > 0) {
             animator.SetBool("Walk", true);
-        }
+        }*/
 
         if (distance <= explodeAtDistance && !isExploding)
         {
@@ -96,8 +95,8 @@ public class Fox : Mob
             //stop random movement and start chasing player
             CancelInvoke(nameof(randomTargetPos));
             target = attacker.transform;
-            pathSetter.target = target;
-            path.enabled = true;
+            //pathSetter.target = target;
+            //path.enabled = true;
 
             // Set the attack target flag in EnemyAttack
             if (enemyAttack != null)
@@ -116,80 +115,4 @@ public class Fox : Mob
         target.position = pos;
         
     }
-
-    void getAttacked()
-    {
-        
-    }
-
-    // IEnumerator Explode()
-    // {
-    //     animator.SetBool("Explode", true);
-
-    //     yield return new WaitForSeconds(explosionDelay);
-
-    //     enemyCollider.isTrigger = true;
-    //     path.enabled = false;
-    //     animator.Play("scrombolo_bombolo_exploding");
-
-    //     yield return new WaitForSeconds(.35f);
-
-    //     particles.Play();
-
-        
-    //     Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-    //     foreach (var hit in hits)
-    //     {
-    //         Health health = hit.GetComponent<Health>();
-    //         if (health != null)
-    //         {
-    //             health.TakeDamage(damage, false);
-    //         }
-    //     }
-
-    //     // Destroy nearby wall tiles on explosion
-    //     int tileX = (int)gameObject.transform.position.x;
-    //     int tileY = (int)gameObject.transform.position.y;
-    //     Vector3Int bombTilePos = blockTilemap.WorldToCell(new Vector3Int(tileX, tileY, 0));
-    //     int explosionBlockRadius = (int)Mathf.Ceil(explosionRadius);
-    //     spreadToNeighbors(blockTilemap, bombTilePos.x, bombTilePos.y, null, explosionBlockRadius);
-
-    //     // Trigger death event manually so any listeners (like MobDrop) react:
-    //     Health mobHealth = GetComponent<Health>();
-    //     if (mobHealth != null)
-    //     {
-    //         Debug.Log($"[Bomb] Invoking onDeath on {gameObject.name}");
-    //         mobHealth.onDeath?.Invoke();
-
-    //         OnDeath();
-
-    //         // Hide health bar if it still exists
-    //         Transform healthBar = transform.Find("HealthBar");
-    //         if (healthBar != null)
-    //             healthBar.gameObject.SetActive(false);
-    //     }
-
-    //     yield return new WaitForSeconds(3f);
-
-    //     Destroy(gameObject);
-    // }
-
-    //ported and modified from renderDungeon
-    // void spreadToNeighbors(Tilemap tilemap, int tileX, int tileY, Tile T, int iterations)
-    // {
-    //     //given an xPos, yPos, tilemap, and tile, change all adjacent tiles to match the given tile
-    //     tilemap.SetTile(new Vector3Int(tileX + 1, tileY, 0), T);
-    //     tilemap.SetTile(new Vector3Int(tileX - 1, tileY, 0), T);
-    //     tilemap.SetTile(new Vector3Int(tileX, tileY + 1, 0), T);
-    //     tilemap.SetTile(new Vector3Int(tileX, tileY - 1, 0), T);
-    //     //recurse outwards; a little redundant but fine for small scale
-    //     if (iterations > 0)
-    //     {
-    //         spreadToNeighbors(tilemap, tileX + 1, tileY, T, iterations - 1);
-    //         spreadToNeighbors(tilemap, tileX - 1, tileY, T, iterations - 1);
-    //         spreadToNeighbors(tilemap, tileX, tileY + 1, T, iterations - 1);
-    //         spreadToNeighbors(tilemap, tileX, tileY - 1, T, iterations - 1);
-    //     }
-
-    // }
 }

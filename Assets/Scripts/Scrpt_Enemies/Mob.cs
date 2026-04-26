@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;     // For IEnumerator
-using Pathfinding;
 
 public class Mob : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class Mob : MonoBehaviour
     protected Vector2 chunkPos;
 
     private Rigidbody2D rb;
-    protected AIPath path;
+    //protected AIPath path;
     private bool isKnockedBack = false;
 
     protected bool isDead = false;
@@ -18,11 +17,11 @@ public class Mob : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        path = GetComponent<AIPath>();  // get AIPath attached to same object
+        //path = GetComponent<AIPath>();  // get AIPath attached to same object
         if (rb == null)
             Debug.LogError("Rigidbody2D missing on Mob!");
-        if (path == null)
-            Debug.LogWarning("AIPath missing on Mob!");
+        //if (path == null)
+        //    Debug.LogWarning("AIPath missing on Mob!");
         //set chunk pos on spawn
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene != null ? objectInScene.transform.position : transform.position);
     }
@@ -31,8 +30,8 @@ public class Mob : MonoBehaviour
     {
         if (rb == null || isDead) return;  // don't knockback dead mobs
 
-        if (path != null)
-            path.enabled = false;  // Disable AIPath during knockback
+        //if (path != null)
+        //    path.enabled = false;  // Disable AIPath during knockback
 
         isKnockedBack = true;
 
@@ -47,8 +46,8 @@ public class Mob : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         isKnockedBack = false;
-        if (path != null)
-            path.enabled = true;
+        //if (path != null)
+        //    path.enabled = true;
     }
     private void FixedUpdate()
     {
@@ -75,92 +74,13 @@ public class Mob : MonoBehaviour
     public void OnDeath()
     {
         isDead = true;
-        if (path != null)
-            path.enabled = false;
+        //if (path != null)
+        //    path.enabled = false;
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
-            rb.isKinematic = true;  // freeze physics
+            rb.bodyType = RigidbodyType2D.Kinematic;  // freeze physics
         }
     }
 }
-
-
-
-/*
-using Codice.CM.Common;
-using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-
-public class Mob : MonoBehaviour //base class for living entities
-{
-    private bool isInKnockback = false;
-    private float knockbackForce = 0f;
-    private float knockbackAcceleration = 0f;
-    private Vector3 knockbackPos;
-    protected GameObject objectInScene; //gameobject associated with this instance of an entity
-    private int health;
-    protected Vector3 worldPos;
-    protected Vector2 chunkPos;
-
-    // Update is called once per frame
-
-    //public Mob(Vector3 pos)
-    //{
-    //    worldPos = pos;
-    //}
-
-    //places the mob into the scene
-    //public void instantiate(GameObject enemyPrefab)
-    //{
-    //    if (objectInScene == null)
-    //    {
-    //        objectInScene = Instantiate(enemyPrefab, worldPos, Quaternion.identity);
-    //    }
-    //    else
-    //    {
-    //        Instantiate(objectInScene);
-    //    }
-    //}
-
-    public void applyKnockback(Vector3 IknockbackVector, float IknockbackForce)
-    {
-        //set knockback vars which this mob will update to
-        isInKnockback = true;
-        knockbackForce = IknockbackForce;
-        knockbackPos = IknockbackVector + gameObject.transform.position;
-        knockbackAcceleration = IknockbackForce / 10;
-    }
-
-    public void updateChunkPos()
-    {
-        Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-        //Debug.Log(currChunkPos);
-        //if detect a change in chunks
-        if (currChunkPos != chunkPos)
-        {
-            //ChunkManager.renderPlayerChunks(transform.position);
-            ChunkManager.updateEntityPos(chunkPos, currChunkPos, objectInScene);
-            chunkPos = currChunkPos;
-        }
-    }
-
-    public void updateKnockback()
-    {
-        //update player if in knockback
-        if (isInKnockback)
-        {
-            var step = (knockbackForce + knockbackAcceleration) * Time.deltaTime; // calculate distance to move
-            knockbackForce += knockbackAcceleration;
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, knockbackPos, step);
-
-            // check if knockback is finished
-            if (Vector3.Distance(gameObject.transform.position, knockbackPos) < 0.001f)
-            {
-                isInKnockback = false;
-            }
-        }
-    }
-}
-*/

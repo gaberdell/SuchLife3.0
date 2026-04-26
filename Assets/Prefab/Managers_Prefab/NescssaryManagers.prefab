@@ -143,9 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8217759203845166909}
-  - component: {fileID: 4140672653934516930}
   - component: {fileID: 292997655842392784}
-  - component: {fileID: 4721950202364909704}
   m_Layer: 0
   m_Name: Astar
   m_TagString: Untagged
@@ -168,93 +166,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2853734779050922621}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4140672653934516930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1773991758395113962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  data:
-    dataString: UEsDBBQAAAgIAACYn+sfhe8vZwIAABsFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzg1jSPjqrQVCeiBhQju5+CKsNdYgSx5JDpAM/727so0dOj2x7Ntdvfe08ieT2hWQeGNXVoq1EcC+9xjF7FuvBZ/gxPdGb+UHNDVvUviMinioeeVeGswPqM2ZHLyVyQ+9V1QcYbLUMjU2X4o9zI3zDtMpVw4QssZTt8bUZ4+d8OduRi1njIYTij4wmkW9C4YJaA+2LR2O+vd17X3Un9TFVW2pE8XzAgQRb1sGo2Y6RqFQo6i6hgQkRinpakbMn4ugeFtkYIEkC8lRYGAx6I8wkYHcZ57YdLtf0tSBr/Vbfl5Ii05VY9lPU9mXc3eoqL1zVQYGw2kgVQ1d/4PfDQKcWpM/NecOIjrDZzI5vPJzwp3v+NtNLzrUg0NHrg58p+AtA/1sVtaUWiDobUmtpYPhov17lTbPIDm0+YrqTbIsWssbw5vLJA2XoP40VzLfEdR/qBJbZYLhYQfA4tX8QsJhQ1w9ArPE4o+D33zfXaUaeJTWeYRqlZro7UxpqZQtg2ekpvRzYzXY7oQCNFf+vME5/vYOb7D/dz1yejX16TXWPIablpBu66PoBtqY4/W2XGaOa3DZS+mV1NBaTcAzGjU3Wlcr5r6C1LUtbcqTTte+lOLrarHpNBo+ROPBcHy/G6eJuEunfDTlfDae8GgyG09Z2D2pUSZXm4pn7Q7emm6Ha9yz5lvSW1lehG0Xlh9X8iM3HX5Sp2abWAD9Uk1oHHJg8RB8lmIpJPqzBe+lDvfNPmOmTHIAEV8HxUHp8uQtj9spMSvku/GUidk8fDxiRunrLm8svEs40uHNsAu7/AVQSwMEFAAACAgAAJif6+vpy0ZtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJKFhYGRiYGZoZGZcZJZWnKKbppFoqlFYqKlmXmigbmlmYVSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAJif6x+F7y9nAgAAGwUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAJif6+vpy0ZtAAAAeAAAAAkAJAAAAAAAAAAAAAAAtAIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABsAwAAAAA=
-    upgradeData: 
-    file_cachedStartup: {fileID: 0}
-    data_cachedStartup: 
-    cacheStartup: 0
-  showNavGraphs: 1
-  showUnwalkableNodes: 1
-  debugMode: 0
-  debugFloor: 0
-  debugRoof: 1
-  manualDebugFloorRoof: 0
-  showSearchTree: 0
-  unwalkableNodeDebugSize: 0.3
-  logPathResults: 1
-  maxNearestNodeDistance: 100
-  scanOnStartup: 1
-  fullGetNearestSearch: 0
-  prioritizeGraphs: 0
-  prioritizeGraphsLimit: 1
-  colorSettings:
-    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
-    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
-    _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
-    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
-    _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
-    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
-    _AreaColors:
-    - {r: 0, g: 0, b: 0, a: 0}
-  tagNames:
-  - Basic Ground
-  - 1
-  - 2
-  - 3
-  - 4
-  - 5
-  - 6
-  - 7
-  - 8
-  - 9
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
-  - 15
-  - 16
-  - 17
-  - 18
-  - 19
-  - 20
-  - 21
-  - 22
-  - 23
-  - 24
-  - 25
-  - 26
-  - 27
-  - 28
-  - 29
-  - 30
-  - 31
-  heuristic: 2
-  heuristicScale: 1
-  threadCount: 1
-  maxFrameTime: 10
-  batchGraphUpdates: 0
-  graphUpdateBatchingInterval: 0.2
-  euclideanEmbedding:
-    mode: 0
-    seed: 0
-    pivotPointRoot: {fileID: 0}
-    spreadOutCount: 1
-  showGraphs: 1
 --- !u!114 &292997655842392784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,22 +178,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9375e92ab0014f0e80656534885df80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4721950202364909704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1773991758395113962}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a634230476dc478b88eceac73b1c8a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  updateDistance: 10
-  target: {fileID: 0}
-  graphIndex: 0
 --- !u!1 &4714972432992389126
 GameObject:
   m_ObjectHideFlags: 0

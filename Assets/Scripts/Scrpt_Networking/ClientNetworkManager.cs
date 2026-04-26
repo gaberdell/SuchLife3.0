@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR;
 
 
@@ -51,6 +52,10 @@ public class ClientNetworkManager : MonoBehaviour
         }
         catch (Exception e) {
             Debug.LogError(e.Message);
+            StopClient();
+            //TODO: Put actual connecting screen here instead of just dumping the player out to the main menu
+            //if they fail and also explain why
+            SceneManager.LoadScene("TitleScreen");
         }
     }
 

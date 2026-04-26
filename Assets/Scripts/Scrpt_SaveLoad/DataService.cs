@@ -19,7 +19,7 @@ public struct ServerInfo {
     public string path;
     public string name;
     public string ip;
-    public Guid uuid;
+    public byte[] uuid;
     public uint order;
     public uint saveVersion;
 }
@@ -254,7 +254,7 @@ public class DataService {
         saveInfo.path = finishedPath;
         saveInfo.name = worldName;
         saveInfo.ip = "127.0.0.1";
-        saveInfo.uuid = Guid.NewGuid();
+        saveInfo.uuid = Guid.NewGuid().ToByteArray();
         saveInfo.order = order;
         saveInfo.saveVersion = currentSaveVersion;
 
@@ -375,7 +375,7 @@ public class DataService {
             ServerInfo serverInfo = JsonUtility.FromJson<ServerInfo>(File.ReadAllText(path));
 
             IpOfServer = serverInfo.ip;
-            localPlayerUUID = serverInfo.uuid;
+            localPlayerUUID = new Guid(serverInfo.uuid);
         }
 
         return true;

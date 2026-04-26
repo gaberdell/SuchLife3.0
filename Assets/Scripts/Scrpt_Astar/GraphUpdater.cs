@@ -22,7 +22,8 @@ public class GraphUpdater : MonoBehaviour
         if (tilemap.gameObject.layer == 7) {
             foreach (Tilemap.SyncTile tile in ts) {
                 Bounds tileBounds = new Bounds(tile.position, new Vector2(3, 3));
-                AstarPath.active.UpdateGraphs(tileBounds);
+                //TODO: Create custom Astar implementation
+                //AstarPath.active.UpdateGraphs(tileBounds);
             }
         }
     }

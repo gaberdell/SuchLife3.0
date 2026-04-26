@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using Pathfinding;
 
 public class EnemyAttack : MonoBehaviour
 {
@@ -21,11 +20,11 @@ public class EnemyAttack : MonoBehaviour
     private bool hasDealtDamage = false;
     private Vector3 attackStartPos;
     private Transform targetTransform;
-    private AIPath aiPath;
+    //private AIPath aiPath;
 
     void Start()
     {
-        aiPath = GetComponent<AIPath>();
+        //aiPath = GetComponent<AIPath>();
     }
 
     void Update()
@@ -49,10 +48,10 @@ public class EnemyAttack : MonoBehaviour
         canAttack = false;
         isAttacking = true;
         hasDealtDamage = false;
-        if (aiPath != null)
+        /*if (aiPath != null)
         {
             aiPath.enabled = false;
-        }
+        }*/
 
         attackStartPos = transform.position;
 
@@ -102,10 +101,10 @@ public class EnemyAttack : MonoBehaviour
         }
 
         transform.position = attackStartPos;
-         if (aiPath != null)
+        /*if (aiPath != null)
         {
             aiPath.enabled = true;
-        }
+        }*/
         isAttacking = false;
 
         yield return new WaitForSeconds(attackCooldown);

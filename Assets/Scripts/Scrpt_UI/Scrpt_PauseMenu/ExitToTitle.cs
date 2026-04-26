@@ -9,10 +9,12 @@ public class ExitToTitle : MonoBehaviour
 
     private void OnEnable() {
         EventManager.LocalGameObjectPlayerAddedToScene += addLocalPlayer;
+        EventManager.PlayerExitedGameSoSafeToLeave += ExitGame;
     }
 
     private void OnDisable() {
         EventManager.LocalGameObjectPlayerAddedToScene -= addLocalPlayer;
+        EventManager.PlayerExitedGameSoSafeToLeave -= ExitGame;
     }
     void addLocalPlayer(GameObject newLocalPlayer) {
         localPlayer = newLocalPlayer;
@@ -20,7 +22,10 @@ public class ExitToTitle : MonoBehaviour
 
     public void Home()
     {
+        Debug.Log("Leaving to tittle screen");
         EventManager.SetLocalGameObjectPlayerLeftScene(localPlayer);
+    }
+    public void ExitGame() {
         SceneManager.LoadScene(TITLE_SCREEN_NAME);
     }
 }

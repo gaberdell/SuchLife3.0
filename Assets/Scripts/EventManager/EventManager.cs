@@ -5,18 +5,15 @@ public class EventManager : MonoBehaviour
     public delegate void SetPlayerAnimSpeedDelegate(float playerSpeed);
     public static event SetPlayerAnimSpeedDelegate setPlayerAnimSpeed;
 
-
-    public delegate void ClickAction();
-    public static event ClickAction Clicked;
+    public delegate void NoParamDelegate();
+    public static event NoParamDelegate Clicked;
 
     public delegate void EnterDungeon(int offsetX, int offsetY, int dWidth, int dHeight);
     public static event EnterDungeon PlayerEnterDungeon;
 
-    public delegate void ExitDungeon();
-    public static event ExitDungeon PlayerExitDungeon;
+    public static event NoParamDelegate PlayerExitDungeon;
 
-    public delegate void CraftingTableUpdated();
-    public static event CraftingTableUpdated CraftingTableUpdate;
+    public static event NoParamDelegate CraftingTableUpdate;
 
     public delegate void UpdateSlotPositionDelegate(string pathName, uint position);
     public static event UpdateSlotPositionDelegate UpdateSlotPosition;
@@ -30,6 +27,8 @@ public class EventManager : MonoBehaviour
     public static event GameObjectSingleDelegate LocalGameObjectPlayerLeftScene;
     public static event GameObjectSingleDelegate OnlinePlayerJoined;
     public static event GameObjectSingleDelegate OnlinePlayerLeft;
+
+    public static event NoParamDelegate PlayerExitedGameSoSafeToLeave;
 
     public static EventManager Instance;
 
@@ -79,6 +78,10 @@ public class EventManager : MonoBehaviour
 
     public static void SetOnlinePlayerLeft(GameObject player) {
         OnlinePlayerLeft?.Invoke(player);
+    }
+
+    public static void SetPlayerExitedGameSoSafeToLeave() {
+        PlayerExitedGameSoSafeToLeave?.Invoke();
     }
 
     void Awake()

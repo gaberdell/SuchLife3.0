@@ -22,14 +22,31 @@ public class PauseGame : MonoBehaviour
 
     InputHandler inputhandler;
 
+
+    const string TITLE_SCREEN_NAME = "TitleScreen";
+
+    GameObject localPlayer = null;
+
+    void addLocalPlayer(GameObject newLocalPlayer) {
+        localPlayer = newLocalPlayer;
+    }
+
     private void OnEnable()
     {
+        EventManager.LocalGameObjectPlayerAddedToScene += addLocalPlayer;
+        EventManager.PlayerExitedGameSoSafeToLeave += FullyExitToTittle;
+
         SceneManager.sceneLoaded += onPauseMenuDoneLoading;
         SceneManager.sceneUnloaded += onPauseMenuDoneUnloading;
+
     }
 
     private void OnDisable()
     {
+        EventManager.LocalGameObjectPlayerAddedToScene -= addLocalPlayer;
+        EventManager.PlayerExitedGameSoSafeToLeave -= FullyExitToTittle;
+
+
         SceneManager.sceneLoaded -= onPauseMenuDoneLoading;
         SceneManager.sceneUnloaded -= onPauseMenuDoneUnloading;
     }
@@ -101,11 +118,15 @@ public class PauseGame : MonoBehaviour
 
     public void ExitToTitle()
     {
-        if (isPaused)
-        {
+        EventManager.SetLocalGameObjectPlayerLeftScene(localPlayer);
+    }
+
+    public void FullyExitToTittle() {
+        if (isPaused) {
             isPaused = false;
             PauseTimeHandler.UnPauseGame();
         }
+
 
         SceneManager.LoadScene(titleScreen);
     }

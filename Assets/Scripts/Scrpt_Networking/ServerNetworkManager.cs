@@ -219,7 +219,7 @@ public class ServerNetworkManager : MonoBehaviour
             //Object gone ig
         }
         catch (Exception e) {
-            //Debug.LogError("Unexpectedly got error : " + e.Message);
+            Debug.LogError("Unexpectedly got error : " + e.Message);
 
             if (isActivated) {
                 //Keep going either way!!
@@ -264,9 +264,6 @@ public class ServerNetworkManager : MonoBehaviour
                     Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), data.Skip(skipAmount).ToArray(), out int bytesUsed);
                     Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), data.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
 
-                    Debug.Log("ObjectUIntID To Update : " + objectUIntIdToUpdate.ToString());
-                    Debug.Log("Prefab position To Update : " + prefabPosition.ToString());
-                    Debug.Log("Prefab rotation To Update : " + eulerRotation.ToString());
                 }
             }
         }
