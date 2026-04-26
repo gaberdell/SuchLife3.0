@@ -52,9 +52,12 @@ public class SaveObjectsManager : MonoBehaviour
         if (DataService.IsLocalSave) {
 #if UNITY_EDITOR
             byte[] localSaveData = DataService.LoadEntitySaveData();
+            string printString = "Loaded Byte index of total length " + localSaveData.Length.ToString() + " : { ";
             for (int i = 0; i < localSaveData.Length; i++) {
-                Debug.Log("Loaded Byte index (" + i + ") : " + localSaveData[i]);
+                printString += localSaveData[i].ToString() + ", ";
             }
+            printString += "}";
+            Debug.Log(printString);
 #endif
 
             LoadAllEntityDataToPrefabs(DataService.LoadEntitySaveData());
@@ -112,9 +115,12 @@ public class SaveObjectsManager : MonoBehaviour
     void LoadAllEntityDataToPrefabs(byte[] byteData) {
 
 #if UNITY_EDITOR
+        string printString = "Loaded Byte index of total to prefab length " + byteData.Length.ToString() + " : { ";
         for (int i = 0; i < byteData.Length; i++) {
-            Debug.Log("Loaded Byte index ("+ i + ") : " + byteData[i]);
+            printString += byteData[i].ToString() + ", ";
         }
+        printString += "}";
+        Debug.Log(printString);
 #endif
 
         while (byteData.Length > 0) {
@@ -124,24 +130,24 @@ public class SaveObjectsManager : MonoBehaviour
     }
 
     void savePrefabOnLocalPlayerLeave(GameObject player) {
-        Debug.Log("Hello??");
         SaveAllPrefabData();
         EventManager.SetPlayerExitedGameSoSafeToLeave();
     }
 
     void SaveAllPrefabData() {
-        Debug.Log("Attempting to save game!");
         if (DataService.IsLocalSave) {
+            Debug.Log("Attempting to save game!");
             byte[] saveData = GetAllBytesForPrefabData();
-            
-            Debug.Log("Save byte length : " + saveData.Length);
 
             DataService.SaveEntitySaveData(saveData);
 
 #if UNITY_EDITOR
+            string printString = "Loaded Byte index of total length " + saveData.Length.ToString() + " : { ";
             for (int i = 0; i < saveData.Length; i++) {
-                Debug.Log("Save Byte index (" + i + ") : " + saveData[i]);
+                printString += saveData[i].ToString() + ", ";
             }
+            printString += "}";
+            Debug.Log(printString);
 #endif
         }
     }

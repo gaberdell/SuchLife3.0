@@ -22,9 +22,6 @@ public class PauseGame : MonoBehaviour
 
     InputHandler inputhandler;
 
-
-    const string TITLE_SCREEN_NAME = "TitleScreen";
-
     GameObject localPlayer = null;
 
     void addLocalPlayer(GameObject newLocalPlayer) {

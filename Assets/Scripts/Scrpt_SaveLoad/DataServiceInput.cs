@@ -6,9 +6,6 @@ using UnityEngine;
 // README: this is a component exclusively for detecting key inputs to test DataService
 public class DataServiceInput : MonoBehaviour
 {
-
-  private bool blocking = false; // a boolean to block further DataService calls when one is in process
-
   // key shortcuts
   private KeyCode LC = KeyCode.LeftControl;
   private KeyCode F = KeyCode.F; // fetch

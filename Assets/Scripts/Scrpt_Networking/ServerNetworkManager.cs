@@ -60,7 +60,7 @@ public class ServerNetworkManager : MonoBehaviour
     }
 
     static void onAcceptTcpClient(IAsyncResult result) {
-        //try {
+        try {
             TcpClient newClient = tcpListener.EndAcceptTcpClient(result);
             NetworkStream newClientStream = newClient.GetStream();
 
@@ -87,10 +87,10 @@ public class ServerNetworkManager : MonoBehaviour
 
             //using end accept client will end it sob emoji gotta call it again
             tcpListener.BeginAcceptTcpClient(onAcceptTcpClient, null);
-        //}
-        //catch (Exception e) {
-          //  Debug.LogError("Error handeling tcpAccept lmao : " + e.Message);
-        //}
+        }
+        catch (Exception e) {
+            Debug.LogError("Error handeling tcpAccept lmao : " + e.Message);
+        }
     }
 
     static void onRecieveDataTcp(IAsyncResult result) {
@@ -99,7 +99,6 @@ public class ServerNetworkManager : MonoBehaviour
         try {
             int bytesRead = data.Stream.EndRead(result);
             if (bytesRead > 0) {
-
                 //Clip data to bytes we want
                 byte[] tcpBytes = new byte[bytesRead];
                 for (int i = 0; i < bytesRead; i++) {
@@ -116,9 +115,30 @@ public class ServerNetworkManager : MonoBehaviour
                     //Essentially if we could find the players GUID in the player prefab
                     //Then that player is that prefab
                     bool doesPlayerAlreadyExsistInScene = false;
-                    foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
-                        PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
+                    Debug.Log(SaveablePrefabManager.SaveablePrefabs.Count);
+                    
+                    //Ok so apperently attempting to index one of these causes an error so frick
+                    for (int i = 0; i < SaveablePrefabManager.SaveablePrefabs.Count; i++) {
+                        Debug.Log("Amogus");
+                        Debug.Log("Is this null " + SaveablePrefabManager.SaveablePrefabs);
+                        Debug.Log("Is this object null " + SaveablePrefabManager.SaveablePrefabs[i]);
+                        Debug.Log("Please state your name : " + SaveablePrefabManager.SaveablePrefabs[i].name);
+                    }
 
+                    int sus35 = SaveablePrefabManager.SaveablePrefabs.Count;
+                    Debug.Log(sus35);
+                    for (int i = 0; i < sus35; i++) {
+                        Debug.Log("Amogus2");
+                        Debug.Log("Please state your name : " + SaveablePrefabManager.SaveablePrefabs[i].name);
+                    }
+
+
+//-------------------------------------TODO: SWITCH OVER TO USING THE DEAL_WITH_TCP_CONNECTION sense it stalls when trying to index a dictionary--------------
+
+                    foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
+                        Debug.Log("Please state your name : " + saveObject.name);
+                        PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
+                        Debug.Log("After name state");
                         byte[] bytesToSendToTellLocalClient = addTcpBasic(saveObject);
 
                         PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
@@ -173,6 +193,9 @@ public class ServerNetworkManager : MonoBehaviour
             SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
             players.Remove(data.ClientId);
             data.Client.Close();
+        }
+        catch (Exception e) {
+            Debug.LogError("Error when trying to do the tcp stuff " + e.Message);
         }
     }
 
@@ -232,7 +255,6 @@ public class ServerNetworkManager : MonoBehaviour
         using (PacketWrapper packet = new PacketWrapper()) {
             packet.AddBytes(bytesToAdd);
             byte[] data = packet.GetBytes();
-            Debug.Log(String.Format("(TCP) Sending packets to {0} clients", tcpClients.Count));
             tcpClients[client].Stream.Write(data, 0, data.Length);
         }
     }
@@ -242,9 +264,10 @@ public class ServerNetworkManager : MonoBehaviour
         using (PacketWrapper packet = new PacketWrapper()) {
             packet.AddBytes(bytesToAdd);
             byte[] data = packet.GetBytes();
-            Debug.Log(String.Format("(TCP) Sending packets to {0} clients", tcpClients.Count));
-            foreach (var client in tcpClients.Values) {
-                client.Stream.Write(data, 0, data.Length);
+            if (tcpClients != null) {
+                foreach (var client in tcpClients.Values) {
+                    client.Stream.Write(data, 0, data.Length);
+                }
             }
         }
     }

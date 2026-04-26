@@ -8,5 +8,6 @@ public enum NetworkOpCodeEnum : byte
     ADD_LOCAL_PLAYER,
     ADD_PREFAB,
     REMOVE_PREFAB,
-    UPDATE_PREFAB
+    UPDATE_PREFAB,
+    DEAL_WITH_TCP_CONNECTION
 }

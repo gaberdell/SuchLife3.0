@@ -250,7 +250,8 @@ public static class ChunkManager
         //groundTilemap.SetTile(new Vector3Int(0, -60, 0), null);
         if (time == 0)
         {
-            Debug.Log("no global animation tile found!");
+            //TODO: Remeber to reable for Cole
+            //Debug.Log("no global animation tile found!");
         }
         return time;
     }

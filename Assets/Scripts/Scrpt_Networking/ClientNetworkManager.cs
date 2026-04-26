@@ -48,6 +48,14 @@ public class ClientNetworkManager : MonoBehaviour
             udpClient = new UdpClient(ip, port);
             udpClient.BeginReceive(onRecieveDataUdp, null);
 
+            Debug.Log("Attempting to send to tcp");
+            float timeSenseAttemptionAttempt = Time.time;
+            while (!tcpClient.Connected) {
+                if (Time.time - timeSenseAttemptionAttempt > 25.0f) {
+                    Debug.Log("Wasn't able to connect in 25 seconds rip");
+                }
+            }
+
             sendDataWithTcp(DataService.localPlayerUUID.ToByteArray());
         }
         catch (Exception e) {
@@ -220,9 +228,11 @@ public class ClientNetworkManager : MonoBehaviour
     private void sendDataWithTcp(byte[] bytes) {
         try {
             using (PacketWrapper packet = new PacketWrapper()) {
+                Debug.Log("Inside packet wrapper");
                 packet.AddBytes(bytes);
+                Debug.Log("Added Bytes to TCP");
                 byte[] data = packet.GetBytes();
-
+                Debug.Log("Sending to TCP?");
                 tcpStream.Write(data, 0, data.Length);
             }
         }
