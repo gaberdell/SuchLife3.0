@@ -80,6 +80,12 @@ Settings Button:
 
 ### Gameplay Loop: ###
 
+Players start in starting hub in the overworld where they gather basic resources.
+
+Players then clear dungeons to unlock new materials, gear, and zones.
+
+In each zone players get new materials and gear before completing more dungeons.
+
 See Gameplay_Loop_Design_Doc.md for more.
 
 ### Movement: ###
@@ -88,7 +94,7 @@ Players can move using traditional WASD movement.
 
 Players can sprint using shift. Short cool down after sprinting for a time.
 
-Players can roll using r. Short cool down afer rolling.
+Players can roll/ dodge using r. Short cool down afer rolling.
 
 ### Area Themeing: ###
 
