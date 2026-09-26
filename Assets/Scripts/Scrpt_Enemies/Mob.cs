@@ -60,8 +60,8 @@ public class Mob : MonoBehaviour
     public void updateChunkPos()
     {
         Vector3 currentPos = objectInScene != null ? objectInScene.transform.position : transform.position;
-        Debug.Log("current mob pos: " + currentPos);
-        Debug.Log("object in scene: " + objectInScene);
+        //Debug.Log("current mob pos: " + currentPos);
+        //Debug.Log("object in scene: " + objectInScene);
         Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(currentPos);
 
         if (currChunkPos != chunkPos)

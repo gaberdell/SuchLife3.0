@@ -196,9 +196,19 @@ public static class ChunkManager
         return targetChunk.getTile(xInChunk, yInChunk, isWall);
     }
 
+    static public Tilemap GetGroundTilemap() { return groundTilemap; }
+    static public Tilemap GetWallTilemap() { return wallTilemap; }
 
 
-    
+    //static public TileBase[] GetActiveTilesBlock(BoundsInt bounds)
+    // {
+    //     //boundsint provides a box of tiles to grab tiles from
+
+    //     //we only want to grab 'active' (loaded) tiles, so we can grab tiles from loadedChunks.
+    // }
+
+
+
 
     /*
     * requires: input not null

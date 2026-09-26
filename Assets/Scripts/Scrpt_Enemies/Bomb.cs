@@ -15,6 +15,7 @@ public class Bomb : Mob
     private List<Transform> targets;
     private Transform target;
     //private AIDestinationSetter pathSetter;
+    private PathingController pathController;
     [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
@@ -43,7 +44,10 @@ public class Bomb : Mob
     {
         targets = new List<Transform>();
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
-        //pathSetter = GetComponent<AIDestinationSetter>();
+        pathController = new PathingController((int)transform.position.x, (int)transform.position.x, target);
+        pathController.createPathGrid();
+        pathController.printPath(); //debug
+
         //target = GameObject.Find("Player").transform;
 
         //rework pathfinding to have an 'alert' range instead to handle multiple player objects existing
