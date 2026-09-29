@@ -70,13 +70,20 @@ Mechanics should focus on:
 
     - Skillfully beating enemies
 
+
 ### Title Screen: ###
 
 Singleplayer Button:
 
+The Singleplayer Button opens
+
 Multiplayer Button:
 
-Settings Button:
+The Multiplayer Button opens 
+
+Settings Button: 
+
+The Settings Button opens a menu that allows players to customize their resolution/ refresh rate, keybinds, and audio settings.
 
 ### Gameplay Loop: ###
 
@@ -85,6 +92,8 @@ Players start in starting hub in the overworld where they gather basic resources
 Players then clear dungeons to unlock new materials, gear, and zones.
 
 In each zone players get new materials and gear before completing more dungeons.
+
+Death is an obstacle, not the end.
 
 See Gameplay_Loop_Design_Doc.md for more.
 
@@ -98,7 +107,11 @@ Players can roll/ dodge using r. Short cool down afer rolling.
 
 ### Area Themeing: ###
 
+Each zone will have a different theme to it.
+
 ### Map Tiles: ###
+
+Map tiles are
 
 ### Day/Night Cycle: ###
 
