@@ -46,7 +46,9 @@ public class Bomb : Mob
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
         pathController = new PathingController((int)transform.position.x, (int)transform.position.x, target);
         pathController.createPathGrid();
+        pathController.findPath();
         pathController.printPath(); //debug
+
 
         //target = GameObject.Find("Player").transform;
 

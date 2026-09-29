@@ -11,18 +11,22 @@ public class PathingController
     Tilemap groundMap = ChunkManager.GetGroundTilemap();
     Tilemap wallMap = ChunkManager.GetWallTilemap();
 
-    const int gridSize = 30; //const value for now, replace with input values later when necessary
-    PathGrid pgrid = new PathGrid(gridSize, gridSize);
-
     Transform target;
+    PathCell startCell;
+    PathCell endCell;
 
     //bounds of where we search the world for tiles
     public int pathStartX, pathStartY;
     public BoundsInt pathBounds;
 
+    const int gridSize = 30; //const value for now, replace with input values later when necessary
+    PathGrid pgrid;
+
     private int gridBoundX = 0, gridBoundY = 0;
 
     bool isActive = false;
+
+    
 
     public PathingController(int startX, int startY, Transform t)
     {
@@ -31,6 +35,7 @@ public class PathingController
         pathStartY = startY;
         target = t;
         pathBounds = new BoundsInt(startX-gridSize/2, startY-gridSize/2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
+        pgrid = new PathGrid(gridSize, gridSize, pathBounds.min.x, pathBounds.min.y);
     }
 
     private void FixedUpdate()
@@ -48,10 +53,10 @@ public class PathingController
         TileBase[] wallTiles = wallMap.GetTilesBlock(pathBounds);
 
         //check positions (debugging)
-        foreach (var point in pathBounds.allPositionsWithin) 
-        {
-            Debug.Log(point.ToString());
-        }
+        //foreach (var point in pathBounds.allPositionsWithin) 
+        //{
+        //    Debug.Log(point.ToString());
+        //}
 
 
         int pathx = 0, pathy = 0, i = 0;
@@ -85,17 +90,88 @@ public class PathingController
             {
                 pathx++;
             }
-            
-            
+               
         }
 
+        //now assign neighbors
+        assignNeighbors();
 
+    }
+
+    //called after grid is created; give every pathcell its neighbor
+    public void assignNeighbors()
+    {
+        pgrid.assignNeighbors();
     }
 
     public void printPath()
     {
         Debug.Log("printing path");
         pgrid.printGrid();
+    }
+
+    //retraces path from targetcell to startcell
+    public List<PathCell> retracePath()
+    {
+        List<PathCell> path = new List<PathCell>();
+        PathCell current = endCell;
+        while (current != startCell)
+        {
+            path.Add(current);
+            current = endCell.parent;
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+
+    //main A* pathfinding script
+
+    public void findPath()
+    {
+        //using start/end cells already established
+        List<PathCell> openSet = new List<PathCell>();
+        List<PathCell> closeSet = new List<PathCell>();
+        openSet.Add(startCell);
+
+        //main loop
+        while (openSet.Count > 0)
+        {
+            //look for an eligible cell from the open set
+            PathCell currentCell = openSet[0];
+            for (int i = 0; i < openSet.Count; i++)
+            {
+                if (openSet[i].fCost() < currentCell.fCost() || openSet[i].fCost() == currentCell.fCost() && openSet[i].hCost < currentCell.hCost)
+                {
+                    currentCell = openSet[i];
+                }
+            }
+            //
+            openSet.Remove(currentCell);
+            closeSet.Add(currentCell);
+            if (currentCell == endCell)
+            {
+                retracePath();
+                return;
+            }
+
+            //look through neighbors for a better cell to go to next
+            foreach (PathCell neighbor in currentCell.neighbors)
+            {
+                if (!neighbor.walkable || closeSet.Contains(neighbor)) continue;
+
+                int newMovementCostToNeighbor = currentCell.gCost + pgrid.getDistance(currentCell, neighbor);
+                if (newMovementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                {
+                    neighbor.gCost = newMovementCostToNeighbor;
+                    neighbor.hCost = pgrid.getDistance(neighbor, endCell);
+                    neighbor.parent = currentCell;
+
+                    if (!openSet.Contains(neighbor)) openSet.Add(neighbor);
+                }
+            }
+        }
     }
 
     

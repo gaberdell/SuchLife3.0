@@ -9,10 +9,9 @@ public class PathCell
 
     public int gCost = -1; //-1 corresponds to uninitialized
     public int hCost = -1;
-    public int fCost = -1;
     public int tileX = -1, tileY = -1; //corresponds to position on tilemap;
     public int pathX = -1, pathY = -1;
-    bool walkable = false;
+    public bool walkable = false;
     public List<PathCell> neighbors; //for finding the path
     public PathCell parent; //for path purposes
 
@@ -26,7 +25,7 @@ public class PathCell
         walkable = w;
     }
 
-    public int getfCost()
+    public int fCost()
     {
         return gCost + hCost;
     }
@@ -34,6 +33,17 @@ public class PathCell
     public void printCell()
     {
         //print cell as a string
-        Debug.Log("Cell: Tile (" + tileX + ", " + tileY + ") | Path (" + pathX + ", " + pathY + ") | Walkable: " + walkable + " | fgh(" + fCost + ", " + gCost + ", " + hCost + ")");
+        Debug.Log("Cell: Tile (" + tileX + ", " + tileY + ") | Path (" + pathX + ", " + pathY + ") | Walkable: " + walkable + " | fgh(" + gCost+hCost + ", " + gCost + ", " + hCost + ")");
     }
+
+    public void printNeighbors()
+    {
+        Debug.Log("Printing Neighbors");
+        foreach (PathCell neighbor in neighbors)
+        {
+            neighbor.printCell();
+        }
+    }
+
+
 }
