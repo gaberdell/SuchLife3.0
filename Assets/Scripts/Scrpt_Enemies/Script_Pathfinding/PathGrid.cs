@@ -109,4 +109,9 @@ public class PathGrid
         return new Vector3(c.tileX, c.tileY, 0);
     }
 
+    public PathCell getCellFromWorld(int x, int y)
+    {
+        return grid[x-worldX][y-worldY];
+    }
+
 }

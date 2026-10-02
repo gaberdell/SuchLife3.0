@@ -33,7 +33,7 @@ public class PathCell
     public void printCell()
     {
         //print cell as a string
-        Debug.Log("Cell: Tile (" + tileX + ", " + tileY + ") | Path (" + pathX + ", " + pathY + ") | Walkable: " + walkable + " | fgh(" + gCost+hCost + ", " + gCost + ", " + hCost + ")");
+        Debug.Log("Cell: Tile (" + tileX + ", " + tileY + ") | Path (" + pathX + ", " + pathY + ") | Walkable: " + walkable + " | fgh(" + fCost() + ", " + gCost + ", " + hCost + ")");
     }
 
     public void printNeighbors()

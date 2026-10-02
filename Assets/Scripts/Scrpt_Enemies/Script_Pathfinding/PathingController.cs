@@ -16,26 +16,27 @@ public class PathingController
     PathCell endCell;
 
     //bounds of where we search the world for tiles
-    public int pathStartX, pathStartY;
     public BoundsInt pathBounds;
 
     const int gridSize = 30; //const value for now, replace with input values later when necessary
     PathGrid pgrid;
 
     private int gridBoundX = 0, gridBoundY = 0;
+    private int startX, startY;
 
     bool isActive = false;
 
     
 
-    public PathingController(int startX, int startY, Transform t)
+    public PathingController(int sX, int sY, Transform t)
     {
         //only search for tiles within range of the enemy location.
-        pathStartX = startX;
-        pathStartY = startY;
+        startX = sX;
+        startY = sY;
         target = t;
         pathBounds = new BoundsInt(startX-gridSize/2, startY-gridSize/2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
         pgrid = new PathGrid(gridSize, gridSize, pathBounds.min.x, pathBounds.min.y);
+        
     }
 
     private void FixedUpdate()
@@ -93,6 +94,11 @@ public class PathingController
                
         }
 
+        //assign startcell and endcell
+        startCell = pgrid.getCellFromWorld(startX, startY);
+        Debug.Log("target " + target.position.ToString());
+        endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
+
         //now assign neighbors
         assignNeighbors();
 
@@ -106,7 +112,7 @@ public class PathingController
 
     public void printPath()
     {
-        Debug.Log("printing path");
+        //Debug.Log("printing path");
         pgrid.printGrid();
     }
 
@@ -117,6 +123,7 @@ public class PathingController
         PathCell current = endCell;
         while (current != startCell)
         {
+            current.printCell();
             path.Add(current);
             current = endCell.parent;
         }
@@ -140,6 +147,7 @@ public class PathingController
         {
             //look for an eligible cell from the open set
             PathCell currentCell = openSet[0];
+            //currentCell.printCell();
             for (int i = 0; i < openSet.Count; i++)
             {
                 if (openSet[i].fCost() < currentCell.fCost() || openSet[i].fCost() == currentCell.fCost() && openSet[i].hCost < currentCell.hCost)
@@ -152,13 +160,14 @@ public class PathingController
             closeSet.Add(currentCell);
             if (currentCell == endCell)
             {
-                retracePath();
+                //retracePath();
                 return;
             }
 
             //look through neighbors for a better cell to go to next
             foreach (PathCell neighbor in currentCell.neighbors)
             {
+                //neighbor.printCell();
                 if (!neighbor.walkable || closeSet.Contains(neighbor)) continue;
 
                 int newMovementCostToNeighbor = currentCell.gCost + pgrid.getDistance(currentCell, neighbor);
