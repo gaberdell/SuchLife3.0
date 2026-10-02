@@ -223,8 +223,8 @@ public class SaveObjectsManager : MonoBehaviour
 
         GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
 
-        //TODO : Player might not be id one so maybe change later?
-        if (id.Length == 1 && id[0] == 1) {
+        // Finds the ID referring to Player Prefab at Runtime, allowing Player Prefab IDs to change in the future
+        if (id.Length == 1 && id[0] == SaveablePrefabManager.GetPlayerPrefabID()) {
             LocalPlayerFromSaveData = prefab;
         }
         //newStartPos += idDelinatorPosition; Idk this makes more sense to me idk tho

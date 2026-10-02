@@ -15,18 +15,15 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     static private string RESOURCE_LOCATION = "SaveablePrefabs/";
 
-    static private string ENEMY_FOLDER = "SaveableEnemyPrefabs/";
-
-    static private string PLAYER_PREFAB_NAME = "Player";
-    static private string OTHER_PLAYER_PREFAB_NAME = "OtherPlayer";
-    static private string SERVER_PLAYER_PREFAB_NAME = "ServerPlayer";
-    static private string SCROMBOLO_BOMBOLO_NAME = ENEMY_FOLDER + "Scrombolo_Bombolo";
+    // Removed unnecessary Prefab variables, now does everything at runtime
+    // This means that we can add more Prefabs without having to add more variables here
     static private string ITEM_NAME = "Item";
 
-    static GameObject PLAYER_PREFAB;
-    static GameObject OTHER_PLAYER_PREFAB;
-    static GameObject SCROMBOLO_BOMBOLO_PREFAB;
-    static GameObject SERVER_PLAYER_PREFAB;
+    // Private variable storing the ID of the Player Prefab, can be accessed via observer
+    static private byte PlayerPrefabID;
+
+    // Consolidated the Prefabs variables into an array
+    static GameObject[] ALL_PREFABS;
 
     //Maybe make this into a two way dictionary type?
     static public Dictionary<byte[], GameObject> ByteToPrefabKey { get; private set; }
@@ -42,6 +39,9 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     uint numberOfActiveEntities = 0;
     static byte[] currentlyActiveEntities;
+
+    // Allows access to Player Prefab ID
+    public static byte GetPlayerPrefabID() { return PlayerPrefabID; }
 
     static bool retrieveIsActiveEntity(uint location)
     {
@@ -180,26 +180,24 @@ public class SaveablePrefabManager : MonoBehaviour {
         SaveablePrefabs = new List<GameObject>();
         currentlyActiveEntities = new byte[1] { 0 };
 
-        PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + PLAYER_PREFAB_NAME);
-        OTHER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + OTHER_PLAYER_PREFAB_NAME);
-        SCROMBOLO_BOMBOLO_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SCROMBOLO_BOMBOLO_NAME);
-        SERVER_PLAYER_PREFAB = Resources.Load<GameObject>(RESOURCE_LOCATION + SERVER_PLAYER_PREFAB_NAME);
-
-
+        // Uses LoadAll instead of Load'ing each Prefab separately
+        // LoadAll is recursive, allowing Prefabs to be placed within directories
+        // After Loading All, adds every Prefab to the appropiate Dictionaries
+        ALL_PREFABS = Resources.LoadAll<GameObject>(RESOURCE_LOCATION);
         ByteToPrefabKey = new Dictionary<byte[], GameObject>(new ByteArrayComparer());
-        ByteToPrefabKey.Add(new byte[1] { 1 }, PLAYER_PREFAB);
-        ByteToPrefabKey.Add(new byte[1] { 2 }, OTHER_PLAYER_PREFAB);
-        ByteToPrefabKey.Add(new byte[1] { 3 }, SERVER_PLAYER_PREFAB);
-        ByteToPrefabKey.Add(new byte[1] { 4 }, SCROMBOLO_BOMBOLO_PREFAB);
+        StringToPrefabKey = new Dictionary<string, GameObject>();
+        
+        int count = 0;
+        for (; count < ALL_PREFABS.Length; ++count)
+        {
+            GameObject cur = (GameObject)ALL_PREFABS[count];
+            ByteToPrefabKey.Add(new byte[1] { (byte)(count+1) }, cur);
+            StringToPrefabKey.Add(cur.name, cur);
+            if (cur.name == "Player") { PlayerPrefabID = (byte)(count+1); }
+            UnityEngine.Debug.Log(cur.name);
+        }
 
         PrefabToByteKey = ByteToPrefabKey.ToDictionary((i) => i.Value, (i) => i.Key);
-
-        //TODO : Automate creation of this too prone to error otherwise
-        StringToPrefabKey = new Dictionary<string, GameObject>();
-        StringToPrefabKey.Add(PLAYER_PREFAB_NAME, PLAYER_PREFAB);
-        StringToPrefabKey.Add(OTHER_PLAYER_PREFAB_NAME, OTHER_PLAYER_PREFAB);
-        StringToPrefabKey.Add(SERVER_PLAYER_PREFAB_NAME, SERVER_PLAYER_PREFAB);
-        StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
 
         NetworkIdsPrefabs = new Dictionary<uint, GameObject>();
     }
