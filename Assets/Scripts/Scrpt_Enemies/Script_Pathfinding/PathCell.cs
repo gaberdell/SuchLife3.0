@@ -7,13 +7,13 @@ public class PathCell
     //Utility Cell data structure for pathfinding algo
     //public cause i cant be bothered otherwise
 
-    public int gCost = -1; //-1 corresponds to uninitialized
-    public int hCost = -1;
+    public int gCost = 1000; 
+    public int hCost = 0;
     public int tileX = -1, tileY = -1; //corresponds to position on tilemap;
     public int pathX = -1, pathY = -1;
     public bool walkable = false;
     public List<PathCell> neighbors; //for finding the path
-    public PathCell parent; //for path purposes
+    public PathCell parent = null; //for path purposes
 
 
     public PathCell(int tx, int ty, int px, int py, bool w)

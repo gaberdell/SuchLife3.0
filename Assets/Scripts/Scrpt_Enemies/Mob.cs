@@ -8,20 +8,23 @@ public class Mob : MonoBehaviour
     protected Vector3 worldPos;
     protected Vector2 chunkPos;
 
+    //pathing
     private Rigidbody2D rb;
-    //protected AIPath path;
+    protected PathingController pathController;
+    protected Transform target;
+    float speed = 1;
+
     private bool isKnockedBack = false;
 
     protected bool isDead = false;
 
     private void Awake()
     {
+        target = GameObject.Find("Sign").transform;
         rb = GetComponent<Rigidbody2D>();
-        //path = GetComponent<AIPath>();  // get AIPath attached to same object
-        //if (rb == null)
-            //Debug.LogError("Rigidbody2D missing on Mob!"); Some mobs dont need a rigidbody2D (breakable entities); these should probably be restructured though
-        //if (path == null)
-        //    Debug.LogWarning("AIPath missing on Mob!");
+        pathController = new PathingController((int)transform.position.x, (int)transform.position.y, target, this.transform);
+        pathController.createPathGrid();
+        pathController.findPath();
         //set chunk pos on spawn
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene != null ? objectInScene.transform.position : transform.position);
     }
@@ -51,6 +54,9 @@ public class Mob : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        //progress pathfinding
+        pathController.moveAlongPath(speed);
+
         if (rb != null)
         {
             //Debug.Log($"Current velocity: {rb.linearVelocity}");

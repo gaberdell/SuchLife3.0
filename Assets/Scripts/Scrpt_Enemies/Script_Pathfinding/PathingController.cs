@@ -1,9 +1,10 @@
+using Codice.Client.BaseCommands.WkStatus.Printers;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class PathingController 
+public class PathingController
 {
     //every entity with pathfinding will have a PathingController attached to them to facilitate this.
 
@@ -11,9 +12,12 @@ public class PathingController
     Tilemap groundMap = ChunkManager.GetGroundTilemap();
     Tilemap wallMap = ChunkManager.GetWallTilemap();
 
+    Transform controlled;
     Transform target;
     PathCell startCell;
     PathCell endCell;
+
+    List<PathCell> currentPath;
 
     //bounds of where we search the world for tiles
     public BoundsInt pathBounds;
@@ -28,20 +32,38 @@ public class PathingController
 
     
 
-    public PathingController(int sX, int sY, Transform t)
+    public PathingController(int sX, int sY, Transform t, Transform c)
     {
         //only search for tiles within range of the enemy location.
         startX = sX;
         startY = sY;
         target = t;
+        controlled = c;
         pathBounds = new BoundsInt(startX-gridSize/2, startY-gridSize/2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
         pgrid = new PathGrid(gridSize, gridSize, pathBounds.min.x, pathBounds.min.y);
         
     }
 
-    private void FixedUpdate()
+    public void toggleActive()
     {
-        //update path every x length of time
+        isActive = !isActive;
+    }
+
+    public void moveAlongPath(float speed)
+    {
+        if (isActive && currentPath.Count > 0)
+        {
+            //step towards the next world pos in the path
+            Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
+            float step = speed * Time.deltaTime;
+            controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
+            //face towards next position
+            if(Vector3.Distance(controlled.position, nextPos) < 0.01f)
+            {
+                Debug.Log("MOVING TO NEXT PATH STEP");
+                currentPath.RemoveAt(0);
+            }
+        }
     }
 
     public void createPathGrid()
@@ -98,7 +120,7 @@ public class PathingController
         startCell = pgrid.getCellFromWorld(startX, startY);
         Debug.Log("target " + target.position.ToString());
         endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
-
+        endCell.printCell();
         //now assign neighbors
         assignNeighbors();
 
@@ -121,11 +143,13 @@ public class PathingController
     {
         List<PathCell> path = new List<PathCell>();
         PathCell current = endCell;
-        while (current != startCell)
+        int c = 0;
+        while ((current != startCell) && (c < 100))
         {
             current.printCell();
             path.Add(current);
-            current = endCell.parent;
+            current = current.parent;
+            c++;
         }
 
         path.Reverse();
@@ -141,6 +165,7 @@ public class PathingController
         List<PathCell> openSet = new List<PathCell>();
         List<PathCell> closeSet = new List<PathCell>();
         openSet.Add(startCell);
+        startCell.gCost = 0;
 
         //main loop
         while (openSet.Count > 0)
@@ -160,14 +185,13 @@ public class PathingController
             closeSet.Add(currentCell);
             if (currentCell == endCell)
             {
-                //retracePath();
+                currentPath = retracePath();
                 return;
             }
 
             //look through neighbors for a better cell to go to next
             foreach (PathCell neighbor in currentCell.neighbors)
             {
-                //neighbor.printCell();
                 if (!neighbor.walkable || closeSet.Contains(neighbor)) continue;
 
                 int newMovementCostToNeighbor = currentCell.gCost + pgrid.getDistance(currentCell, neighbor);
