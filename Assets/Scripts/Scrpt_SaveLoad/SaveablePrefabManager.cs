@@ -124,12 +124,17 @@ public class SaveablePrefabManager : MonoBehaviour {
             if (retrieveIsActiveEntity(idReal)) {
                 throw new Exception("Already exsists exception :sob:");
             }
-            addLocation(idReal);
             entity.NetworkId = idReal;
         }
 
+        //Hopefully this fixing the issue
+        addLocation(entity.NetworkId);
+
+        //Issue here i think??
+        Debug.Log("Were able to add new object : " + entity.NetworkId + " name : " + newObject.name);
         SaveablePrefabs.Add(newObject);
         NetworkIdsPrefabs.Add(entity.NetworkId, newObject);
+        Debug.Log("Yay we did it wouthout crashing!");
 
         if (!isQuiet) {
             EventManager.SetPrefabAddedToScene(newObject);

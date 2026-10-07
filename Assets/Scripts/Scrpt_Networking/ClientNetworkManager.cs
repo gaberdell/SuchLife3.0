@@ -314,13 +314,8 @@ public class ClientNetworkManager : MonoBehaviour
             // sendDataWithUdp(;
             if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();
-            }/*
-            else if (Input.GetKeyDown(KeyCode.T)) {
-                sendDataWithTcp();
             }
-            else if (Input.GetKeyDown(KeyCode.U)) {
-              //  sendDataWithUdp();
-            }*/
+
             DispatchCommandsOnMainThread();
         }
 

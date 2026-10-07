@@ -148,7 +148,9 @@ public class ServerNetworkManager : MonoBehaviour
                         }
                         if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes())) {
                             doesPlayerAlreadyExsistInScene = true;
+                            Debug.Log("Before potential crash?");
                             players.Add(data.ClientId, saveObject);
+                            Debug.Log("After potential crash?");
                             bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
                         }
 
@@ -176,6 +178,7 @@ public class ServerNetworkManager : MonoBehaviour
                 IPEndPoint clientEndPoint = (IPEndPoint)data.Client.Client.RemoteEndPoint;
 
                 Debug.Log("Peacefully lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
+                Debug.Log("Peacefully lost client");
                 SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
                 players.Remove(data.ClientId);
                 data.Client.Close();
@@ -190,6 +193,7 @@ public class ServerNetworkManager : MonoBehaviour
             IPEndPoint clientEndPoint = (IPEndPoint)data.Client.Client.RemoteEndPoint;
 
             Debug.LogError("Unexpectedly lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
+            Debug.Log("Attempting to remove client");
             SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
             players.Remove(data.ClientId);
             data.Client.Close();
@@ -363,6 +367,7 @@ public class ServerNetworkManager : MonoBehaviour
 
                     //Means add a new local player not from a save tho
                     case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
+                        Debug.Log("New player thing equals : " + newCommand.tcpOriginId);
                         GameObject newPlayer = SaveablePrefabManager.CreatePrefab("ServerPlayer", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), null, true);
                         players.Add(newCommand.tcpOriginId, newPlayer);
                         PlayerGUIDInfo playerInfo = newPlayer.GetComponent<PlayerGUIDInfo>();
@@ -390,6 +395,7 @@ public class ServerNetworkManager : MonoBehaviour
                         SendToTcp(newCommand.tcpOriginId, sendBytes);
                         break;
                     case NetworkOpCodeEnum.UPDATE_PREFAB:
+                        Debug.Log("Atttempting to update player using : " + newCommand.tcpOriginId);
                         players[newCommand.tcpOriginId].GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
                         break;
                 }
