@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SuchLife3.0.sln"
+    "dotnet.defaultSolution": "SuchLife3.0.slnx"
 }
