@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class PathingController
 {
@@ -58,9 +59,13 @@ public class PathingController
             float step = speed * Time.deltaTime;
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
             //face towards next position
+            Quaternion finalRotation = Quaternion.LookRotation(controlled.position - nextPos);
+            float nextAngle = Mathf.LerpAngle(controlled.rotation.z, finalRotation.z, Time.deltaTime);
+            controlled.eulerAngles = new Vector3(0, 0, nextAngle);
+ 
             if(Vector3.Distance(controlled.position, nextPos) < 0.01f)
             {
-                Debug.Log("MOVING TO NEXT PATH STEP");
+                Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
                 currentPath.RemoveAt(0);
             }
         }
@@ -118,8 +123,12 @@ public class PathingController
 
         //assign startcell and endcell
         startCell = pgrid.getCellFromWorld(startX, startY);
-        Debug.Log("target " + target.position.ToString());
+        //Debug.Log("target " + target.position.ToString());
+        //Debug.Log("Start: (" + startX + ", " + startY + ")");
+        startCell.printCell();
+        //Debug.Log("End: (" + (int)target.position.x + ", " + (int)target.position.y + ")");
         endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
+        //Debug.Log("End: (" + (int)target.position.x + ", " + (int)target.position.y + ")");
         endCell.printCell();
         //now assign neighbors
         assignNeighbors();

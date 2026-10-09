@@ -111,7 +111,7 @@ public class PathGrid
 
     public PathCell getCellFromWorld(int x, int y)
     {
-        return grid[x-worldX][y-worldY];
+        return grid[y-worldY][x-worldX];
     }
 
 }
