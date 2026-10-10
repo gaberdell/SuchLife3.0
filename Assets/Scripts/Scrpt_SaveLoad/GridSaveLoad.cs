@@ -20,13 +20,13 @@ public class GridSaveLoad
     
     GameObject background = GameObject.Find(BACKGROUND_NAME);
     if (background == null) {
-      Debug.LogError("SaveGrid: Unable to find \"" + BACKGROUND_NAME + "\"!");
+      UnityEngine.Debug.LogError("SaveGrid: Unable to find \"" + BACKGROUND_NAME + "\"!");
       return null;
     }
 
     GameObject foreground = GameObject.Find(FOREGROUND_NAME);
     if (foreground == null) {
-      Debug.LogError("SaveGrid: Unable to find \"" + FOREGROUND_NAME + "\"!");
+      UnityEngine.Debug.LogError("SaveGrid: Unable to find \"" + FOREGROUND_NAME + "\"!");
       return null;
     }
 
@@ -34,13 +34,13 @@ public class GridSaveLoad
     
     Tilemap backTilemap = background.GetComponent<Tilemap>();
     if (backTilemap == null) {
-      Debug.LogError("SaveGrid: Unable to extract " + BACKGROUND_NAME + "'s Tilemap component!");
+      UnityEngine.Debug.LogError("SaveGrid: Unable to extract " + BACKGROUND_NAME + "'s Tilemap component!");
       return null;
     }
 
     Tilemap foreTilemap = foreground.GetComponent<Tilemap>();
     if (foreTilemap == null) {
-      Debug.LogError("SaveGrid: Unable to extract " + FOREGROUND_NAME + "'s Tilemap component!");
+      UnityEngine.Debug.LogError("SaveGrid: Unable to extract " + FOREGROUND_NAME + "'s Tilemap component!");
       return null;
     }
 
@@ -53,20 +53,20 @@ public class GridSaveLoad
     int y_min = backTilemap.cellBounds.min.y;
     int y_max = backTilemap.cellBounds.max.y;
 
-    Debug.Log("SaveGrid: Processing background tilemap...");
+    UnityEngine.Debug.Log("SaveGrid: Processing background tilemap...");
 
     gridData += "background\n";
     for (int x = x_min; x < x_max; x++) {
       for (int y = y_min; y < y_max; y++) {
         Vector3Int loc = new Vector3Int(x, y, 0);
-        // Debug.Log("SaveGrid: loc: " + loc.ToString());
+        // UnityEngine.Debug.Log("SaveGrid: loc: " + loc.ToString());
 
         Sprite sprite = backTilemap.GetSprite(loc);
         if (sprite != null) {
-          // Debug.Log("SaveGrid: sprite: " + sprite.ToString());
+          // UnityEngine.Debug.Log("SaveGrid: sprite: " + sprite.ToString());
 
           string spriteName = sprite.name;
-          Debug.Log("SaveGrid: spriteName: " + spriteName);
+          UnityEngine.Debug.Log("SaveGrid: spriteName: " + spriteName);
 
           gridData += spriteName + ", " + x + ", " + y + "\n";
         }
@@ -82,21 +82,21 @@ public class GridSaveLoad
     y_min = foreTilemap.cellBounds.min.y;
     y_max = foreTilemap.cellBounds.max.y;
 
-    Debug.Log("SaveGrid: Processing foreground tilemap...");
+    UnityEngine.Debug.Log("SaveGrid: Processing foreground tilemap...");
 
     gridData += "foreground\n";
     for (int x = x_min; x < x_max; x++) {
       for (int y = y_min; y < y_max; y++) {
 
         Vector3Int loc = new Vector3Int(x, y, 0);
-        // Debug.Log("SaveGrid: loc: " + loc.ToString());
+        // UnityEngine.Debug.Log("SaveGrid: loc: " + loc.ToString());
 
         Sprite sprite = foreTilemap.GetSprite(loc);
         if (sprite != null) {
-          // Debug.Log("SaveGrid: sprite: " + sprite.ToString());
+          // UnityEngine.Debug.Log("SaveGrid: sprite: " + sprite.ToString());
 
           string spriteName = sprite.name;
-          Debug.Log("SaveGrid: spriteName: " + spriteName);
+          UnityEngine.Debug.Log("SaveGrid: spriteName: " + spriteName);
 
           gridData += spriteName + ", " + x + ", " + y + "\n";
         }
@@ -116,13 +116,13 @@ public class GridSaveLoad
 
     GameObject background = GameObject.Find(BACKGROUND_NAME);
     if (background == null) {
-      Debug.LogError("LoadGrid: Unable to find \"" + BACKGROUND_NAME + "\"!");
+      UnityEngine.Debug.LogError("LoadGrid: Unable to find \"" + BACKGROUND_NAME + "\"!");
       return;
     }
 
     GameObject foreground = GameObject.Find(FOREGROUND_NAME);
     if (foreground == null) {
-      Debug.LogError("LoadGrid: Unable to find \"" + FOREGROUND_NAME + "\"!");
+      UnityEngine.Debug.LogError("LoadGrid: Unable to find \"" + FOREGROUND_NAME + "\"!");
       return;
     }
 
@@ -130,13 +130,13 @@ public class GridSaveLoad
 
     Tilemap backTilemap = background.GetComponent<Tilemap>();
     if (backTilemap == null) {
-      Debug.LogError("LoadGrid: Unable to extract " + BACKGROUND_NAME + "'s Tilemap component!");
+      UnityEngine.Debug.LogError("LoadGrid: Unable to extract " + BACKGROUND_NAME + "'s Tilemap component!");
       return;
     }
 
     Tilemap foreTilemap = foreground.GetComponent<Tilemap>();
     if (foreTilemap == null) {
-      Debug.LogError("LoadGrid: Unable to extract " + FOREGROUND_NAME + "'s Tilemap component!");
+      UnityEngine.Debug.LogError("LoadGrid: Unable to extract " + FOREGROUND_NAME + "'s Tilemap component!");
       return;
     }
 
@@ -145,7 +145,7 @@ public class GridSaveLoad
     // TODO: Make this also work with non specified tilemap names
     if (gridData.Length < 11 || gridData[..11] != "background\n")
     {
-      Debug.LogError("LoadGrid: Bad tile load string!");
+      UnityEngine.Debug.LogError("LoadGrid: Bad tile load string!");
       return;
     }
 
@@ -156,7 +156,7 @@ public class GridSaveLoad
     {
       if (gridData.Substring(i,4) == "END\n") 
       { 
-        gridData = gridData[i+4..];
+        gridData = gridData[(i+4)..];
         break;
       }
       if (gridData[i] == ',')
@@ -167,12 +167,12 @@ public class GridSaveLoad
           if (t.sprite.name == spritename)
           {
             int endInt = gridData.IndexOf('\n',i);
-            string mystr = gridData[i+1..endInt];
+            string mystr = gridData[(i+1)..endInt];
             i = endInt+1;
             string[] numbers = mystr.Split(',');
             if (numbers.Length != 2)
             {
-              Debug.LogError("LoadGrid: Bad tile load string!");
+              UnityEngine.Debug.LogError("LoadGrid: Bad tile load string!");
             }
 
             int x = int.Parse(numbers[0]);
@@ -192,16 +192,16 @@ public class GridSaveLoad
     // TODO: Make this also work with non specified tilemap names
     if (gridData.Length < 11 || gridData[..11] != "foreground\n")
     {
-      Debug.LogError("LoadGrid: Bad tile load string!");
+      UnityEngine.Debug.LogError("LoadGrid: Bad tile load string!");
       return;
     }
 
-    int j = 11;
+    j = 11;
     for (int i = 11; i < gridData.Length; ++i)
     {
       if (gridData.Substring(i,4) == "END\n") 
       { 
-        gridData = gridData[i+4..];
+        gridData = gridData[(i+4)..];
         break;
       }
       if (gridData[i] == ',')
@@ -212,12 +212,12 @@ public class GridSaveLoad
           if (t.sprite.name == spritename)
           {
             int endInt = gridData.IndexOf('\n',i);
-            string mystr = gridData[i+1..endInt];
+            string mystr = gridData[(i+1)..endInt];
             i = endInt+1;
             string[] numbers = mystr.Split(',');
             if (numbers.Length != 2)
             {
-              Debug.LogError("LoadGrid: Bad tile load string!");
+              UnityEngine.Debug.LogError("LoadGrid: Bad tile load string!");
             }
 
             int x = int.Parse(numbers[0]);
