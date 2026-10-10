@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.Runtime.Versioning;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class GridSaveLoad
 {
+  // TODO: Instead of storing names of tilemaps, look for them in scene objects
 
   private const string BACKGROUND_NAME = "GroundTilemap"; // name of the background tilemap object
   private const string FOREGROUND_NAME = "PlaceableTileMap";
@@ -107,7 +110,7 @@ public class GridSaveLoad
   }
 
   // loads the world from the save file at the given path
-  public static void LoadGrid(List<string> gridData) {
+  public static void LoadGrid(string gridData) {
   
     // getting tilemaps
 
@@ -137,20 +140,103 @@ public class GridSaveLoad
       return;
     }
 
+    // load background
+
+    // TODO: Make this also work with non specified tilemap names
+    if (gridData.Length < 11 || gridData[..11] != "background\n")
+    {
+      Debug.LogError("LoadGrid: Bad tile load string!");
+      return;
+    }
+
+    int j = 11;
+    Tile[] allTiles = Resources.LoadAll<Tile>("Tilemaps");
+
+    for (int i = 11; i < gridData.Length; ++i)
+    {
+      if (gridData.Substring(i,4) == "END\n") 
+      { 
+        gridData = gridData[i+4..];
+        break;
+      }
+      if (gridData[i] == ',')
+      {
+        string spritename = gridData[j..i];
+        foreach (Tile t in allTiles)
+        {
+          if (t.sprite.name == spritename)
+          {
+            int endInt = gridData.IndexOf('\n',i);
+            string mystr = gridData[i+1..endInt];
+            i = endInt+1;
+            string[] numbers = mystr.Split(',');
+            if (numbers.Length != 2)
+            {
+              Debug.LogError("LoadGrid: Bad tile load string!");
+            }
+
+            int x = int.Parse(numbers[0]);
+            int y = int.Parse(numbers[1]);
+
+            Vector3Int loc = new Vector3Int(x,y,0);
+            backTilemap.SetTile(loc,t);
+            break;
+          }
+        }
+        j = i;
+      }
+    }
+
+    // load foreground
+
+    // TODO: Make this also work with non specified tilemap names
+    if (gridData.Length < 11 || gridData[..11] != "foreground\n")
+    {
+      Debug.LogError("LoadGrid: Bad tile load string!");
+      return;
+    }
+
+    int j = 11;
+    for (int i = 11; i < gridData.Length; ++i)
+    {
+      if (gridData.Substring(i,4) == "END\n") 
+      { 
+        gridData = gridData[i+4..];
+        break;
+      }
+      if (gridData[i] == ',')
+      {
+        string spritename = gridData[j..i];
+        foreach (Tile t in allTiles)
+        {
+          if (t.sprite.name == spritename)
+          {
+            int endInt = gridData.IndexOf('\n',i);
+            string mystr = gridData[i+1..endInt];
+            i = endInt+1;
+            string[] numbers = mystr.Split(',');
+            if (numbers.Length != 2)
+            {
+              Debug.LogError("LoadGrid: Bad tile load string!");
+            }
+
+            int x = int.Parse(numbers[0]);
+            int y = int.Parse(numbers[1]);
+
+            Vector3Int loc = new Vector3Int(x,y,0);
+            foreTilemap.SetTile(loc,t);
+            break;
+          }
+        }
+        j = i;
+      }
+    }
+
     /*
     // getting tiles
     Tile[] groundTiles = RenderDungeon.groundTiles;
     RuleTile wallTile = RenderDungeon.wallTile;
-
-    // TODO: loading background
-
-    int i = 1;
-    while (!gridData[i].Equals("END")) {
-        dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
-    }
     */
-
-    // TODO: loading foreground
 
   }
 }
