@@ -20,7 +20,7 @@ Access to new zones in only rewarded upon the full clear (defeating all enemies)
 
 Dungeons are more challenging at night, but also offer greater rewards.
 
-Enemies can sometimes "leak" out of dungeons and present a challenge to players.
+Enemies can sometimes "leak" out of dungeons and present a challenge to players in the overworld. Defeating these enemies also offers rewards.
 
 ## New Zones ##
 
@@ -33,3 +33,5 @@ New zones also offer new dungeons to unlock further zones.
 ## Death ##
 
 Upon death players will drop their items and have the option to quit to menu or continue playing, respawning at a designated respawn point.
+
+Death is designed to be an obstacle when encountered, not the end.

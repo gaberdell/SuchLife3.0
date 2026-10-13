@@ -131,6 +131,8 @@ Openable Whenever
 
 Potential to increase size in future.
 
+Inventory carries items for combat (swords, armor, etc.), survival (food, potions, etc.), and building (blocks, etc.).
+
 ### Crafting: ###
 
 3 x 3 Grid
