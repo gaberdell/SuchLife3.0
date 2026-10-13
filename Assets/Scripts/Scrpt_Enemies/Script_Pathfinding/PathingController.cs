@@ -30,19 +30,19 @@ public class PathingController
     private int startX, startY;
 
     bool isActive = false;
+    private Animator animator; //used to toggle walk cycle as necessary
 
-    
 
-    public PathingController(int sX, int sY, Transform t, Transform c)
+    public PathingController(int sX, int sY, Transform t, Transform c, Animator a = null)
     {
         //only search for tiles within range of the enemy location.
         startX = sX;
         startY = sY;
         target = t;
         controlled = c;
-        pathBounds = new BoundsInt(startX-gridSize/2, startY-gridSize/2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
+        pathBounds = new BoundsInt(startX - gridSize / 2, startY - gridSize / 2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
         pgrid = new PathGrid(gridSize, gridSize, pathBounds.min.x, pathBounds.min.y);
-        
+        animator = a;
     }
 
     public void toggleActive()
@@ -56,17 +56,28 @@ public class PathingController
         {
             //step towards the next world pos in the path
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
+           
             float step = speed * Time.deltaTime;
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
+
             //face towards next position
-            Quaternion finalRotation = Quaternion.LookRotation(controlled.position - nextPos);
-            float nextAngle = Mathf.LerpAngle(controlled.rotation.z, finalRotation.z, Time.deltaTime);
-            controlled.eulerAngles = new Vector3(0, 0, nextAngle);
- 
-            if(Vector3.Distance(controlled.position, nextPos) < 0.01f)
+            Vector3 moveDir = (controlled.position - nextPos);
+            float nextAngle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
+            controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle+90), Time.deltaTime);
+
+            //make sure walking animation is playing
+            if (animator) animator.SetBool("Walk", true);
+
+            if (Vector3.Distance(controlled.position, nextPos) < 0.01f)
             {
-                Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
+                //Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
                 currentPath.RemoveAt(0);
+
+                //if finished with the path then stop walking
+                if(currentPath.Count <= 0)
+                {
+                    if (animator) animator.SetBool("Walk", false);
+                }
             }
         }
     }
@@ -214,6 +225,11 @@ public class PathingController
                 }
             }
         }
+    }
+
+    public void setAnimator(Animator a)
+    {
+        animator = a;
     }
 
     
