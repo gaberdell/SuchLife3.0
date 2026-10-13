@@ -8,7 +8,6 @@
   <Project Path="DungeonsAssem.csproj" />
   <Project Path="NetworkingAssem.csproj" />
   <Project Path="EntityBaseAssem.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="TitleScreenAssem.csproj" />
   <Project Path="InputAssem.csproj" />
   <Project Path="EffectsAssem.csproj" />
@@ -19,6 +18,7 @@
   <Project Path="BlockIteractionAssem.csproj" />
   <Project Path="EnemiesAssem.csproj" />
   <Project Path="PlayerInventoryAssem.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="ChunkAssem.csproj" />
   <Project Path="CraftingAssem.csproj" />
   <Project Path="TileMapHelperAssem.csproj" />
