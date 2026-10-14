@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
+// THIS CLASS IS DEPRECIATED
+// THE CLASS TilemapSaveLoad in "TilemapSaveLoad.cs" is the new implementation
+// TilemapSaveLoad USES THE COMPATIBLE byte[] INSTEAD OF string
+// THIS FILE HAS BEEN KEPT AS A REFERENCE IN CASE OF ERRORS IN TilemapSaveLoad
+
 public class GridSaveLoad
 {
-  // TODO: Have the tilemaps stored in byte[] instead of strings for efficiency
-
-
   // converts data in the back/foreground tilemaps into strings
   public static string SaveGrid() {
 
