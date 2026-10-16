@@ -22,9 +22,8 @@ public class Mob : MonoBehaviour
     {
         target = GameObject.Find("Sign").transform;
         rb = GetComponent<Rigidbody2D>();
-        pathController = new PathingController((int)transform.position.x, (int)transform.position.y, target, this.transform);
-        pathController.createPathGrid();
-        pathController.findPath();
+        pathController = new PathingController((int)transform.position.x, (int)transform.position.y, this.transform, null, 0);
+        pathController.setTarget(target);
         //set chunk pos on spawn
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene != null ? objectInScene.transform.position : transform.position);
     }

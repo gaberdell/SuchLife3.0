@@ -1,6 +1,7 @@
 using Codice.Client.BaseCommands.WkStatus.Printers;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -24,79 +25,87 @@ public class PathingController
     public BoundsInt pathBounds;
 
     const int gridSize = 30; //const value for now, replace with input values later when necessary
+    int controlledWallExtension = 0; //how many times to 'extend' walls when simulating the path so that the controlled object is big enough to fit; 1x1 is 0, 3x3 (bomb) is 1 
     PathGrid pgrid;
 
     private int gridBoundX = 0, gridBoundY = 0;
     private int startX, startY;
 
-    bool isActive = false;
+    private bool isActive = false;
     private Animator animator; //used to toggle walk cycle as necessary
 
 
-    public PathingController(int sX, int sY, Transform t, Transform c, Animator a = null)
+    public PathingController(int sX, int sY, Transform c, Animator a, int s)
     {
         //only search for tiles within range of the enemy location.
         startX = sX;
         startY = sY;
-        target = t;
         controlled = c;
         pathBounds = new BoundsInt(startX - gridSize / 2, startY - gridSize / 2, 0, gridSize, gridSize, 1); //create a bounds of length/width gridSize centered at startX, startY
         pgrid = new PathGrid(gridSize, gridSize, pathBounds.min.x, pathBounds.min.y);
         animator = a;
+        controlledWallExtension = s;
+        //instantiate the pathgrid on creation
+        createPathGrid();
     }
 
     public void toggleActive()
     {
         isActive = !isActive;
+        if (isActive)
+        {
+            //create a path when being set active
+            findPath();
+        }
     }
 
+    //method is called every frame by the mob's update method
     public void moveAlongPath(float speed)
     {
         if (isActive && currentPath.Count > 0)
         {
             //step towards the next world pos in the path
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
-           
+
             float step = speed * Time.deltaTime;
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
 
             //face towards next position
             Vector3 moveDir = (controlled.position - nextPos);
             float nextAngle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-            controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle+90), Time.deltaTime);
+            controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle + 90), Time.deltaTime);
 
             //make sure walking animation is playing
             if (animator) animator.SetBool("Walk", true);
 
             if (Vector3.Distance(controlled.position, nextPos) < 0.01f)
             {
-                //Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
+                Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
                 currentPath.RemoveAt(0);
 
                 //if finished with the path then stop walking
-                if(currentPath.Count <= 0)
+                if (currentPath.Count <= 0)
                 {
                     if (animator) animator.SetBool("Walk", false);
                 }
             }
         }
+
+        /*check if path needs to be recalculated;
+         * path needs to be recalculated if:
+         * - target position changes to a different tile (listen for target change)
+         * - current path becomes no longer walkable (check when player places a block)
+        */
+       
     }
 
-    public void createPathGrid()
+    private void createPathGrid()
     {
         //iterate through all corresponding tiles in the world within the range and add them to the grid
-
         //use getTilesBlock on the live tilemap instead for performance (definitely not cause i dont want to write an equivalent for the chunkman...)
 
         TileBase[] groundTiles = groundMap.GetTilesBlock(pathBounds);
         TileBase[] wallTiles = wallMap.GetTilesBlock(pathBounds);
-
-        //check positions (debugging)
-        //foreach (var point in pathBounds.allPositionsWithin) 
-        //{
-        //    Debug.Log(point.ToString());
-        //}
-
 
         int pathx = 0, pathy = 0, i = 0;
         foreach (TileBase t in groundTiles)
@@ -105,16 +114,21 @@ public class PathingController
             //assuming the lists contain tiles starting from the minX, minY position, compressed into a 1D list 
             if (t == null)
             {
-                //if tile is null then there is no wall tile OR chunk is unloaded
-                if(groundTiles[i] == null)
-                {
-                    //chunk is unloaded; treat this tile as a wall because we do not want enemies pathing through unloaded chunks
-                    newCell = new PathCell(pathx + pathBounds.min.x, pathy + pathBounds.min.y, pathx, pathy, true);
-                }
+                //if ground tile is null then chunk is unloaded; treat this tile as a wall because we do not want enemies pathing through unloaded chunks
                 newCell = new PathCell(pathx + pathBounds.min.x, pathy + pathBounds.min.y, pathx, pathy, false);
             } else
             {
-                newCell = new PathCell(pathx + pathBounds.min.x, pathy + pathBounds.min.y, pathx, pathy, true);
+                //ground tile is not null; check for a wall now
+                if (wallTiles[i] == null)
+                {
+                    //no wall; tile is walkable
+                    newCell = new PathCell(pathx + pathBounds.min.x, pathy + pathBounds.min.y, pathx, pathy, false);
+                } else
+                {
+                    //wall present; tile is not walkable
+                    newCell = new PathCell(pathx + pathBounds.min.x, pathy + pathBounds.min.y, pathx, pathy, true);
+                    //newCell.printCell();
+                }
             }
 
             //Debug.Log("pathx: " + pathx + " | pathy: " + pathy + " | i: " + i );
@@ -131,23 +145,44 @@ public class PathingController
             }
                
         }
-
-        //assign startcell and endcell
-        startCell = pgrid.getCellFromWorld(startX, startY);
-        //Debug.Log("target " + target.position.ToString());
-        //Debug.Log("Start: (" + startX + ", " + startY + ")");
-        startCell.printCell();
-        //Debug.Log("End: (" + (int)target.position.x + ", " + (int)target.position.y + ")");
-        endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
-        //Debug.Log("End: (" + (int)target.position.x + ", " + (int)target.position.y + ")");
-        endCell.printCell();
         //now assign neighbors
         assignNeighbors();
 
+        //perform simulated wall extensions
+        for(int j = 0; j < controlledWallExtension; j++)
+        {
+            //for every tile, check if a neighbor is a wall; if so then mark it to be set as a wall
+            List<PathCell> newWallCells = pgrid.getCellsWithWallNeighbors();
+            //set marked tiles as walls; 2 passes to avoid everything chaining into a wall
+            foreach(PathCell newCell in newWallCells)
+            {
+                newCell.walkable = false;
+            }
+        }
+    }
+
+    //used to set a target after initialization
+    public void setTarget(Transform t)
+    {
+        target = t;
+        //assign startcell and endcell
+    }
+
+    public void setSize(int s)
+    {
+        controlledWallExtension = s;
+        createPathGrid();
+    }
+
+    //reset start and end cell locations; used to update path if target moves
+    private void resetPath()
+    {
+        startCell = pgrid.getCellFromWorld(startX, startY);
+        endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
     }
 
     //called after grid is created; give every pathcell its neighbor
-    public void assignNeighbors()
+    private void assignNeighbors()
     {
         pgrid.assignNeighbors();
     }
@@ -159,7 +194,7 @@ public class PathingController
     }
 
     //retraces path from targetcell to startcell
-    public List<PathCell> retracePath()
+    private List<PathCell> retracePath()
     {
         List<PathCell> path = new List<PathCell>();
         PathCell current = endCell;
@@ -179,8 +214,10 @@ public class PathingController
 
     //main A* pathfinding script
 
-    public void findPath()
+    private void findPath()
     {
+        //reset path and start/end cells first
+        resetPath();
         //using start/end cells already established
         List<PathCell> openSet = new List<PathCell>();
         List<PathCell> closeSet = new List<PathCell>();

@@ -55,6 +55,27 @@ public class PathGrid
         
     }
 
+    public List<PathCell> getCellsWithWallNeighbors()
+    {
+        List<PathCell> cells = new List<PathCell>();
+        for (int i = 0; i < grid.Count; i++)
+        {
+            for (int j = 0; j < grid[i].Count; j++)
+            {
+                PathCell cell = grid[i][j];
+                foreach (PathCell pc in cell.neighbors)
+                {
+                    if (!pc.walkable)
+                    {
+                        cells.Add(cell);
+                        break;
+                    }
+                }
+            }
+        }
+        return cells;
+    }
+
 
     //get a cell's neighbors (within this pathgrid) using pathgrid coordinates
     public List<PathCell> getNeighbors(int x, int y)

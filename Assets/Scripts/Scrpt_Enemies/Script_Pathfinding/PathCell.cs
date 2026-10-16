@@ -11,18 +11,18 @@ public class PathCell
     public int hCost = 0;
     public int tileX = -1, tileY = -1; //corresponds to position on tilemap;
     public int pathX = -1, pathY = -1;
-    public bool walkable = false;
+    public bool walkable;
     public List<PathCell> neighbors; //for finding the path
     public PathCell parent = null; //for path purposes
 
 
-    public PathCell(int tx, int ty, int px, int py, bool w)
+    public PathCell(int tx, int ty, int px, int py, bool isWall)
     {
         tileX = tx; 
         tileY = ty;
         pathX = px;
         pathY = py;
-        walkable = w;
+        walkable = !isWall;
     }
 
     public int fCost()

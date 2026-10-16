@@ -41,9 +41,11 @@ public class Bomb : Mob
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
+        pathController.setAnimator(animator);
+        pathController.setSize(1);
         pathController.toggleActive();
         targets = new List<Transform>();
-        pathController.setAnimator(animator);
+
 
         //TEMP TARGET PLACING FOR TESTING
 
