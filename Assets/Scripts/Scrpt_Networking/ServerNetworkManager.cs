@@ -141,6 +141,14 @@ public class ServerNetworkManager : MonoBehaviour
                         Debug.Log("After name state");
                         byte[] bytesToSendToTellLocalClient = addTcpBasic(saveObject);
 
+                        string add = "{";
+                        for (int i = 0; i < bytesToSendToTellLocalClient.Length; i++) {
+                            add += bytesToSendToTellLocalClient[i] + ",";
+                        }
+                        add += "}";
+
+                        Debug.Log("Thing to load in bytes wise : " + add);
+
                         PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
                         if (playerInfo != null) {
                             Debug.Log("Current Player Info string : " + playerInfo.guid.ToString());
@@ -153,6 +161,14 @@ public class ServerNetworkManager : MonoBehaviour
                             Debug.Log("After potential crash?");
                             bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
                         }
+
+                        string mog35 = "{";
+                        for (int i = 0; i < bytesToSendToTellLocalClient.Length; i++) {
+                            mog35 += bytesToSendToTellLocalClient[i] + ",";
+                        }
+                        mog35 += "}";
+
+                        Debug.Log("Sending over entity to player (server) : " + mog35);
 
                         SendToTcp(data.ClientId, bytesToSendToTellLocalClient);
                     }
@@ -345,7 +361,7 @@ public class ServerNetworkManager : MonoBehaviour
         byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(saveInfo.NetworkId);
         byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.position);
         byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.rotation.eulerAngles);
-        return networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).ToArray();
+        return networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).Concat(new byte[1] {0}).ToArray();
     }
 
     void addTcpObject(GameObject prefabToAdd) {
@@ -381,12 +397,32 @@ public class ServerNetworkManager : MonoBehaviour
                             }
                             else {
                                 byte[] bytesToSendToTellLocalClient = addTcpBasic(newPlayer);
+
+                                string mog35 = "{";
+                                for (int i = 0; i < bytesToSendToTellLocalClient.Length; i++) {
+                                    mog35 += bytesToSendToTellLocalClient[i] + ",";
+                                }
+                                mog35 += "}";
+
+                                Debug.Log("Sending new player request to player (server) : " + mog35);
+
+
                                 SendToTcp(clientPair.Key, bytesToSendToTellLocalClient);
                             }
                         }
                         break;
                     case NetworkOpCodeEnum.ADD_PREFAB:
                         //Cant use add tcp basic because there is no game object here just data
+
+                        string add = "{";
+                        for (int i = 0; i < newCommand.idOfPrefab.Length; i++) {
+                            add += newCommand.idOfPrefab[i] + ",";
+                        }
+                        add += "}";
+
+                        Debug.Log("Id of prefab (server) : " + add);
+
+
                         byte[] networkIdType = new byte[1] { (byte)NetworkOpCodeEnum.ADD_PREFAB };
                         byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.networkId);
                         byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(newCommand.prefabPosition);
@@ -395,8 +431,10 @@ public class ServerNetworkManager : MonoBehaviour
                         SendToTcp(newCommand.tcpOriginId, sendBytes);
                         break;
                     case NetworkOpCodeEnum.UPDATE_PREFAB:
-                        Debug.Log("Atttempting to update player using : " + newCommand.tcpOriginId);
-                        players[newCommand.tcpOriginId].GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
+                        if (players.TryGetValue(newCommand.tcpOriginId, out GameObject playerWithTCPID)) {
+                            Debug.Log("Player (tcp " + newCommand.tcpOriginId + ") Location : " + playerWithTCPID.transform.position);
+                            playerWithTCPID.GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
+                        }
                         break;
                 }
             }

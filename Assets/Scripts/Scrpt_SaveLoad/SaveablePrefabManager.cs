@@ -55,6 +55,13 @@ public class SaveablePrefabManager : MonoBehaviour {
         return (exactByte & (oneByte << byteLocation)) != 0;
     }
 
+    static bool retrieveIsActiveEntitySafe(uint location) {
+        if (1 + location / 8 > currentlyActiveEntities.Length) {
+            return false;
+        }
+        return retrieveIsActiveEntity(location);
+    }
+
     static void removeLocation(uint location)
     {
         byte byteComplement = (byte) ~(1 << ((byte)location % 8));
@@ -62,11 +69,20 @@ public class SaveablePrefabManager : MonoBehaviour {
         currentlyActiveEntities[location / 8] &= byteComplement;
     }
 
-    static void addLocation(uint location)
-    {
-        byte byteLocation = (byte) (1 << ((byte)location % 8));
+
+    static void addLocation(uint location) {
+        byte byteLocation = (byte)(1 << ((byte)location % 8));
 
         currentlyActiveEntities[location / 8] |= byteLocation;
+    }
+    static void addLocationSafe(uint location)
+    {
+        uint newSize = 1 + location / 8;
+        if (newSize > currentlyActiveEntities.Length) {
+            Array.Resize<byte>(ref currentlyActiveEntities, (int)newSize);
+        }
+
+        addLocation(location);
     }
 
     static uint getUnoccupiedId()
@@ -119,22 +135,19 @@ public class SaveablePrefabManager : MonoBehaviour {
             entity.NetworkId = getUnoccupiedId();
         }
         else {
+            Debug.Log("Id of thing we trying to add : " + id);
             uint idReal = (uint)id;
 
-            if (retrieveIsActiveEntity(idReal)) {
+            if (retrieveIsActiveEntitySafe(idReal)) {
                 throw new Exception("Already exsists exception :sob:");
             }
             entity.NetworkId = idReal;
         }
 
-        //Hopefully this fixing the issue
-        addLocation(entity.NetworkId);
-
-        //Issue here i think??
-        Debug.Log("Were able to add new object : " + entity.NetworkId + " name : " + newObject.name);
+        addLocationSafe(entity.NetworkId);
+;
         SaveablePrefabs.Add(newObject);
         NetworkIdsPrefabs.Add(entity.NetworkId, newObject);
-        Debug.Log("Yay we did it wouthout crashing!");
 
         if (!isQuiet) {
             EventManager.SetPrefabAddedToScene(newObject);
@@ -155,6 +168,15 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
     {
+        string add = "{";
+        for (int i = 0; i < prefabId.Length; i++) {
+            add += prefabId[i] + ",";
+        }
+        add += "}";
+
+        Debug.Log("Print out prefab for create : " + add);
+        Debug.Log("Prefab length for create : " + prefabId.Length);
+
         return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation, id, isQuiet);
     }
 

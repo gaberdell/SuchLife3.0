@@ -112,7 +112,8 @@ public class ClientNetworkManager : MonoBehaviour
     }
 
     private void onRecieveDataTcp(IAsyncResult result) {
-        try {
+        //try {
+            //TCP stream reads everything including multiple requests at once sometimes
             int bytesRead = tcpStream.EndRead(result);
             if (bytesRead > 0) {
                 byte[] data = new byte[bytesRead];
@@ -120,49 +121,58 @@ public class ClientNetworkManager : MonoBehaviour
                     data[i] = recieveBuffer[i];
                     //Debug.Log(String.Format("Packet index i {0} : {1}", i, data[i]));
                 }
+                int bytesLeft = data.Length;
+                do {
+                    using (PacketWrapper packet = new PacketWrapper(data)) {
 
-                using (PacketWrapper packet = new PacketWrapper(data)) {
-                    //TODO : Make Client processing stuff
-                    //Make me print a pretty message to da screen
-                    byte[] packetBytes = packet.GetBytes();
+                        //TODO : Make Client processing stuff
+                        //Make me print a pretty message to da screen
+                        byte[] packetBytes = packet.GetBytes();
 
-                    NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
-                    newCommand.networkOpCode = (NetworkOpCodeEnum)packetBytes[0];
+                        NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
+                        newCommand.networkOpCode = (NetworkOpCodeEnum)packetBytes[0];
 
-                    uint newPrefabNetworkId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes.Skip(1).ToArray(), out int bytesForUInt);
+                        uint newPrefabNetworkId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes.Skip(1).ToArray(), out int bytesForUInt);
 
-                    Vector3 prefabPosition = Vector3.zero;
-                    Vector3 eulerRotation = Vector3.zero;
-                    int totalBytesUsed = 0;
+                        Vector3 prefabPosition = Vector3.zero;
+                        Vector3 eulerRotation = Vector3.zero;
+                        int totalBytesUsed = 0;
 
-                    if (newCommand.networkOpCode != NetworkOpCodeEnum.REMOVE_PREFAB) {
-                        prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1+ bytesForUInt).ToArray(), out int bytesUsedForPos);
-                        eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1 + bytesForUInt + bytesUsedForPos).ToArray(), out int rotBytesUsed);
-                        totalBytesUsed = 1 + bytesForUInt + bytesUsedForPos + rotBytesUsed;
-                    }
+                        if (newCommand.networkOpCode != NetworkOpCodeEnum.REMOVE_PREFAB) {
+                            prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1+ bytesForUInt).ToArray(), out int bytesUsedForPos);
+                            eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1 + bytesForUInt + bytesUsedForPos).ToArray(), out int rotBytesUsed);
+                            totalBytesUsed = 1 + bytesForUInt + bytesUsedForPos + rotBytesUsed;
+                        }
                     
-                    newCommand.prefabPosition = prefabPosition;
-                    newCommand.prefabRotation = eulerRotation;
-                    newCommand.networkId = newPrefabNetworkId;
+                        newCommand.prefabPosition = prefabPosition;
+                        newCommand.prefabRotation = eulerRotation;
+                        newCommand.networkId = newPrefabNetworkId;
                     
-                    if (newCommand.networkOpCode == NetworkOpCodeEnum.ADD_PREFAB) {
-                        int zeroByte = 0;
-                        for (int i = totalBytesUsed; i < packetBytes.Length; i++) {
-                            if (packetBytes[i] == 0) {
-                                zeroByte = i;
-                                break;
+                        if (newCommand.networkOpCode == NetworkOpCodeEnum.ADD_PREFAB) {
+                            int zeroByte = 0;
+                            for (int i = totalBytesUsed; i < packetBytes.Length; i++) {
+                                if (packetBytes[i] == 0) {
+                                    zeroByte = i;
+                                    break;
+                                }
                             }
+
+
+                            Debug.Log("Total bytes used : " + totalBytesUsed);
+                            Debug.Log("Data Length : " + data.Length);
+                            newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed).ToArray();
+                            Debug.Log("IdOfPrefabLen Length : " + newCommand.idOfPrefab.Length);
+                            totalBytesUsed = zeroByte;
+                        }
+                        else {
+                            newCommand.idOfPrefab = null;
                         }
 
-                        newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed - 1).ToArray();
-
+                        ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
+                        bytesLeft -= totalBytesUsed;
+                        data = data.Skip(totalBytesUsed).ToArray();
                     }
-                    else {
-                        newCommand.idOfPrefab = null;
-                    }
-
-                    ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
-                }
+                } while (bytesLeft > 0);
             }
             else {
                 Debug.Log("TCP connection ended");
@@ -170,8 +180,8 @@ public class ClientNetworkManager : MonoBehaviour
             }
             recieveBuffer = new byte[MAX_TCP_RECIEVE_BUFFER];
             tcpStream.BeginRead(recieveBuffer, 0, recieveBuffer.Length, onRecieveDataTcp, null);
-        }
-        catch (IOException) {
+        //}
+        /*catch (IOException) {
             Debug.LogError("TCP Connection was lost.");
             StopClient();
         }
@@ -181,7 +191,7 @@ public class ClientNetworkManager : MonoBehaviour
         catch (Exception e) {
             Debug.LogError("Error reading TCP message booting from server : " + e.Message);
             StopClient();
-        }
+        }*/
     }
 
     //Maybe refactor cuz this stuff basically the same as the server code
@@ -259,7 +269,9 @@ public class ClientNetworkManager : MonoBehaviour
             bool isNotBlocked = ExecuteOtherThreadRequestQueue.TryDequeue(out NetworkMainThreadStruct newCommand);
             if (isNotBlocked) {
                 switch (newCommand.networkOpCode) {
+                    
                     case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
+                        Debug.Log("Adding local player? " + newCommand.networkId);
                         if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(newCommand.networkId)) {
                             SaveablePrefabManager.DeletePrefab(newCommand.networkId);
                         }
@@ -269,6 +281,7 @@ public class ClientNetworkManager : MonoBehaviour
                         initialWorldSetup.AddPlayerToGame(newPlayer);
                         break;
                     case NetworkOpCodeEnum.ADD_PREFAB:
+                        Debug.Log("Got add prefab request?");
                         GameObject newPrefab = SaveablePrefabManager.CreatePrefab(newCommand.idOfPrefab, newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), newCommand.networkId);
                         break;
                     case NetworkOpCodeEnum.REMOVE_PREFAB:
@@ -286,6 +299,7 @@ public class ClientNetworkManager : MonoBehaviour
                             else {
                                 if (Time.time - lastTimeUpdatedPlayerPos > MAX_TIME_BEFORE_WE_RESYNC_PLAYER) {
                                     lastTimeUpdatedPlayerPos = Time.time;
+                                    //Debug.Log("New recieved position : " + newCommand.prefabPosition);
                                     gO.transform.position = newCommand.prefabPosition;
                                     //TODO : Sync rotation
                                     //gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
