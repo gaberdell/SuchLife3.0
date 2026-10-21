@@ -71,6 +71,7 @@ public class InputHandler : MonoBehaviour
     public bool[] IsInventoryKey { get; private set; }
     public static InputHandler Instance { get; private set; }
 
+
     //handling for context-sensitive use; checked against in scripts that perform use-actions with the attack key (or other)
     public enum SelectedContext {None = 0, Tool = 1, Block = 2, Consumable = 3, Weapon = 4}
     static public SelectedContext currSelectedContext { get; private set; }
@@ -241,6 +242,11 @@ public class InputHandler : MonoBehaviour
     public Vector2 GetMousePos()
     {
         return Mouse.current.position.ReadValue();
+    }
+
+    public Vector2 GetMouseScroll()
+    {
+        return Mouse.current.scroll.ReadValue();
     }
 
     //Re register things if a PlayerInput was deleted
