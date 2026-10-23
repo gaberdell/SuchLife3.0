@@ -52,35 +52,31 @@ public class CraftingUI : MonoBehaviour
     void Start()
     {
 
-    
+        crafting = new List<InventorySlot>();
 
-    crafting = new List<InventorySlot>();
+        firstButtonPress.type = null; 
+        firstButtonPress.index = -1;
 
-    firstButtonPress.type = null; 
-    firstButtonPress.index = -1;
+        secondButtonPress.type = null; 
+        secondButtonPress.index = -1;
 
-    secondButtonPress.type = null; 
-    secondButtonPress.index = -1;
-
-    itemInCursorObj.GetComponent<Image>().enabled = false;
+        itemInCursorObj.GetComponent<Image>().enabled = false;
 
 
         for (int i = 0; i < inv_panel.transform.childCount; i++)
-            {
-                inv.Add(inv_panel.transform.GetChild(i).gameObject);
+        {
+            inv.Add(inv_panel.transform.GetChild(i).gameObject);
+        }    
 
-            }    
-
-            for (int i = 0; i < craftinggrid.transform.childCount; i++) //same thing w crafting
-            {
-                craft.Add(craftinggrid.transform.GetChild(i).gameObject);
-
-            }   
+        for (int i = 0; i < craftinggrid.transform.childCount; i++) //same thing w crafting
+        {
+            craft.Add(craftinggrid.transform.GetChild(i).gameObject);
+        }   
 
 
-      inventory = null;
+        inventory = null;
    
-      for(int i = 0; i < 9; i++)
+        for(int i = 0; i < 9; i++)
         {
             InventorySlot slot = new InventorySlot(); 
             slot.isEmpty = true;
@@ -136,10 +132,12 @@ public class CraftingUI : MonoBehaviour
             if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
-
                 tmp.color = new Color32(255,255,225,100);
-                inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
-               // player.GetComponent<TextMeshProUGUI>();
+
+                GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                PanelImage.enabled = true;
+                PanelItem.GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon;
 
             }
            
@@ -186,8 +184,10 @@ public class CraftingUI : MonoBehaviour
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
+            GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
+            Image PanelImage = PanelItem.GetComponent<Image>();
 
-            if(!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
+            if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
                 if((player.GetComponent<PlayerInventory>().inventory)[count].quantity > 1){
                     tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
@@ -202,21 +202,18 @@ public class CraftingUI : MonoBehaviour
 
 
                 if (inventory[count].item != null){
-                 inv[count].GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon; 
+                    //set item in inventory panel
+                    PanelImage.enabled = true;
+                    PanelItem.GetComponent<Image>().sprite = (player.GetComponent<PlayerInventory>().inventory)[count].item.icon;
                 }
 
             }
             else {
-
-                inv[count].GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
-                inv[count].GetComponent<Image>().color = new Color32(255,255,225,100);
+                PanelImage.enabled = false;
                 tmp.text = "";
 
             }
-            
            count++; 
-
-
         }
 
         //the same for crafting.
@@ -226,9 +223,10 @@ public class CraftingUI : MonoBehaviour
         {
             Transform textChild = panel.transform.GetChild(0); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
+            GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
+            Image PanelImage = PanelItem.GetComponent<Image>();
 
-
-            if(!(crafting[count].isEmpty)){ //if we have something in crafting 
+            if (!(crafting[count].isEmpty)){ //if we have something in crafting 
 
                 if( crafting[count].quantity > 1){
                 tmp.text = crafting[count].quantity.ToString(); 
@@ -238,41 +236,22 @@ public class CraftingUI : MonoBehaviour
                     tmp.text = "" ;
 
                 }
-               
-
-                //breaking!!
-
+              
                 if(crafting[count].item != null){
-                  craft[count].GetComponent<Image>().sprite = crafting[count].item.icon; 
-
+                    PanelImage.enabled = true;
+                    PanelItem.GetComponent<Image>().sprite = crafting[count].item.icon;
                 }
-               // player.GetComponent<TextMeshProUGUI>();
-
-
-
             }
             else {
 
-                craft[count].GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty; 
-                craft[count].GetComponent<Image>().color = new Color32(255,255,225,100);
+                PanelImage.enabled = false;
                 tmp.text = "";
-
-
-
-
+                //craft[count].GetComponent<Image>().color = new Color32(255,255,225,100);
             }
-           
            count++; 
-
-
         }
 
-
         //Now we need to update what Results looks like.
-
-
-
-
 
         
     }
@@ -282,6 +261,7 @@ public class CraftingUI : MonoBehaviour
     {
         //assume no result found by default
         bool resultFound = false;
+        GameObject PanelItem = resultbox.transform.Find("PanelItem").gameObject;
         foreach (Recipe recipe in allrecipes)
         {
             Debug.Log(recipe);
@@ -289,7 +269,7 @@ public class CraftingUI : MonoBehaviour
             { //IF WE'VE FOUND A MATCH
                 Debug.Log("MATCH FOUND");
                 Debug.Log(recipe.result);
-                resultbox.GetComponent<Image>().sprite = recipe.result.icon;
+                PanelItem.GetComponent<Image>().sprite = recipe.result.icon;
                 resultRecipe = recipe;
                 resultFound = true;
             }
@@ -298,7 +278,7 @@ public class CraftingUI : MonoBehaviour
                 if (!resultFound)
                 {
                     //don't overwrite displayed result; stop at first match found
-                    resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
+                    PanelItem.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
                 }
             }
 
