@@ -11,6 +11,12 @@ public class PlayerInventory : MonoBehaviour
 
     public GameObject gameUI;
 
+    [SerializeField] Sprite hotbarBoxDefault;
+    [SerializeField] Sprite hotbarBoxSelected;
+
+    const int quantityIndex = 0; //index of children within hotbar panels
+    const int itemIndex = 0;
+
     private string gameUITag = "GameUI";
     
     //Parent objects.
@@ -102,7 +108,7 @@ public class PlayerInventory : MonoBehaviour
         foreach (GameObject panel in hotbar) {
             if (panel.transform.childCount > 0) // Ensure it has a child
             {
-                Transform textChild = panel.transform.GetChild(0); // Get the first child
+                Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
                 tmp.text = "";
@@ -115,7 +121,7 @@ public class PlayerInventory : MonoBehaviour
         foreach (GameObject panel in fullInv) {
             if (panel.transform.childCount > 0) // Ensure it has a child
             {
-                Transform textChild = panel.transform.GetChild(0); // Get the first child
+                Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
                 tmp.text = "";
@@ -143,7 +149,8 @@ public class PlayerInventory : MonoBehaviour
             {
 
                 if(selectedItem != -1){ //if selectedItem has changed before, we need to turn that selection off.
-                    hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
+                    //hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
+                    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxDefault;
 
                 }
                 //we have to check 0 first because 0 is 10, not 0.
@@ -169,8 +176,9 @@ public class PlayerInventory : MonoBehaviour
                     {
                         InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
                     }
-
-                    hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+                    //set box sprite
+                    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxSelected;
+                    //hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
 
                 }
              
@@ -236,18 +244,22 @@ public class PlayerInventory : MonoBehaviour
         {
             GameObject panel = hotbar[i];
             //make quantity match inventory data
-            Transform textChild = panel.transform.GetChild(0); // Get the quantity object
+            Transform textChild = panel.transform.GetChild(quantityIndex); // Get the quantity object
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             if (inventory[i].quantity <= 1) tmp.text = "";
             else tmp.text = inventory[i].quantity.ToString();
             //match icons
             try
             {
-                hotbar[i].GetComponent<Image>().sprite = inventory[i].item.icon;
+                GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                PanelImage.enabled = true;
+                PanelItem.GetComponent<Image>().sprite = inventory[i].item.icon;
+               
             }
             catch (System.Exception)
             {
-                hotbar[i].GetComponent<Image>().sprite = empty;
+                //hotbar[i].GetComponent<Image>().sprite = empty;
                 //throw;
             }
             
@@ -258,6 +270,7 @@ public class PlayerInventory : MonoBehaviour
     public void AddItem(Item item){
 
         int isInHotbar = 0;
+
         foreach (InventorySlot slot in inventory){
 
             if(slot.item == item){
@@ -268,7 +281,7 @@ public class PlayerInventory : MonoBehaviour
                  if(isInHotbar < hotbarSize){
                     
 
-                   Transform textChild = hotbar[isInHotbar].transform.GetChild(0); // Get the first child
+                   Transform textChild = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
                    TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
                    tmp.text = slot.quantity.ToString(); 
                    if(slot.quantity <= 1)
@@ -278,9 +291,12 @@ public class PlayerInventory : MonoBehaviour
 
                 }
 
-                  fullInv[isInHotbar].GetComponent<Image>().sprite = slot.item.icon; 
+                GameObject PanelItem = hotbar[isInHotbar].transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                PanelImage.enabled = true;
+                PanelItem.GetComponent<Image>().sprite = slot.item.icon;
 
-                   Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(0); // Get the first child
+                Transform textChild_inv = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
                    TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
                    tmp_inv.text = slot.quantity.ToString();
                     if (slot.quantity <= 1)
@@ -303,25 +319,23 @@ public class PlayerInventory : MonoBehaviour
             if(slot.isEmpty == true){
                 slot.isEmpty = false; 
                 slot.item = item; 
-                slot.quantity++; 
+                slot.quantity++;
 
-               //If isInHotbar is 0 - 9, it's in the hotbar! (first 10 indeces of inventory are hotbar.)
-
-                if(isInHotbar < hotbarSize){
-                    //Change color to teal just for debugging, so we know it's working.
-                   //hotbar[isInHotbar].GetComponent<Image>().color = new Color32(50,255,225,100);
-                  hotbar[isInHotbar].GetComponent<Image>().sprite = slot.item.icon; 
+                //If isInHotbar is 0 - 9, it's in the hotbar! (first 10 indeces of inventory are hotbar.)
+                GameObject PanelItem = hotbar[isInHotbar].transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                if (isInHotbar < hotbarSize){
+                    PanelImage.enabled = true;
+                    PanelItem.GetComponent<Image>().sprite = slot.item.icon;
 
                 }
-
-               // fullInv[isInHotbar].GetComponent<Image>().color = new Color32(50,255,225,100);
-                  fullInv[isInHotbar].GetComponent<Image>().sprite = slot.item.icon; 
-
+                PanelImage.enabled = true;
+                PanelItem.GetComponent<Image>().sprite = slot.item.icon;
 
                 return; 
             }
             isInHotbar++;
-        }
+         }
 
         
 
@@ -339,17 +353,18 @@ public class PlayerInventory : MonoBehaviour
         {
 
             //Now we also have to remove the image in hotbar.
-
+            GameObject PanelItem = hotbar[isInHotbar].transform.Find("PanelItem").gameObject;
+            Image PanelImage = PanelItem.GetComponent<Image>();
+            PanelImage.enabled = false;
+            PanelImage = null;
 
             if (isInHotbar < hotbarSize)
             {
                 //Change color to white just for debugging, so we know it's working.
                 //hotbar[isInHotbar].GetComponent<Image>().color = new Color32(255,255,225,100);
-                hotbar[isInHotbar].GetComponent<Image>().sprite = empty;
+                //hotbar[isInHotbar].GetComponent<Image>().sprite = empty;
 
             }
-
-            fullInv[isInHotbar].GetComponent<Image>().sprite = empty;
 
 
             slot.isEmpty = true;
@@ -368,11 +383,11 @@ public class PlayerInventory : MonoBehaviour
         {
 
             //remove number if 1 . 
-            Transform textChild = hotbar[isInHotbar].transform.GetChild(0); // Get the first child
+            Transform textChild = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             tmp.text = "";
 
-            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(0); // Get the first child
+            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
             tmp_inv.text = "";
 
@@ -380,11 +395,11 @@ public class PlayerInventory : MonoBehaviour
         else
         {
             //just lower number if above one. 
-            Transform textChild = hotbar[isInHotbar].transform.GetChild(0); // Get the first child
+            Transform textChild = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             tmp.text = slot.quantity.ToString();
 
-            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(0); // Get the first child
+            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
             tmp_inv.text = slot.quantity.ToString();
 
