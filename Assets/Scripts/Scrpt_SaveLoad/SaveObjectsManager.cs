@@ -61,6 +61,8 @@ public class SaveObjectsManager : MonoBehaviour
 #endif
 
             LoadAllEntityDataToPrefabs(DataService.LoadEntitySaveData());
+            // Tilemap save/load addition
+            TilemapSaveLoad.LoadGrid(DataService.LoadTilemapData());
         }
 
     }
@@ -140,6 +142,7 @@ public class SaveObjectsManager : MonoBehaviour
             byte[] saveData = GetAllBytesForPrefabData();
 
             DataService.SaveEntitySaveData(saveData);
+            DataService.SaveTilemapData(TilemapSaveLoad.SaveGrid());
 
 #if UNITY_EDITOR
             string printString = "Loaded Byte index of total length " + saveData.Length.ToString() + " : { ";

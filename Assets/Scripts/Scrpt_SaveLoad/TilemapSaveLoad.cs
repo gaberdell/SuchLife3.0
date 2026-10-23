@@ -25,11 +25,11 @@ public class TilemapSaveLoad
     // Our byte List with which we will store information (starts with 255 for verification)
     List<byte> retval = new() {255};
 
-    // Start with dictionary of Tiles (Assumes there are <255 sprites whose names are <255 characters)
-    Tile[] allTiles = Resources.LoadAll<Tile>("Tilemaps");
+    // Start with dictionary of Tiles (Assumes there are <255 tiles whose names are <255 characters)
+    TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
     if (allTiles.Length >= 255)
     {
-      Debug.LogError("SaveGrid: Too many Tile sprites!");
+      Debug.LogError("SaveGrid: Too many Tiles!");
       return null;
     }
     Dictionary<string,byte> tileDict = new();
@@ -37,9 +37,9 @@ public class TilemapSaveLoad
 
     for (int i = 0; i < allTiles.Length; ++i)
     {
-      retval.Add(Convert.ToByte(allTiles[i].sprite.name.Length));
-      retval.AddRange(Encoding.ASCII.GetBytes(allTiles[i].sprite.name));
-      tileDict.Add(allTiles[i].sprite.name, Convert.ToByte(i));
+      tileDict.Add(allTiles[i].name, Convert.ToByte(i));
+      retval.Add(Convert.ToByte(allTiles[i].name.Length));
+      retval.AddRange(Encoding.ASCII.GetBytes(allTiles[i].name));
     }
     retval.Add(0);
 
@@ -55,7 +55,7 @@ public class TilemapSaveLoad
       Debug.Log($"SaveGrid: Processing {name} tilemap...");
 
       // Add length of Tilemap name, then name itself
-      retval.Add( (byte) (name.Length+2));
+      retval.Add( (byte) name.Length);
       retval.AddRange(Encoding.ASCII.GetBytes(name));
 
       // Add total length of Tilemap encoding
@@ -67,11 +67,10 @@ public class TilemapSaveLoad
       for (int x = x_min; x < x_max; x++) {
         for (int y = y_min; y < y_max; y++) {
           Vector3Int loc = new(x, y, 0);
-          Sprite sprite = map.GetSprite(loc);
-          if (sprite != null) {
-            string spriteName = sprite.name;
-            Debug.Log("SaveGrid: spriteName: " + spriteName);
-            retval.Add(tileDict[spriteName]); // 1 byte
+          TileBase tile = map.GetTile<TileBase>(loc);
+          if (tile != null) {
+            string tileName = tile.name;
+            retval.Add(tileDict[tileName]); // 1 byte
             BinaryPrimitives.WriteInt32LittleEndian(myInt,x);
             retval.AddRange(myInt); // 4 bytes
             BinaryPrimitives.WriteInt32LittleEndian(myInt,y);
@@ -88,9 +87,10 @@ public class TilemapSaveLoad
   // Loads tilemap from byte array
   public static void LoadGrid(byte[] gridData) {
     // Check parameter is good
-    if (gridData.Length == 0 || gridData[0] != 255)
+    if (gridData.Length == 0) { return;}
+    if (gridData[0] != 255)
     {
-      Debug.LogError("LoadGrid: Bad tile load byte array!");
+      Debug.LogError("LoadGrid: Bad tile load byte array 0!");
       return;
     }
 
@@ -104,66 +104,72 @@ public class TilemapSaveLoad
       Tilemap[] retval = i.GetComponentsInChildren<Tilemap>(true);
       tilemaps.AddRange(retval);
     }
+    foreach (Tilemap i in tilemaps)
+    {
+      i.ClearAllTiles();
+    }
     Dictionary<string,Tilemap> tilemapDict = tilemaps.ToDictionary(x => x.name, x => x);
 
-    // Load tile sprites and create corresponding string Dictionary
-    Tile[] allTiles = Resources.LoadAll<Tile>("Tilemaps");
-    Dictionary<string,Tile> tileDict = allTiles.ToDictionary(x => x.sprite.name, x => x);
+    // Load tiles and create corresponding string Dictionary
+    TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
+    Dictionary<string,TileBase> tileDict = allTiles.ToDictionary(x => x.name, x => x);
 
     // Begin loading
     int index = 1;
 
-    // Start by creating array of Tile sprite names
-    string[] spriteNames = new string[gridData[index++]];
+    // Start by creating array of TileBase names
+    string[] tileNames = new string[gridData[index++]];
     for (int newIndex = 0; index < gridData.Length; ++newIndex)
     {
-      if (newIndex == spriteNames.Length)
+      if (newIndex == tileNames.Length)
       {
-        Debug.LogError("LoadGrid: Bad tile load byte array!");
+        Debug.LogError("LoadGrid: Bad tile load byte array! 1");
         return;
       }
       int strlen = gridData[index++];
-      if (strlen == 0) { break;}
-      spriteNames[newIndex] = Encoding.ASCII.GetString(gridData,index,strlen);
+      tileNames[newIndex] = Encoding.ASCII.GetString(gridData,index,strlen);
       index += strlen;
+      if (gridData[index] == 0)
+      {
+        ++index;
+        break;
+      }
     }
-
-    if (spriteNames.Length >= 255)
-    {
-      Debug.LogError("LoadGrid: Bad tile load byte array!");
-      return;
-    }
-
+    Debug.Log(index);
     // Load tilemap
     for (; index < gridData.Length; )
     {
+      Debug.Log(index);
       int tilemapNameLen = gridData[index++];
       string tilemapName = Encoding.ASCII.GetString(gridData,index,tilemapNameLen);
       index += tilemapNameLen;
       int totalBytes = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
+      index += 4;
+      Debug.Log(tilemapName);
       if (!tilemapDict.ContainsKey(tilemapName))
       {
-        index += totalBytes+4+1;
+        Debug.Log("uh oh");
+        index += totalBytes+1;
         continue;
       }
-
-      index += 4;
       int totalTiles = totalBytes/9;
       Tilemap map = tilemapDict[tilemapName];
 
       for (int i = 0; i < totalTiles; ++i)
       {
-        string spritestr = spriteNames[gridData[index++]];
+        if (gridData[index] == 255) { break;}
+        string tilestr = tileNames[gridData[index++]];
+        Debug.Log(tilestr);
         int x = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
         index += 4;
         int y = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
         index += 4;
-        map.SetTile(new Vector3Int(x,y,0), tileDict[spritestr]);
+        map.SetTile(new Vector3Int(x,y,0), tileDict[tilestr]);
       }
 
       if (gridData[index++] != 255)
       {
-        Debug.LogError("LoadGrid: Bad tile load byte array!");
+        Debug.LogError("LoadGrid: Bad tile load byte array! 3");
         return;
       }
 

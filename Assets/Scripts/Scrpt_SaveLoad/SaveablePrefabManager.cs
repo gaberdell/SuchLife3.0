@@ -190,7 +190,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         int count = 0;
         for (; count < ALL_PREFABS.Length; ++count)
         {
-            GameObject cur = (GameObject)ALL_PREFABS[count];
+            GameObject cur = ALL_PREFABS[count];
             ByteToPrefabKey.Add(new byte[1] { (byte)(count+1) }, cur);
             StringToPrefabKey.Add(cur.name, cur);
             if (cur.name == "Player") { PlayerPrefabID = (byte)(count+1); }

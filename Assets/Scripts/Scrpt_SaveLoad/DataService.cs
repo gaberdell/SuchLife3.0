@@ -298,33 +298,16 @@ public class DataService {
         File.WriteAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME, saveData);
     }
 
-  // saves current scene into savePath + name, returns success through a boolean
-  // NOTE: as of 2025-04-04, TestScene is what is saved
-    public static bool SaveCurr() {
-        Directory.CreateDirectory(savePath);
-
-        // checks if a world is currently loaded
-        if (worldName == null) {
-            Debug.LogError("DataService: World not loaded!");
-            return false;
-        }
-
-        // saving world grid/tilemap
-        string gridData = GridSaveLoad.SaveGrid();
-        if (gridData == null) {
-            Debug.LogError("DataService: SaveGrid() failed!");
-            return false;
-        }
-
-        // writing to file
-        string namedSavePath = savePath + saveName;
-        Debug.Log("DataService: Saving to \"" + namedSavePath + "\"...");
-        File.WriteAllText(namedSavePath, gridData);
-    
-        Debug.Log("DataService: World saved!");
-
-        return true;
+    // Tilemap save/load addition
+    public static void SaveTilemapData(byte[] saveData) {
+        File.WriteAllBytes(currentSavePath + "/" + WORLD_DATA_SAVE_NAME, saveData);
     }
+
+    public static byte[] LoadTilemapData() {
+        return File.ReadAllBytes(currentSavePath + "/" + WORLD_DATA_SAVE_NAME);
+    }
+
+  // removed below
 
     public static AsyncOperation LoadAsync(string path, bool isLocalSave = false) {
         IsLocalSave = isLocalSave;

@@ -100,7 +100,7 @@ namespace BlockIteraction
 
 
                 //only draw breakable preview when tool is held
-                if (InputHandler.currSelectedContext == InputHandler.SelectedContext.Tool)
+                if (/*InputHandler.currSelectedContext == InputHandler.SelectedContext.Tool*/true)
                 {
                     playerBlockView.SetLookAtObject(drawWhereHit, hitVal, destroyRotation, null, false);
 
