@@ -124,10 +124,18 @@ public class ClientNetworkManager : MonoBehaviour
                 int bytesLeft = data.Length;
                 do {
                     using (PacketWrapper packet = new PacketWrapper(data)) {
+                            string add = "{";
+                            for (int i = 0; i < data.Length; i++) {
+                                add += data[i] + ",";
+                            }
+                            add += "}";
 
-                        //TODO : Make Client processing stuff
-                        //Make me print a pretty message to da screen
-                        byte[] packetBytes = packet.GetBytes();
+                            Debug.Log("DATA_PRINT : " + add);
+
+
+                    //TODO : Make Client processing stuff
+                    //Make me print a pretty message to da screen
+                    byte[] packetBytes = packet.GetBytes();
 
                         NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
                         newCommand.networkOpCode = (NetworkOpCodeEnum)packetBytes[0];
@@ -162,7 +170,7 @@ public class ClientNetworkManager : MonoBehaviour
                             Debug.Log("Data Length : " + data.Length);
                             newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed).ToArray();
                             Debug.Log("IdOfPrefabLen Length : " + newCommand.idOfPrefab.Length);
-                            totalBytesUsed = zeroByte;
+                            totalBytesUsed = zeroByte+1;
                         }
                         else {
                             newCommand.idOfPrefab = null;
@@ -171,6 +179,7 @@ public class ClientNetworkManager : MonoBehaviour
                         ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
                         bytesLeft -= totalBytesUsed;
                         data = data.Skip(totalBytesUsed).ToArray();
+                        Debug.Log("Bytes left : " + bytesLeft);
                     }
                 } while (bytesLeft > 0);
             }

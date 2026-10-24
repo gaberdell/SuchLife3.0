@@ -106,6 +106,10 @@ public class ServerNetworkManager : MonoBehaviour
                 }
 
                 using (PacketWrapper packet = new PacketWrapper(tcpBytes)) {
+                    //TODO : Account for processing requiring me to make this like the client
+                            //where it parses through the bytes each time for each new request
+
+
                     //TODO : Text processing suff ig
                     //Make me print a pretty message to da screen
 
@@ -117,21 +121,12 @@ public class ServerNetworkManager : MonoBehaviour
                     bool doesPlayerAlreadyExsistInScene = false;
                     Debug.Log(SaveablePrefabManager.SaveablePrefabs.Count);
                     
-                    //Ok so apperently attempting to index one of these causes an error so frick
                     for (int i = 0; i < SaveablePrefabManager.SaveablePrefabs.Count; i++) {
                         Debug.Log("Amogus");
                         Debug.Log("Is this null " + SaveablePrefabManager.SaveablePrefabs);
                         Debug.Log("Is this object null " + SaveablePrefabManager.SaveablePrefabs[i]);
                         Debug.Log("Please state your name : " + SaveablePrefabManager.SaveablePrefabs[i].name);
                     }
-
-                    int sus35 = SaveablePrefabManager.SaveablePrefabs.Count;
-                    Debug.Log(sus35);
-                    for (int i = 0; i < sus35; i++) {
-                        Debug.Log("Amogus2");
-                        Debug.Log("Please state your name : " + SaveablePrefabManager.SaveablePrefabs[i].name);
-                    }
-
 
 //-------------------------------------TODO: SWITCH OVER TO USING THE DEAL_WITH_TCP_CONNECTION sense it stalls when trying to index a dictionary--------------
 
@@ -156,7 +151,7 @@ public class ServerNetworkManager : MonoBehaviour
                         }
                         if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes())) {
                             doesPlayerAlreadyExsistInScene = true;
-                            Debug.Log("Before potential crash?");
+                            Debug.Log("PLAYER EXSISTS!! Before potential crash?");
                             players.Add(data.ClientId, saveObject);
                             Debug.Log("After potential crash?");
                             bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
