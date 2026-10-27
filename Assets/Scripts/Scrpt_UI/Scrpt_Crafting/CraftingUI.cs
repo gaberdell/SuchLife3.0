@@ -264,7 +264,7 @@ public class CraftingUI : MonoBehaviour
         GameObject PanelItem = resultbox.transform.Find("PanelItem").gameObject;
         foreach (Recipe recipe in allrecipes)
         {
-            Debug.Log(recipe);
+            //Debug.Log(recipe);
             if (recipe.compareRecipes(current_crafting))
             { //IF WE'VE FOUND A MATCH
                 Debug.Log("MATCH FOUND");
@@ -305,7 +305,9 @@ public class CraftingUI : MonoBehaviour
                 //one item is picked up at a time with left click.
 
                 //instead of changing color, we can set the sprite to be rendered around the player's cursor when selected (like minecraft & terraria)
-                itemInCursorObj.GetComponent<Image>().sprite = inv[index].GetComponent<Image>().sprite;
+                GameObject PanelItem = inv[index].transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                itemInCursorObj.GetComponent<Image>().sprite = PanelImage.sprite;
                 itemInCursorObj.GetComponent<Image>().enabled = true;
                 selectItem("inv", index);
             }  
@@ -341,7 +343,9 @@ public class CraftingUI : MonoBehaviour
                 firstButtonPress.type = "craft";
                 firstButtonPress.index = index;
                 //same behavior as inventory; when an item is selected, move the item and its data to the itemInHand container.
-                itemInCursorObj.GetComponent<Image>().sprite = craft[index].GetComponent<Image>().sprite;
+                GameObject PanelItem = craft[index].transform.Find("PanelItem").gameObject;
+                Image PanelImage = PanelItem.GetComponent<Image>();
+                itemInCursorObj.GetComponent<Image>().sprite = PanelImage.sprite;
                 itemInCursorObj.GetComponent<Image>().enabled = true;
                 selectItem("craft", index);
             }
@@ -537,15 +541,18 @@ public class CraftingUI : MonoBehaviour
                 Item i;
                 if (secondButtonPress.type == "inv")
                 {
-                    itemInCursorObj.GetComponent<Image>().sprite = inv[secondButtonPress.index].GetComponent<Image>().sprite;
+                    GameObject PanelItem = inv[secondButtonPress.index].transform.Find("PanelItem").gameObject;
+                    Image PanelImage = PanelItem.GetComponent<Image>();
+                    itemInCursorObj.GetComponent<Image>().sprite = PanelImage.sprite;
                     q = inventory[secondButtonPress.index].quantity;
                     i = inventory[secondButtonPress.index].item;
                     inventory[secondButtonPress.index].item = itemInCursor;
                     inventory[secondButtonPress.index].quantity = itemInCursorQuantity;
                 } else if(secondButtonPress.type == "craft")
                 {
-                    Debug.Log("craft swap");
-                    itemInCursorObj.GetComponent<Image>().sprite = craft[secondButtonPress.index].GetComponent<Image>().sprite;
+                    GameObject PanelItem = craft[secondButtonPress.index].transform.Find("PanelItem").gameObject;
+                    Image PanelImage = PanelItem.GetComponent<Image>();
+                    itemInCursorObj.GetComponent<Image>().sprite = PanelImage.sprite;
                     q = crafting[secondButtonPress.index].quantity;
                     i = crafting[secondButtonPress.index].item;
                     crafting[secondButtonPress.index].item = itemInCursor;
@@ -581,7 +588,10 @@ public class CraftingUI : MonoBehaviour
             firstButtonPress.index = 9; //necessary?
             itemInCursorObj.GetComponent<Image>().enabled = true;
             //clear result box
-            resultbox.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
+            GameObject PanelItem = resultbox.transform.Find("PanelItem").gameObject;
+            Image PanelImage = PanelItem.GetComponent<Image>();
+            PanelImage.enabled = false;
+            PanelImage.sprite = player.GetComponent<PlayerInventory>().empty;
             //clear grid corresponding to how many items are made
             for (int i = 0; i < crafting.Count; i++)
             {
