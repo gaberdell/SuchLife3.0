@@ -1,5 +1,3 @@
-// Mouse scrolling on hotbar is almost functional (for some reason it only stops on odds) - Mac
-
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -51,7 +49,7 @@ public class PlayerInventory : MonoBehaviour
     private float nextScrollTime = 0f; 
     // This stores the next time inventory slot is allowed to change when scrolling
 
-    private float scrollCoolDown = 0.2f;
+    private float scrollCoolDown = 0.025f;
     // Delay when scrolling
 
     void Start(){
@@ -196,7 +194,7 @@ public class PlayerInventory : MonoBehaviour
                 if(InputHandler.Instance.GetMouseScroll().y > 0f)
                 {
                     // Handdles if would go over upper bounds
-                    if (selectedItem++ > hotbarSize-1)
+                    if (selectedItem+1 > hotbarSize-1)
                     {
                         selectedItem = 0;
                     }
@@ -204,12 +202,11 @@ public class PlayerInventory : MonoBehaviour
                     {
                         selectedItem++;
                     }
-                    Debug.Log("Scrolling Up!" + selectedItem);
                 }
                 else if (InputHandler.Instance.GetMouseScroll().y < 0f)
                 {
                     // Handles if would go out of lower bounds
-                    if (selectedItem-- < 0)
+                    if (selectedItem-1 < 0)
                     {
                         selectedItem = hotbarSize-1;
                     }
@@ -217,7 +214,6 @@ public class PlayerInventory : MonoBehaviour
                     {
                         selectedItem--;
                     }
-                    Debug.Log("Scrolling Down!" + selectedItem);
                 }
                 nextScrollTime = Time.time + scrollCoolDown;
                 playerInfo.HeldItem = inventory[selectedItem].item;
