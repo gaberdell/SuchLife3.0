@@ -190,6 +190,7 @@ public class ServerNetworkManager : MonoBehaviour
 
                 Debug.Log("Peacefully lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
                 Debug.Log("Peacefully lost client");
+                //Probably don't want to do this as we want player to persist between sessions
                 SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
                 players.Remove(data.ClientId);
                 data.Client.Close();
@@ -205,6 +206,8 @@ public class ServerNetworkManager : MonoBehaviour
 
             Debug.LogError("Unexpectedly lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
             Debug.Log("Attempting to remove client");
+            //Probably don't want to do this as we want player to persist between sessions
+            //Fix it so there's a time out so player will get auto disconnected..
             SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
             players.Remove(data.ClientId);
             data.Client.Close();
@@ -427,7 +430,6 @@ public class ServerNetworkManager : MonoBehaviour
                         break;
                     case NetworkOpCodeEnum.UPDATE_PREFAB:
                         if (players.TryGetValue(newCommand.tcpOriginId, out GameObject playerWithTCPID)) {
-                            Debug.Log("Player (tcp " + newCommand.tcpOriginId + ") Location : " + playerWithTCPID.transform.position);
                             playerWithTCPID.GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
                         }
                         break;

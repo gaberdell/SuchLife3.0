@@ -69,6 +69,9 @@ public class ClientNetworkManager : MonoBehaviour
     public void OnApplicationQuit() {
         StopClient();
     }
+    public void OnDisable() {
+        StopClient();
+    }
 
     public void StopClient() {
         udpClient?.Close();
