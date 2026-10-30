@@ -48,6 +48,8 @@ public class CraftingUI : MonoBehaviour
     public Item itemInCursor;
     public int itemInCursorQuantity = 0;
 
+    const int quantityIndex = 1;
+
 
     void Start()
     {
@@ -88,7 +90,7 @@ public class CraftingUI : MonoBehaviour
         foreach (GameObject panel in inv)
         {
             
-                Transform textChild = panel.transform.GetChild(0); // Get the first child
+                Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
                 tmp.text = ""; 
@@ -127,7 +129,7 @@ public class CraftingUI : MonoBehaviour
 
         foreach (GameObject panel in inv)
         {
-            Transform textChild = panel.transform.GetChild(0); // Get the first child
+            Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             if (!(player.GetComponent<PlayerInventory>().inventory)[count].isEmpty){
 
@@ -151,7 +153,7 @@ public class CraftingUI : MonoBehaviour
         foreach (GameObject panel in craft)
         {
             
-                Transform textChild = panel.transform.GetChild(0); // Get the first child
+                Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
                 TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
 
                 tmp.text = ""; 
@@ -182,7 +184,7 @@ public class CraftingUI : MonoBehaviour
 
         foreach (GameObject panel in inv)
         {
-            Transform textChild = panel.transform.GetChild(0); // Get the first child
+            Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
             Image PanelImage = PanelItem.GetComponent<Image>();
@@ -192,7 +194,7 @@ public class CraftingUI : MonoBehaviour
                 if((player.GetComponent<PlayerInventory>().inventory)[count].quantity > 1){
                     tmp.text = (player.GetComponent<PlayerInventory>().inventory)[count].quantity.ToString(); 
 
-                }else {
+                }else if(tmp){
                     tmp.text = "" ;
 
                 }
@@ -221,7 +223,7 @@ public class CraftingUI : MonoBehaviour
         count = 0;
         foreach (GameObject panel in craft)
         {
-            Transform textChild = panel.transform.GetChild(0); // Get the first child
+            Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
             Image PanelImage = PanelItem.GetComponent<Image>();

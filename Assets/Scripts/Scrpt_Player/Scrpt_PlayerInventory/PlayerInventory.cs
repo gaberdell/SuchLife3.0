@@ -14,7 +14,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] Sprite hotbarBoxDefault;
     [SerializeField] Sprite hotbarBoxSelected;
 
-    const int quantityIndex = 0; //index of children within hotbar panels
+    const int quantityIndex = 1; //index of children within hotbar panels
     const int itemIndex = 0;
 
     private string gameUITag = "GameUI";
@@ -24,15 +24,11 @@ public class PlayerInventory : MonoBehaviour
     private string hotbarPanelTag = "HotbarPanel";
 
 
-    public GameObject fullInventory;
-    private string fullInventoryTag = "FullInventory";
-
     private PlayerInfo playerInfo;
 
 
     //List of all the panels in Hotbar and Fullnav.
     public List<GameObject> hotbar = new List<GameObject>(); 
-    public List<GameObject> fullInv = new List<GameObject>(); 
 
 
     //our current selected item, 0-9.
@@ -80,7 +76,6 @@ public class PlayerInventory : MonoBehaviour
     private void grabUI(GameObject player) {
         gameUI = GameObject.FindGameObjectWithTag(gameUITag);
         hotbarPanel = GameObject.FindGameObjectWithTag(hotbarPanelTag);
-        fullInventory = GameObject.FindGameObjectWithTag(fullInventoryTag);
         CraftingUI = GameObject.FindGameObjectWithTag(CraftingUITag);
         CraftingUI.SetActive(false);
 
@@ -88,14 +83,7 @@ public class PlayerInventory : MonoBehaviour
             hotbar.Add(hotbarPanel.transform.GetChild(i).gameObject);
         }
 
-        //Do the same for FullInventory and fullInv
-        for (int i = 0; i < fullInventory.transform.childCount; i++) {
-            fullInv.Add(fullInventory.transform.GetChild(i).gameObject);
 
-
-        }
-
-        fullInventory.SetActive(false);
         for (int i = 0; i < inventorySize; i++) {
             InventorySlot slot = new InventorySlot();
             slot.isEmpty = true;
@@ -118,19 +106,6 @@ public class PlayerInventory : MonoBehaviour
 
         }
 
-        foreach (GameObject panel in fullInv) {
-            if (panel.transform.childCount > 0) // Ensure it has a child
-            {
-                Transform textChild = panel.transform.GetChild(quantityIndex); // Get the first child
-                TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
-
-                tmp.text = "";
-                tmp.color = new Color32(255, 255, 225, 100);
-
-
-            }
-
-        }
 
         isConnectedWithUI = true;
     }
@@ -189,28 +164,10 @@ public class PlayerInventory : MonoBehaviour
 
         //Let's assume E is Inventory button, because it usually is.... //setting to P for testing as E is the interact key so it conflicts
 
-        if (InputHandler.Instance.InventoryOpenTriggered)
-        {
-
-            if (fullInventory != null && !CraftingUI.activeSelf)
-            {
-
-                bool isActive = fullInventory.activeSelf;
-
-                fullInventory.SetActive(!isActive);
-                gameUI.SetActive(isActive);
-
-
-
-                PauseTimeHandler.TogglePauseGame();
-
-            }
-
-        }
 
         //Weird disabling hotbar code idk
         if (InputHandler.Instance.CraftingTriggered) {
-            if (CraftingUI != null && !fullInventory.activeSelf){
+            if (CraftingUI != null){
                  bool isActive = CraftingUI.activeSelf;
 
                 //if disabling the crafting menu then make the hotbar match the first row of the crafting ui
@@ -386,11 +343,6 @@ public class PlayerInventory : MonoBehaviour
             Transform textChild = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             tmp.text = "";
-
-            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
-            TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
-            tmp_inv.text = "";
-
         }
         else
         {
@@ -398,10 +350,6 @@ public class PlayerInventory : MonoBehaviour
             Transform textChild = hotbar[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             tmp.text = slot.quantity.ToString();
-
-            Transform textChild_inv = fullInv[isInHotbar].transform.GetChild(quantityIndex); // Get the first child
-            TextMeshProUGUI tmp_inv = textChild_inv.GetComponent<TextMeshProUGUI>();
-            tmp_inv.text = slot.quantity.ToString();
 
         }
 
