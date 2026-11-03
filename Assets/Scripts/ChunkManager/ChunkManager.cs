@@ -40,6 +40,11 @@ public static class ChunkManager
         //0th 0th chunk starts at bottom left corner? top left?
         //input is the position on the tilemap
 
+
+        wallTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
+        groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
+
+        
         Vector2 cPos = getChunkPosFromWorld(tilePos);
         int chunkX = (int)cPos.x;
         int chunkY = (int)cPos.y;

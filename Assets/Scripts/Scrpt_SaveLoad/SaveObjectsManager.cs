@@ -61,20 +61,20 @@ public class SaveObjectsManager : MonoBehaviour
 #endif
 
             LoadAllEntityDataToPrefabs(DataService.LoadEntitySaveData());
-            // Tilemap save/load addition
-            TilemapSaveLoad.LoadGrid(DataService.LoadTilemapData());
         }
 
     }
 
     void OnApplicationPause(bool isPaused) {
         if (isPaused) {
+            DataService.SaveTilemapData(TilemapSaveLoad.SaveGrid());
             SaveAllPrefabData();
         }
 
     }
 
     void OnApplicationQuit() {
+        DataService.SaveTilemapData(TilemapSaveLoad.SaveGrid());
         SaveAllPrefabData();
     }
 

@@ -94,22 +94,6 @@ public class TilemapSaveLoad
       return;
     }
 
-    // Get the tilemaps, and create a parallel list of tilemap names
-    GameObject[] allobjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-    List<Tilemap> tilemaps = new();
-
-    // Getting tilemaps and creating corresponding string Dictionary
-    foreach (GameObject i in allobjs)
-    {
-      Tilemap[] retval = i.GetComponentsInChildren<Tilemap>(true);
-      tilemaps.AddRange(retval);
-    }
-    foreach (Tilemap i in tilemaps)
-    {
-      i.ClearAllTiles();
-    }
-    Dictionary<string,Tilemap> tilemapDict = tilemaps.ToDictionary(x => x.name, x => x);
-
     // Load tiles and create corresponding string Dictionary
     TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
     Dictionary<string,TileBase> tileDict = allTiles.ToDictionary(x => x.name, x => x);
@@ -146,20 +130,20 @@ public class TilemapSaveLoad
       int totalBytes = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
       index += 4;
       Debug.Log(tilemapName);
-      if (!tilemapDict.ContainsKey(tilemapName))
+      Tilemap map = GameObject.Find(tilemapName).GetComponent<Tilemap>();
+      if (map == null)
       {
         Debug.Log("uh oh");
         index += totalBytes+1;
         continue;
       }
+      map.ClearAllTiles();
       int totalTiles = totalBytes/9;
-      Tilemap map = tilemapDict[tilemapName];
 
       for (int i = 0; i < totalTiles; ++i)
       {
         if (gridData[index] == 255) { break;}
         string tilestr = tileNames[gridData[index++]];
-        Debug.Log(tilestr);
         int x = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
         index += 4;
         int y = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);

@@ -51,15 +51,15 @@ namespace BlockIteraction
         }
 
         private void OnEnable() {
-            EventManager.LocalGameObjectPlayerAddedToScene += linkToScenesTileMapAndBlockInteraction;
+            EventManager.LocalGameObjectPlayerAddedToScene += LinkToScenesTileMapAndBlockInteraction;
         }
 
         private void OnDisable() {
-            EventManager.LocalGameObjectPlayerAddedToScene -= linkToScenesTileMapAndBlockInteraction;
+            EventManager.LocalGameObjectPlayerAddedToScene -= LinkToScenesTileMapAndBlockInteraction;
         }
 
-        void linkToScenesTileMapAndBlockInteraction(GameObject player) {
-            playerBlockView = FindFirstObjectByType<BlockIteractionView>();
+        void LinkToScenesTileMapAndBlockInteraction(GameObject player) {
+            playerBlockView = FindAnyObjectByType<BlockIteractionView>();
             placeTileMap = GameObject.FindGameObjectWithTag(placeTileMapTag).GetComponent<Tilemap>();
         }
         private void OnDrawGizmos()
