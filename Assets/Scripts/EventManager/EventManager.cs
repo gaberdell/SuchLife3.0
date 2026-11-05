@@ -28,6 +28,8 @@ public class EventManager : MonoBehaviour
     public static event GameObjectSingleDelegate OnlinePlayerJoined;
     public static event GameObjectSingleDelegate OnlinePlayerLeft;
 
+    public static event GameObjectSingleDelegate PlayerHurt;
+
     public static event NoParamDelegate PlayerExitedGameSoSafeToLeave;
 
     public static EventManager Instance;
@@ -82,6 +84,11 @@ public class EventManager : MonoBehaviour
 
     public static void SetPlayerExitedGameSoSafeToLeave() {
         PlayerExitedGameSoSafeToLeave?.Invoke();
+    }
+
+    public static void SetPlayerHurt(GameObject player)
+    {
+        PlayerHurt?.Invoke(player);
     }
 
     void Awake()

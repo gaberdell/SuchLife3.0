@@ -201,24 +201,23 @@ public class PlayerInventory : MonoBehaviour
         {
             GameObject panel = hotbar[i];
             //make quantity match inventory data
+            GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
+            Image PanelImage = PanelItem.GetComponent<Image>();
             Transform textChild = panel.transform.GetChild(quantityIndex); // Get the quantity object
             TextMeshProUGUI tmp = textChild.GetComponent<TextMeshProUGUI>();
             if (inventory[i].quantity <= 1) tmp.text = "";
             else tmp.text = inventory[i].quantity.ToString();
             //match icons
-            try
+            if (!inventory[i].item)
             {
-                GameObject PanelItem = panel.transform.Find("PanelItem").gameObject;
-                Image PanelImage = PanelItem.GetComponent<Image>();
+                //if no item anymore then adjust ui
+                PanelImage.enabled = false;
+            } else
+            {
                 PanelImage.enabled = true;
                 PanelItem.GetComponent<Image>().sprite = inventory[i].item.icon;
-               
             }
-            catch (System.Exception)
-            {
-                //hotbar[i].GetComponent<Image>().sprite = empty;
-                //throw;
-            }
+
             
         }
     }

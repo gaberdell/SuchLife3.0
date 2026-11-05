@@ -1,6 +1,7 @@
 ﻿// Health.cs
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -53,8 +54,15 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(int amount, bool applyKnockback = true, GameObject attacker = null)
     {
-        Debug.Log($"Health.TakeDamage called on {gameObject.name} with amount: {amount}, applyKnockback: {applyKnockback}, attacker: {attacker?.name}");
+        //Debug.Log($"Health.TakeDamage called on {gameObject.name} with amount: {amount}, applyKnockback: {applyKnockback}, attacker: {attacker?.name}");
         if (!canBeHurt) return; //dont take damage while iframes are up
+        //trigger player hurt event TEMP IMPLEMENTATION
+        if(gameObject.name == "Player(Clone)")
+        {
+            EventManager.SetPlayerHurt(gameObject);
+        }
+        
+
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
 
