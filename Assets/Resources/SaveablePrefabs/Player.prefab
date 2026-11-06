@@ -192,7 +192,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1680966645107147998, guid: 21d34b86b69b3d441b4fa5c14b45b5cd, type: 3}
+  m_Sprite: {fileID: 3020249052371181489, guid: 6d788262965cdb04db8dbcefd880eb06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2714,9 +2714,7 @@ MonoBehaviour:
   hotbarBoxDefault: {fileID: -5304916255451051812, guid: 7c92641e9bad29c42a1bd8a3397d0d93, type: 3}
   hotbarBoxSelected: {fileID: 8705159708830356570, guid: e4b89d9a4e6074b4f9fdf6cb4174c5b3, type: 3}
   hotbarPanel: {fileID: 0}
-  fullInventory: {fileID: 0}
   hotbar: []
-  fullInv: []
   selectedItem: -1
   empty: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   CraftingUI: {fileID: 0}
@@ -2856,7 +2854,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -772480154, guid: 21d34b86b69b3d441b4fa5c14b45b5cd, type: 3}
+  m_Sprite: {fileID: 183850706, guid: 6d788262965cdb04db8dbcefd880eb06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2997,7 +2995,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1949051622, guid: 21d34b86b69b3d441b4fa5c14b45b5cd, type: 3}
+  m_Sprite: {fileID: 263426452, guid: 6d788262965cdb04db8dbcefd880eb06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3090,7 +3088,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -772480154, guid: 21d34b86b69b3d441b4fa5c14b45b5cd, type: 3}
+  m_Sprite: {fileID: 183850706, guid: 6d788262965cdb04db8dbcefd880eb06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3182,7 +3180,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1949051622, guid: 21d34b86b69b3d441b4fa5c14b45b5cd, type: 3}
+  m_Sprite: {fileID: 263426452, guid: 6d788262965cdb04db8dbcefd880eb06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

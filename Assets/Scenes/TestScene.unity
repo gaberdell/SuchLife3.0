@@ -197,6 +197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionsFile: {fileID: 4900000, guid: 87b987aeff0bcf64a9281316b0e13c3d, type: 3}
+  openSprite: {fileID: 0}
+  closeSprite: {fileID: 0}
 --- !u!212 &82973851
 SpriteRenderer:
   serializedVersion: 3
@@ -49148,6 +49150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionsFile: {fileID: 4900000, guid: 4e0e3ec1dcd37a142ad39f44b8f01df8, type: 3}
+  openSprite: {fileID: 0}
+  closeSprite: {fileID: 0}
 --- !u!212 &1946020858
 SpriteRenderer:
   serializedVersion: 3
