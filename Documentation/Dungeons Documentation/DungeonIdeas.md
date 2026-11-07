@@ -1,12 +1,18 @@
-Ideas:
+Ideas that can be added without new assets, etc:
 
-Rubble inside rooms to give cover.
-
+Hallways:
 Traps in hallways.
 
-Crates with more loot.
+Dead end hallways.
+
+Enemies:
+More enemies (just add some foxes for now).
 
 Boss or elite enemies (can just be larger asset and health bar for now).
 
-More enemies (just add some foxes for now).
+Loot:
+Crates with loot.
+
+Rooms:
+Rubble & crates inside rooms to give cover.
 
