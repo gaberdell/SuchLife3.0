@@ -95,9 +95,11 @@ public class ServerNetworkManager : MonoBehaviour
 
     static void onRecieveDataTcp(IAsyncResult result) {
         TcpClientData data = (TcpClientData)result.AsyncState;
-
         try {
             int bytesRead = data.Stream.EndRead(result);
+
+            Debug.Log("Bytes read from the amogus : " + bytesRead);
+
             if (bytesRead > 0) {
                 //Clip data to bytes we want
                 byte[] tcpBytes = new byte[bytesRead];
@@ -131,11 +133,24 @@ public class ServerNetworkManager : MonoBehaviour
 //-------------------------------------TODO: SWITCH OVER TO USING THE DEAL_WITH_TCP_CONNECTION sense it stalls when trying to index a dictionary--------------
 
                     foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
-                        Debug.Log("Please state your name : " + saveObject.name);
                         PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
-                        Debug.Log("After name state");
-                        byte[] bytesToSendToTellLocalClient = addTcpBasic(saveObject);
+                        byte[] bytesToSendToTellLocalClient; 
+                        PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
+                        if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes())) {
+                            bytesToSendToTellLocalClient = addMostSimple(saveObject, out PrefabSaveInfo _).ToArray();
+                            doesPlayerAlreadyExsistInScene = true;
 
+                            players.Add(data.ClientId, saveObject);
+                            bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
+                        }
+                        else {
+                            bytesToSendToTellLocalClient = addTcpBasic(saveObject);
+                            //Debug.Log("Current Player Info string : " + playerInfo.guid.ToString());
+                            //Debug.Log("Incoming TCP Info string : " + new Guid(packet.GetBytes()).ToString());
+                        }
+
+                        /*Debug.Log("Please state your name : " + saveObject.name);
+                        Debug.Log("After name state");
                         string add = "{";
                         for (int i = 0; i < bytesToSendToTellLocalClient.Length; i++) {
                             add += bytesToSendToTellLocalClient[i] + ",";
@@ -144,18 +159,6 @@ public class ServerNetworkManager : MonoBehaviour
 
                         Debug.Log("Thing to load in bytes wise : " + add);
 
-                        PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
-                        if (playerInfo != null) {
-                            Debug.Log("Current Player Info string : " + playerInfo.guid.ToString());
-                            Debug.Log("Incoming TCP Info string : " + new Guid(packet.GetBytes()).ToString());
-                        }
-                        if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes())) {
-                            doesPlayerAlreadyExsistInScene = true;
-                            Debug.Log("PLAYER EXSISTS!! Before potential crash?");
-                            players.Add(data.ClientId, saveObject);
-                            Debug.Log("After potential crash?");
-                            bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
-                        }
 
                         string mog35 = "{";
                         for (int i = 0; i < bytesToSendToTellLocalClient.Length; i++) {
@@ -163,7 +166,7 @@ public class ServerNetworkManager : MonoBehaviour
                         }
                         mog35 += "}";
 
-                        Debug.Log("Sending over entity to player (server) : " + mog35);
+                        Debug.Log("Sending over entity to player (server) : " + mog35);*/
 
                         SendToTcp(data.ClientId, bytesToSendToTellLocalClient);
                     }
@@ -191,7 +194,7 @@ public class ServerNetworkManager : MonoBehaviour
                 Debug.Log("Peacefully lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
                 Debug.Log("Peacefully lost client");
                 //Probably don't want to do this as we want player to persist between sessions
-                SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
+                //SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
                 players.Remove(data.ClientId);
                 data.Client.Close();
             }
@@ -208,7 +211,7 @@ public class ServerNetworkManager : MonoBehaviour
             Debug.Log("Attempting to remove client");
             //Probably don't want to do this as we want player to persist between sessions
             //Fix it so there's a time out so player will get auto disconnected..
-            SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
+            //SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
             players.Remove(data.ClientId);
             data.Client.Close();
         }
@@ -353,13 +356,18 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-    static byte[] addTcpBasic(GameObject prefabToAdd) {
-        PrefabSaveInfo saveInfo = prefabToAdd.GetComponent<PrefabSaveInfo>();
+    static IEnumerable<byte> addMostSimple(GameObject prefabToAdd, out PrefabSaveInfo curSaveInfo) {
+        curSaveInfo = prefabToAdd.GetComponent<PrefabSaveInfo>();
         byte[] networkIdType = new byte[1] { (byte)NetworkOpCodeEnum.ADD_PREFAB };
-        byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(saveInfo.NetworkId);
+        byte[] networkBytes = ConvertToByteArray.ConvertValueToBytes(curSaveInfo.NetworkId);
         byte[] posBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.position);
         byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(prefabToAdd.transform.rotation.eulerAngles);
-        return networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes).Concat(saveInfo.PrefabId).Concat(new byte[1] {0}).ToArray();
+        return networkIdType.Concat(networkBytes).Concat(posBytes).Concat(rotBytes);
+    }
+
+    static byte[] addTcpBasic(GameObject prefabToAdd) {
+        IEnumerable<byte> mostBasicBytes = addMostSimple(prefabToAdd, out PrefabSaveInfo saveInfo);
+        return mostBasicBytes.Concat(saveInfo.PrefabId).Concat(new byte[1] {0}).ToArray();
     }
 
     void addTcpObject(GameObject prefabToAdd) {
@@ -389,7 +397,7 @@ public class ServerNetworkManager : MonoBehaviour
 
                         foreach (var clientPair in tcpClients) {
                             if (clientPair.Key == newCommand.tcpOriginId) {
-                                byte[] bytesToSendToTellLocalClient = addTcpBasic(newPlayer);
+                                byte[] bytesToSendToTellLocalClient = addMostSimple(newPlayer, out PrefabSaveInfo _).ToArray();
                                 bytesToSendToTellLocalClient[0] = (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER;
                                 SendToTcp(clientPair.Key, bytesToSendToTellLocalClient);
                             }

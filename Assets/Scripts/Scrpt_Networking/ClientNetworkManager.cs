@@ -169,11 +169,11 @@ public class ClientNetworkManager : MonoBehaviour
                             }
 
 
+                            newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed).ToArray();
+                            totalBytesUsed = zeroByte+1;
                             Debug.Log("Total bytes used : " + totalBytesUsed);
                             Debug.Log("Data Length : " + data.Length);
-                            newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed).ToArray();
                             Debug.Log("IdOfPrefabLen Length : " + newCommand.idOfPrefab.Length);
-                            totalBytesUsed = zeroByte+1;
                         }
                         else {
                             newCommand.idOfPrefab = null;
