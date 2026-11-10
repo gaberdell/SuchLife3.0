@@ -68,6 +68,7 @@ public class PathingController
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
 
             float step = speed * Time.deltaTime;
+            Debug.Log("ENEMY MOVING TOWARDS " + nextPos.ToString() + "");
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
 
             //face towards next position
@@ -78,7 +79,7 @@ public class PathingController
             //make sure walking animation is playing
             if (animator) animator.SetBool("Walk", true);
 
-            if (Vector3.Distance(controlled.position, nextPos) < 0.01f)
+            if (Vector3.Distance(controlled.position, nextPos) < 0.2f)
             {
                 Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
                 currentPath.RemoveAt(0);

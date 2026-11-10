@@ -1,21 +1,36 @@
 using UnityEngine;
-using System.Collections;     // For IEnumerator
+using System.Collections;
+using UnityEngine.Tilemaps;     // For IEnumerator
 
 public class Mob : MonoBehaviour
 {
     protected GameObject objectInScene; // Can be optional if you just use transform
-    private int health;
+    protected int health;
     protected Vector3 worldPos;
     protected Vector2 chunkPos;
 
     //pathing
-    private Rigidbody2D rb;
+    protected enum AggroType
+    {
+        Passive, //will never attack player; only moves randomly
+        Reactive, //passive but turns hostile when attacked
+        Hostile //has a detection radius; move towards player if enters detection radius;
+    }
+    [SerializeField] protected AggroType Atype;
+    [SerializeField] protected float aggroDistance = 1;
+    [SerializeField] protected CircleCollider2D enemyCollider;
+    [SerializeField] protected int damage = 10;
+    protected Rigidbody2D rb;
     protected PathingController pathController;
     protected Transform target;
     float speed = 1;
 
-    private bool isKnockedBack = false;
+    protected EnemyAttack enemyAttack;
 
+    protected Tilemap blockTilemap;
+    protected string tileMapName = "PlaceableTileMap";
+
+    private bool isKnockedBack = false;
     protected bool isDead = false;
 
     private void Awake()

@@ -6,34 +6,13 @@ using UnityEngine.Tilemaps;
 
 public class Fox : Mob
 {
-    [SerializeField] private CircleCollider2D enemyCollider;
-    //[SerializeField] private AIPath path;
+
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem particles;
-    private EnemyAttack enemyAttack;
-
-    private Transform target;
-    [SerializeField] private float aggroDistance;
-    [SerializeField] private float explodeAtDistance;
-    [SerializeField] private float explosionRadius;
-    [SerializeField] private float explosionDelay;
-    [SerializeField] private int damage;
-    //private AIDestinationSetter pathSetter;
+    
 
     private float distance;
-    private bool isExploding = false;
 
-    [SerializeField] private Tilemap blockTilemap;
-    [SerializeField] private string tileMapName = "PlaceableTileMap"; //Done by goat Kcrushel
-    // public delegate void OnExplode(Collider2D explosionCollider);
-    // public static event OnExplode onExplode;
-
-
-    //public Bomb(Vector3 pos)
-    //{
-    //    //
-    //    worldPos = pos;
-    //}
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
@@ -62,25 +41,6 @@ public class Fox : Mob
         updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
 
         distance = Vector2.Distance(transform.position, target.position);
-
-        /*if  (pathSetter.target != target)
-        {
-            pathSetter.target = target;
-        }
-        if (distance <= aggroDistance && !isExploding)
-        {
-            path.enabled = true;
-        }
-
-        if (path.desiredVelocity.magnitude > 0) {
-            animator.SetBool("Walk", true);
-        }*/
-
-        if (distance <= explodeAtDistance && !isExploding)
-        {
-            isExploding = true;  
-            //StartCoroutine(Explode());
-        }
     }
 
     

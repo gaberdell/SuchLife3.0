@@ -14,11 +14,9 @@ public class Bomb : Mob
 
     private List<Transform> targets;
     //private AIDestinationSetter pathSetter;
-    [SerializeField] private float aggroDistance;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
     [SerializeField] private float explosionDelay;
-    [SerializeField] private int damage;
 
     public void testFunction() { }
 
@@ -27,8 +25,7 @@ public class Bomb : Mob
     [Saveable("IsExploding")]
     private bool isExploding = false;
 
-    [SerializeField] private Tilemap blockTilemap;
-    [SerializeField] private string tileMapName = "PlaceableTileMap"; //Done by goat Kcrushel
+
     // public delegate void OnExplode(Collider2D explosionCollider);
     // public static event OnExplode onExplode;
 
