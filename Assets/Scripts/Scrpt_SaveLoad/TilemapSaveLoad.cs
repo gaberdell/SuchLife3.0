@@ -6,6 +6,71 @@ using UnityEngine.Tilemaps;
 using System.Text;
 using System.Buffers.Binary;
 
+/**
+
+Format
+______
+
+
+             1 byte 
+          +-----------+
+          |     0     |
+          +-----------+
+
+
+--------------------- <TILE NAME DICTIONARY> ---------------------
+
+                   1 byte
+          +---------------------------+
+          |  Dictionary Length < 255  |
+          +---------------------------+
+
+                1 byte              string       
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +---------------- ...
+
+--------------------- </TILE NAME DICTIONARY> --------------------
+
+
+             1 byte
+          +-----------+
+          |     0     |
+          +-----------+
+
+
+----------------------------------- <TILEMAP> -----------------------------------
+
+                1 byte               string                 4 bytes
+          +-----------------+----------------------+-----------------------+
+          |   Name Length   |  Tilemap Name ASCII  |  Tilemap Byte Length  |
+          +-----------------+----------------------+-----------------------+
+
+                       1 byte                 4 bytes          4 bytes
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +----------------------------- ...
+
+             1 byte
+          +-----------+
+          |    255    |
+          +-----------+
+
+----------------------------------- </TILEMAP> ----------------------------------
+
+                      REPEAT <TILEMAP> FOR EACH SAVED TILEMAP
+
+
+*/
+
 public class TilemapSaveLoad
 {
   // Converts data in the back/foreground tilemaps into byte array
@@ -23,7 +88,7 @@ public class TilemapSaveLoad
     }
 
     // Our byte List with which we will store information (starts with 255 for verification)
-    List<byte> retval = new() {255};
+    List<byte> retval = new() {0};
 
     // Start with dictionary of Tiles (Assumes there are <255 tiles whose names are <255 characters)
     TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
@@ -88,7 +153,7 @@ public class TilemapSaveLoad
   public static void LoadGrid(byte[] gridData) {
     // Check parameter is good
     if (gridData.Length == 0) { return;}
-    if (gridData[0] != 255)
+    if (gridData[0] != 0)
     {
       Debug.LogError("LoadGrid: Bad tile load byte array 0!");
       return;
