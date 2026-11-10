@@ -18,6 +18,11 @@
             "entityName": "Bomb",
             "relativeX": 3,
             "relativeY": 3
+         },
+         {
+            "entityName": "Fox",
+            "relativeX": 7,
+            "relativeY": 7
          }],
          "width": 10,
          "height": 10
@@ -56,6 +61,58 @@
          "height": 15
       },
       {
+         "type": "Default",
+         "tileLayout": [
+
+         "FFFFFFFFFFFFFFF",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "SFFFFFFFFFFFFFS",
+         "FFFFFFFFFFFFFFF"
+         ],
+         "entities": [{
+            "entityName": "Bomb",
+            "relativeX": 3,
+            "relativeY": 3
+         },
+         {
+            "entityName": "Bomb",
+            "relativeX": 12,
+            "relativeY": 12
+         }],
+         "width": 15,
+         "height": 15
+      },
+      {
+         "type": "Default",
+         "tileLayout": [
+         "SSSSSSS",
+         "SSSSSSS",
+         "SSFFFSS",
+         "SSFFFSS",
+         "SSFFFSS",
+         "SSSSSSS",
+         "SSSSSSS"
+         ],
+         "entities": [{
+            "entityName": "Crate",
+            "relativeX": 4,
+            "relativeY": 4
+         }],
+         "width": 7,
+         "height": 7
+      },
+      {
          "type": "Cave",
          "tileLayout": [
          "FFFFF",
@@ -69,31 +126,80 @@
       {
          "type": "Cave",
          "tileLayout": [
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "FFFFFFFFFFFFFFF",
-         "FFFFFFFFFFFFFFF",
-         "FFFFFFFFFFFFFFF",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX",
-         "XXXXXFFFFFXXXXX"
+         "XXFFFFFFFXX",
+         "XFFFFFFFFFX",
+         "FFFFXXXFFFF",
+         "FFFXFFFXFFF",
+         "FFXFFFFFXFF",
+         "FFXFFFFFXFF",
+         "FFXFFFFFXFF",
+         "FFFXFFFXFFF",
+         "FFFFXFXFFFF",
+         "XFFFFFFFFFX",
+         "XXFFFFFFFXX"
          ],
-         "entities": [
-         {
-            "entityName": "Bomb",
-            "relativeX": 7,
+         "entities": [{
+            "entityName": "Crate",
+            "relativeX": 6,
+            "relativeY": 6
+         }],
+         "width": 11,
+         "height": 11
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "XXXXXFFFXXXXX",
+         "XXXXFFFFFXXXX",
+         "XXXFFFFFFFXXX",
+         "XXFFFFFFFFFXX",
+         "XFFFFFFFFFFFX",
+         "FFFFFFFFFFFFF",
+         "FFFFFFFFFFFFF",
+         "FFFFFFFFFFFFF",
+         "XFFFFFFFFFFFX",
+         "XXFFFFFFFFFXX",
+         "XXXFFFFFFFXXX",
+         "XXXXFFFFFXXXX",
+         "XXXXXFFFXXXXX"
+         ],
+         "entities": [{
+            "entityName": "Fox",
+            "relativeX": 6,
             "relativeY": 7
-         }
+         },
+         {
+            "entityName": "Fox",
+            "relativeX": 7,
+            "relativeY": 8
+         },
+         {
+            "entityName": "Fox",
+            "relativeX": 8,
+            "relativeY": 7
+         },
+         {
+            "entityName": "Fox",
+            "relativeX": 7,
+            "relativeY": 6
+         }],
+         "width": 13,
+         "height": 13
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
+         "SSSSSSS",
+         "XSSFFSS",
+         "SSSFSSS",
+         "SSSXSSS",
+         "SSFSSSX",
+         "SFSSSSS",
+         "SSSSSSS"
          ],
-         "width": 15,
-         "height": 15
+         "entities": [],
+         "width": 7,
+         "height": 7
       },
       {
          "type": "Cave",

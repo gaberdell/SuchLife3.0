@@ -22,6 +22,8 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
+    [SerializeField] GameObject foxEnemy;
+    [SerializeField] GameObject crateObject;
     [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
     
@@ -247,6 +249,20 @@ public class RenderDungeon : MonoBehaviour
                 //Bomb newEntity = new Bomb(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 ChunkManager.addEntityToChunk(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 //Instantiate(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "Fox")
+            {
+                //Fox newEntity = new Fox(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "Crate")
+            {
+                //Crate newEntity = new Crate(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(crateObject, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(crateObject, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
             }
         }
 
