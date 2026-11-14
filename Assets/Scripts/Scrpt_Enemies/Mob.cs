@@ -20,10 +20,12 @@ public class Mob : MonoBehaviour
     [SerializeField] protected float aggroDistance = 1;
     [SerializeField] protected CircleCollider2D enemyCollider;
     [SerializeField] protected int damage = 10;
+    [SerializeField] protected private Animator animator;
+    [SerializeField] protected private ParticleSystem particles;
     protected Rigidbody2D rb;
     protected PathingController pathController;
-    protected Transform target;
     float speed = 1;
+    protected Transform target; //keep track of target because target moves 
 
     protected EnemyAttack enemyAttack;
 
@@ -34,13 +36,63 @@ public class Mob : MonoBehaviour
     protected bool isDead = false;
 
     private void Awake()
-    {
-        target = GameObject.Find("Sign").transform;
+    {        
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         pathController = new PathingController((int)transform.position.x, (int)transform.position.y, this.transform, null, 0);
-        pathController.setTarget(target);
+        pathController.setAnimator(animator);
+        
         //set chunk pos on spawn
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene != null ? objectInScene.transform.position : transform.position);
+
+        //for pathfinding
+        Health health = GetComponent<Health>();
+        
+
+        //pathfinding init states
+        if(Atype == AggroType.Reactive)
+        {
+            health.onDamageTaken.AddListener(OnDamageTaken);
+        }
+        if(Atype == AggroType.Reactive || Atype == AggroType.Passive)
+        {
+            InvokeRepeating(nameof(randomTargetPos), 0.1f, 3f);
+        }
+    }
+
+    //for reactive mobs
+    void OnDamageTaken(int damageAmount, GameObject attacker)
+    {
+        bool isNotNull = attacker != null;
+        bool isPlayer = isNotNull && attacker.CompareTag("Player");
+
+        Debug.Log($"[Fox] OnDamageTaken: damage={damageAmount}, attacker!=null={isNotNull}, attackerName={(attacker?.name ?? "NULL")}, CompareTag(Player)={isPlayer}");
+        if (attacker != null && attacker.CompareTag("Player"))
+        {
+            Debug.Log($"[Fox] OnDamageTaken called! Damage: {damageAmount}, Attacker: {attacker?.name}");
+            //stop random movement and start chasing player
+            CancelInvoke(nameof(randomTargetPos));
+            target = attacker.transform;
+            pathController.setTarget(attacker.transform);
+            pathController.setActive(true);
+
+            // Set the attack target flag in EnemyAttack
+            if (enemyAttack != null)
+            {
+                enemyAttack.hasAttackTarget = true;
+            }
+        }
+    }
+
+    //for reactive/passive mobs
+    void randomTargetPos()
+    {
+        Vector3 pos = new Vector3();
+        pos.x = Random.Range(-3f, 3f);
+        pos.y = Random.Range(-3f, 3f);
+        pos.z = 0f;
+        //target.position = pos;
+
     }
 
     public void applyKnockback(Vector3 knockbackVector, float knockbackForce)
@@ -55,19 +107,20 @@ public class Mob : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         Vector2 knockbackDir = new Vector2(knockbackVector.x, knockbackVector.y).normalized;
         rb.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
-
-        StartCoroutine(ReenableAIPathAfterDelay(0.5f));
     }
 
-    private IEnumerator ReenableAIPathAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        isKnockedBack = false;
-        //if (path != null)
-        //    path.enabled = true;
-    }
+    //pathfinding methods
+
+
+
     private void FixedUpdate()
     {
+        //check if path needs to be updated
+        if(target && pathController.getTarget().position != target.position)
+        {
+            pathController.setTarget(target);
+        }
+        updateChunkPos();
         //progress pathfinding
         pathController.moveAlongPath(speed);
 
@@ -80,8 +133,6 @@ public class Mob : MonoBehaviour
     public void updateChunkPos()
     {
         Vector3 currentPos = objectInScene != null ? objectInScene.transform.position : transform.position;
-        //Debug.Log("current mob pos: " + currentPos);
-        //Debug.Log("object in scene: " + objectInScene);
         Vector2 currChunkPos = ChunkManager.getChunkPosFromWorld(currentPos);
 
         if (currChunkPos != chunkPos)

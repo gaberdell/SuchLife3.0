@@ -5,74 +5,16 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Fox : Mob
-{
-
-    [SerializeField] private Animator animator;
-    [SerializeField] private ParticleSystem particles;
-    
-
-    private float distance;
-
+{    
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
         //pathSetter = GetComponent<AIDestinationSetter>();
         objectInScene = gameObject;
-        animator = GetComponent<Animator>();
-        GameObject targetObj = new GameObject();
-        target = targetObj.transform;
-        target.position = new Vector3(0, 0, 0);
-        //pathSetter.target = target;
         enemyAttack = GetComponent<EnemyAttack>(); // later set target if get attacked
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-        //add a clock to trigger randomMovement()
-        InvokeRepeating(nameof(randomTargetPos),0.1f,3f);
 
-        // Listen on health changes to trigger getAttacked()
-        Health health = GetComponent<Health>();
-        health.onDamageTaken.AddListener(OnDamageTaken); 
     }
     
-
-    void Update()
-    {
-        //updateKnockback(); //inherited from mob parent
-        updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
-
-        distance = Vector2.Distance(transform.position, target.position);
-    }
-
-    
-    void OnDamageTaken(int damageAmount, GameObject attacker){
-        bool isNotNull = attacker != null;
-        bool isPlayer = isNotNull && attacker.CompareTag("Player");
-
-        Debug.Log($"[Fox] OnDamageTaken: damage={damageAmount}, attacker!=null={isNotNull}, attackerName={(attacker?.name ?? "NULL")}, CompareTag(Player)={isPlayer}");
-        if (attacker != null && attacker.CompareTag("Player"))
-        {
-            Debug.Log($"[Fox] OnDamageTaken called! Damage: {damageAmount}, Attacker: {attacker?.name}");
-            //stop random movement and start chasing player
-            CancelInvoke(nameof(randomTargetPos));
-            target = attacker.transform;
-            //pathSetter.target = target;
-            //path.enabled = true;
-
-            // Set the attack target flag in EnemyAttack
-            if (enemyAttack != null)
-            {
-                enemyAttack.hasAttackTarget = true;
-            }
-        }
-    }
-
-    void randomTargetPos()
-    {
-        Vector3 pos = new Vector3();
-        pos.x = Random.Range(-3f, 3f);
-        pos.y = Random.Range(-3f, 3f);
-        pos.z = 0f;
-        target.position = pos;
-        
-    }
 }

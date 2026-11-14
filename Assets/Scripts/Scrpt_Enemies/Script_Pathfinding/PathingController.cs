@@ -31,7 +31,7 @@ public class PathingController
     private int gridBoundX = 0, gridBoundY = 0;
     private int startX, startY;
 
-    private bool isActive = false;
+    public bool isActive { get; private set; } = false;
     private Animator animator; //used to toggle walk cycle as necessary
 
 
@@ -59,6 +59,12 @@ public class PathingController
         }
     }
 
+    public void setActive(bool a)
+    {
+        //for periodically disabling the controller during specific states like knockback
+        isActive = a;
+    }
+
     //method is called every frame by the mob's update method
     public void moveAlongPath(float speed)
     {
@@ -68,7 +74,7 @@ public class PathingController
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
 
             float step = speed * Time.deltaTime;
-            Debug.Log("ENEMY MOVING TOWARDS " + nextPos.ToString() + "");
+            //Debug.Log("ENEMY MOVING TOWARDS " + nextPos.ToString() + "");
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
 
             //face towards next position
@@ -167,6 +173,13 @@ public class PathingController
     {
         target = t;
         //assign startcell and endcell
+        findPath();
+        Debug.Log("setting new target");
+    }
+
+    public Transform getTarget()
+    {
+        return target;
     }
 
     public void setSize(int s)
@@ -178,6 +191,8 @@ public class PathingController
     //reset start and end cell locations; used to update path if target moves
     private void resetPath()
     {
+        startX = (int) controlled.transform.position.x;
+        startY = (int) controlled.transform.position.y;
         startCell = pgrid.getCellFromWorld(startX, startY);
         endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
     }

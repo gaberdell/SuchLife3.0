@@ -6,51 +6,26 @@ using UnityEngine.Tilemaps;
 
 [SaveableComponent("Scrombolo Bombolo")]
 public class Bomb : Mob
-{
-    [SerializeField] private CircleCollider2D enemyCollider;
-    //[SerializeField] private AIPath path;
-    [SerializeField] private Animator animator;
-    [SerializeField] private ParticleSystem particles;
-
+{   
     private List<Transform> targets;
     //private AIDestinationSetter pathSetter;
     [SerializeField] private float explodeAtDistance;
     [SerializeField] private float explosionRadius;
     [SerializeField] private float explosionDelay;
 
-    public void testFunction() { }
-
     [Saveable("Distance")]
     private float distance;
     [Saveable("IsExploding")]
     private bool isExploding = false;
 
-
-    // public delegate void OnExplode(Collider2D explosionCollider);
-    // public static event OnExplode onExplode;
-
-
-    //public Bomb(Vector3 pos)
-    //{
-    //    //
-    //    worldPos = pos;
-    //}
     void Start()
     {
         blockTilemap = blockTilemap != null ? blockTilemap : GameObject.Find(tileMapName).GetComponent<Tilemap>();
-        pathController.setAnimator(animator);
+        //pathController.setAnimator(animator);
         pathController.setSize(1);
-        pathController.toggleActive();
+        //pathController.toggleActive();
         targets = new List<Transform>();
 
-
-        //TEMP TARGET PLACING FOR TESTING
-
-        //target = GameObject.Find("Player").transform;
-
-        //rework pathfinding to have an 'alert' range instead to handle multiple player objects existing
-
-        //pathSetter.target = target;
         objectInScene = gameObject;
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
@@ -79,30 +54,9 @@ public class Bomb : Mob
     void Update()
     {
         //updateKnockback(); //inherited from mob parent
-        updateChunkPos(); //inherited from mob parent; ideally put in update method shared by all mobs
-
-
-        float smallestDistance = float.MaxValue;
-        foreach (Transform t in targets) {
-            float newDistance = Vector2.Distance(transform.position, t.position);
-            if (newDistance < smallestDistance) {
-                target = t;
-                smallestDistance = newDistance;
-            }
-        }
-
-        //distance = Vector2.Distance(transform.position, target.position);
-
-        if (smallestDistance <= aggroDistance && !isExploding)
-        {
-            //path.enabled = true;
-        }
-
-        /*if (path.desiredVelocity.magnitude > 0) {
-            animator.SetBool("Walk", true);
-        }*/
-
-        if (smallestDistance <= explodeAtDistance && !isExploding)
+        
+        //explosion check
+        if (pathController.isActive && (Mathf.Abs(Vector3.Distance(pathController.getTarget().position, transform.position))) <= explodeAtDistance && !isExploding)
         {
             isExploding = true;  
             StartCoroutine(Explode());
