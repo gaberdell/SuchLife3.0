@@ -243,6 +243,13 @@ public class InputHandler : MonoBehaviour
         return Mouse.current.position.ReadValue();
     }
 
+    public float GetMouseLookPos() {
+        Vector2 tempVec = 2f * Mouse.current.position.ReadValue() / new Vector2(Screen.width, Screen.height);
+        tempVec -= Vector2.one;
+
+        return Mathf.Atan2(tempVec.y, tempVec.x);
+    }
+
     //Re register things if a PlayerInput was deleted
     private void regenerateActions(Scene current)
     {

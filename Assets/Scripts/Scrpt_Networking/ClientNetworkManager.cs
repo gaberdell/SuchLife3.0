@@ -154,7 +154,6 @@ public class ClientNetworkManager : MonoBehaviour
                             eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1 + bytesForUInt + bytesUsedForPos).ToArray(), out int rotBytesUsed);
                             totalBytesUsed = 1 + bytesForUInt + bytesUsedForPos + rotBytesUsed;
                         }
-                    
                         newCommand.prefabPosition = prefabPosition;
                         newCommand.prefabRotation = eulerRotation;
                         newCommand.networkId = newPrefabNetworkId;
@@ -229,6 +228,8 @@ public class ClientNetworkManager : MonoBehaviour
 
                 Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount).ToArray(), out int bytesUsed);
                 Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
+
+                Debug.Log($"Euler rotation {eulerRotation}");
 
                 newCommand.networkId = objectUIntIdToUpdate;
                 newCommand.prefabPosition = prefabPosition;
@@ -333,10 +334,12 @@ public class ClientNetworkManager : MonoBehaviour
         if (isActivated) {
             float xValue = InputHandler.Instance.MoveInput.x;
             float yValue = InputHandler.Instance.MoveInput.y;
+            float rot = InputHandler.Instance.GetMouseLookPos();
             byte[] xBytes = ConvertToByteArray.ConvertValueToBytes(xValue);
             byte[] yBytes = ConvertToByteArray.ConvertValueToBytes(yValue);
+            byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(rot);
 
-            sendDataWithUdp(xBytes.Concat(yBytes).ToArray());
+            sendDataWithUdp(xBytes.Concat(yBytes).Concat(rotBytes).ToArray());
             // sendDataWithUdp(;
             if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();

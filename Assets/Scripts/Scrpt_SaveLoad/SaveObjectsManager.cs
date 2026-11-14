@@ -255,7 +255,6 @@ public class SaveObjectsManager : MonoBehaviour
 
         byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
         byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles);
-
         returnArray.AddRange(prefabPosition);
         returnArray.AddRange(prefabRotation);
         

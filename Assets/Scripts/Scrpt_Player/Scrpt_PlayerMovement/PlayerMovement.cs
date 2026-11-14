@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
     private void handleRotation()
     {
 
-        goalRot = Mathf.Rad2Deg * Mathf.Atan2(input.MousePositionUnitVector.y, input.MousePositionUnitVector.x) + 90f;
+        goalRot = Mathf.Rad2Deg * input.PlayerIntendedRotation + 90f;
         /*
         if (inputHandler.IsMouseEnabled == true)
         {

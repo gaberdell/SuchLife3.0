@@ -438,6 +438,14 @@ public class ServerNetworkManager : MonoBehaviour
                         break;
                     case NetworkOpCodeEnum.UPDATE_PREFAB:
                         if (players.TryGetValue(newCommand.tcpOriginId, out GameObject playerWithTCPID)) {
+
+                            string mog35 = "{";
+                            for (int i = 0; i < newCommand.idOfPrefab.Length; i++) {
+                                mog35 += newCommand.idOfPrefab[i] + ",";
+                            }
+                            mog35 += "}";
+
+                            Debug.Log("New command data? : " + mog35);
                             playerWithTCPID.GetComponent<PlayerNetworkDataToMovement>().SetFromNetworkBytes(newCommand.idOfPrefab);
                         }
                         break;
