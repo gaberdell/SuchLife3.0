@@ -537,13 +537,21 @@ public class CraftingUI : MonoBehaviour
             //if they are the same items then increment the quantity of the second item
             if (target.item == itemInCursor)
             {
-                AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, itemInCursorQuantity);
-                clearSelectedItem();
-                Cursor.visible = true;
-                //reset first selected item
-                firstButtonPress.type = null;
-                firstButtonPress.index = -1;
+                int space = itemInCursor.maxStack - target.quantity;
+                int moved = Mathf.Min(space, itemInCursorQuantity);
 
+                if (moved > 0)
+                {
+                    AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, moved);
+                    itemInCursorQuantity -= moved;
+                }
+
+                if (itemInCursorQuantity <= 0)
+                {
+                    clearSelectedItem();
+                    firstButtonPress.type = null;
+                    firstButtonPress.index = -1;
+                }
             } else
             {
                 //set sprite for cursor
@@ -590,6 +598,9 @@ public class CraftingUI : MonoBehaviour
 
         //like Minecraft: only craft if the cursor is empty or already holding this same item
         if (itemInCursor != null && itemInCursor != resultItem) return;
+
+        int currentInCursor = (itemInCursor == null) ? 0 : itemInCursorQuantity;
+        if (currentInCursor + resultRecipe.resultQuantity > resultItem.maxStack) return;
 
         if (itemInCursor == null)
         {
