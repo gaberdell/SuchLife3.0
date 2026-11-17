@@ -33,7 +33,7 @@ public class DataServiceInput : MonoBehaviour
     if (Input.GetKeyDown(F)) DataService.Fetch();
 
     // save game state
-    else if (Input.GetKeyDown(X)) DataService.SaveCurr();
+    else if (Input.GetKeyDown(X)) DataService.SaveTilemapData(TilemapSaveLoad.SaveGrid());
 
     // load game 
     else if (Input.GetKeyDown(V)) {

@@ -7,21 +7,31 @@ using UnityEngine.SceneManagement;
 
 
 // used by fetch; simple packet that contains a save's path, name, and last modified date and time
-public struct SaveInfo {
+public struct SaveInfo : IComparable<SaveInfo> {
     public string path;
     public string name;
     public uint order;
     public uint saveVersion;
     public DateTime lastModified;
+
+    public int CompareTo(SaveInfo other)
+    {
+        return order.CompareTo(other.order);
+    }
 }
 
-public struct ServerInfo {
+public struct ServerInfo : IComparable<ServerInfo> {
     public string path;
     public string name;
     public string ip;
     public byte[] uuid;
     public uint order;
     public uint saveVersion;
+
+    public int CompareTo(ServerInfo other)
+    {
+        return order.CompareTo(other.order);
+    }
 }
 
 public struct  ServerClientsDataInfo {
@@ -60,19 +70,6 @@ public class DataService {
     private static SaveInfo SAVEINFO_NULL; // blank save info struct
 
 
-    public static int SaveInfoOrder(SaveInfo order, SaveInfo order2)
-    {
-        //in a perfect world imagine order.order <=> order2.order
-        //however this is not a perfect world
-        return order.order > order2.order ? 1 : (order.order < order2.order ? -1 : 0);
-    }
-
-    public static int ServerInfoOrder(ServerInfo order, ServerInfo order2) {
-        //in a perfect world imagine order.order <=> order2.order
-        //however this is not a perfect world
-        return order.order > order2.order ? 1 : (order.order < order2.order ? -1 : 0);
-    }
-
     // returns basic info : name, date (in that order) on all saves
     public static List<SaveInfo> Fetch() {
         Directory.CreateDirectory(savePath); // automatically create Saves\ directory if it doesn't exist
@@ -89,7 +86,7 @@ public class DataService {
             allBasicSaveData.Add(basicSaveInfo);
         }
 
-        allBasicSaveData.Sort(SaveInfoOrder);    
+        allBasicSaveData.Sort();    
 
         return allBasicSaveData;
     }
@@ -108,7 +105,7 @@ public class DataService {
             allBasicSaveData.Add(basicSaveInfo);
         }
 
-        allBasicSaveData.Sort(ServerInfoOrder);
+        allBasicSaveData.Sort();
 
         return allBasicSaveData;
     }
@@ -301,33 +298,16 @@ public class DataService {
         File.WriteAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME, saveData);
     }
 
-  // saves current scene into savePath + name, returns success through a boolean
-  // NOTE: as of 2025-04-04, TestScene is what is saved
-    public static bool SaveCurr() {
-        Directory.CreateDirectory(savePath);
-
-        // checks if a world is currently loaded
-        if (worldName == null) {
-            Debug.LogError("DataService: World not loaded!");
-            return false;
-        }
-
-        // saving world grid/tilemap
-        string gridData = GridSaveLoad.SaveGrid();
-        if (gridData == null) {
-            Debug.LogError("DataService: SaveGrid() failed!");
-            return false;
-        }
-
-        // writing to file
-        string namedSavePath = savePath + saveName;
-        Debug.Log("DataService: Saving to \"" + namedSavePath + "\"...");
-        File.WriteAllText(namedSavePath, gridData);
-    
-        Debug.Log("DataService: World saved!");
-
-        return true;
+    // Tilemap save/load addition
+    public static void SaveTilemapData(byte[] saveData) {
+        File.WriteAllBytes(currentSavePath + "/" + WORLD_DATA_SAVE_NAME, saveData);
     }
+
+    public static byte[] LoadTilemapData() {
+        return File.ReadAllBytes(currentSavePath + "/" + WORLD_DATA_SAVE_NAME);
+    }
+
+  // removed below
 
     public static AsyncOperation LoadAsync(string path, bool isLocalSave = false) {
         IsLocalSave = isLocalSave;
