@@ -23,6 +23,7 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
     [SerializeField] GameObject foxEnemy;
+    [SerializeField] GameObject albinoFoxEnemy;
     [SerializeField] GameObject crateObject;
     [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
@@ -255,6 +256,13 @@ public class RenderDungeon : MonoBehaviour
             {
                 //Fox newEntity = new Fox(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 ChunkManager.addEntityToChunk(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "AlbinoFox")
+            {
+                //Fox newEntity = new Fox(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(albinoFoxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 //Instantiate(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
             }
 

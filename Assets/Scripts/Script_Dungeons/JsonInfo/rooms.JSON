@@ -126,6 +126,23 @@
       {
          "type": "Cave",
          "tileLayout": [
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF",
+         "FFFFF"
+         ],
+         "entities": [{
+            "entityName": "AlbinoFox",
+            "relativeX": 3,
+            "relativeY": 3
+         }],
+         "width": 5,
+         "height": 5
+      },
+      {
+         "type": "Cave",
+         "tileLayout": [
          "XXFFFFFFFXX",
          "XFFFFFFFFFX",
          "FFFFXXXFFFF",
