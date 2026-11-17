@@ -1059,11 +1059,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8959371218710664441}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 50
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -1096,6 +1096,7 @@ MonoBehaviour:
   damage: 10
   animator: {fileID: 4277385478655517277}
   particles: {fileID: 0}
+  speed: 0.02
 --- !u!58 &1380031502883434819
 CircleCollider2D:
   m_ObjectHideFlags: 0

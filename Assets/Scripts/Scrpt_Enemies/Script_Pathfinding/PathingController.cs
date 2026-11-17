@@ -15,7 +15,8 @@ public class PathingController
     Tilemap wallMap = ChunkManager.GetWallTilemap();
 
     Transform controlled;
-    Transform target;
+    //Transform target;
+    Vector3 target;
     PathCell startCell;
     PathCell endCell;
 
@@ -73,21 +74,21 @@ public class PathingController
             //step towards the next world pos in the path
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
 
-            float step = speed * Time.deltaTime;
+            float step = speed;
             //Debug.Log("ENEMY MOVING TOWARDS " + nextPos.ToString() + "");
             controlled.position = Vector3.MoveTowards(controlled.position, nextPos, step);
 
             //face towards next position
             Vector3 moveDir = (controlled.position - nextPos);
             float nextAngle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-            controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle + 90), Time.deltaTime);
+            controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle + 90), step);
 
             //make sure walking animation is playing
-            if (animator) animator.SetBool("Walk", true);
+            if (animator) animator.SetBool("Walk", true);  
 
             if (Vector3.Distance(controlled.position, nextPos) < 0.2f)
             {
-                Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
+                //Debug.Log("MOVING TO NEXT PATH STEP AT " + nextPos.ToString() + "");
                 currentPath.RemoveAt(0);
 
                 //if finished with the path then stop walking
@@ -169,7 +170,7 @@ public class PathingController
     }
 
     //used to set a target after initialization
-    public void setTarget(Transform t)
+    public void setTarget(Vector3 t)
     {
         target = t;
         //assign startcell and endcell
@@ -177,7 +178,7 @@ public class PathingController
         Debug.Log("setting new target");
     }
 
-    public Transform getTarget()
+    public Vector3 getTarget()
     {
         return target;
     }
@@ -194,7 +195,7 @@ public class PathingController
         startX = (int) controlled.transform.position.x;
         startY = (int) controlled.transform.position.y;
         startCell = pgrid.getCellFromWorld(startX, startY);
-        endCell = pgrid.getCellFromWorld((int)target.position.x, (int)target.position.y);
+        endCell = pgrid.getCellFromWorld((int)target.x, (int)target.y);
     }
 
     //called after grid is created; give every pathcell its neighbor

@@ -183,6 +183,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec07dd65eaefc824b9eddf7ff4c2872a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: EnemiesAssem::BreakableEntity
+  Atype: 3
+  aggroDistance: 1
+  enemyCollider: {fileID: 0}
+  damage: 10
+  animator: {fileID: 0}
+  particles: {fileID: 0}
 --- !u!1001 &1039652483302165292
 PrefabInstance:
   m_ObjectHideFlags: 0

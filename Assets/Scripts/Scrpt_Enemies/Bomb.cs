@@ -56,7 +56,7 @@ public class Bomb : Mob
         //updateKnockback(); //inherited from mob parent
         
         //explosion check
-        if (pathController.isActive && (Mathf.Abs(Vector3.Distance(pathController.getTarget().position, transform.position))) <= explodeAtDistance && !isExploding)
+        if (pathController.isActive && target != null && (Mathf.Abs(Vector3.Distance(pathController.getTarget(), transform.position))) <= explodeAtDistance && !isExploding)
         {
             isExploding = true;  
             StartCoroutine(Explode());

@@ -14,7 +14,7 @@ public class Fox : Mob
         enemyAttack = GetComponent<EnemyAttack>(); // later set target if get attacked
         //set starting chunk
         chunkPos = ChunkManager.getChunkPosFromWorld(objectInScene.transform.position);
-
+        pathController.setSize(1);
     }
     
 }
