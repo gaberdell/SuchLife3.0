@@ -42,7 +42,7 @@ public class InitialWorldSetup : MonoBehaviour
 
         //Change to be if it actually cant find 
         if (entitySaveDataBytes == null || entitySaveDataBytes.Length == 0) {
-            player = SaveablePrefabManager.CreatePrefab("Player", Vector3.zero, Quaternion.Euler(0,0,0));
+            player = SaveablePrefabManager.CreatePrefab("Player", Vector3.zero, 0f);
 
         } else {
             player = SaveObjectsManager.LocalPlayerFromSaveData;

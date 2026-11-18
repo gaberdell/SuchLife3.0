@@ -36,7 +36,9 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     static public List<GameObject> SaveablePrefabs { get; private set; }
 
+    //Set this later as a massive array why use dictionary overhead
     static public Dictionary<uint, GameObject> NetworkIdsPrefabs {get; private set;}
+    static public Dictionary<uint, PrefabSaveInfo> NetworkIdsSaveInfoCache { get; private set; }
 
     static uint MAX_BYTES_FOR_ENTITIES = 1024;
 
@@ -117,16 +119,17 @@ public class SaveablePrefabManager : MonoBehaviour {
 
         SaveablePrefabs.Remove(prefab);
         NetworkIdsPrefabs.Remove(entity.NetworkId);
+        NetworkIdsSaveInfoCache.Remove(entity.NetworkId);
 
         EventManager.SetPrefabRemovedFromScene(prefab);
 
         Destroy(prefab);
     }
 
-    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
+    static public GameObject CreatePrefab(GameObject prefab, Vector3 position, float rotationZ, uint? id = null, bool isQuiet = false)
     {
         //Maybe use object pooling
-        GameObject newObject = Instantiate(prefab, position, rotation);
+        GameObject newObject = Instantiate(prefab, position, Quaternion.Euler(0f,0f,rotationZ));
 
         PrefabSaveInfo entity = newObject.gameObject.AddComponent<PrefabSaveInfo>();
         entity.PrefabId = PrefabToByteKey[prefab];
@@ -148,6 +151,7 @@ public class SaveablePrefabManager : MonoBehaviour {
 ;
         SaveablePrefabs.Add(newObject);
         NetworkIdsPrefabs.Add(entity.NetworkId, newObject);
+        NetworkIdsSaveInfoCache.Add(entity.NetworkId, entity);
 
         if (!isQuiet) {
             EventManager.SetPrefabAddedToScene(newObject);
@@ -158,15 +162,15 @@ public class SaveablePrefabManager : MonoBehaviour {
 
     static public GameObject CreatePrefab(string prefabName, uint? id = null, bool isQuiet = false)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, Quaternion.identity, id, isQuiet);
+        return CreatePrefab(StringToPrefabKey[prefabName], Vector3.zero, 0f, id, isQuiet);
     }
 
-    public static GameObject CreatePrefab(string prefabName, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
+    public static GameObject CreatePrefab(string prefabName, Vector3 position, float rotationZ, uint? id = null, bool isQuiet = false)
     {
-        return CreatePrefab(StringToPrefabKey[prefabName], position, rotation, id, isQuiet);
+        return CreatePrefab(StringToPrefabKey[prefabName], position, rotationZ, id, isQuiet);
     }
 
-    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, Quaternion rotation, uint? id = null, bool isQuiet = false)
+    public static GameObject CreatePrefab(byte[] prefabId, Vector3 position, float rotationZ, uint? id = null, bool isQuiet = false)
     {
         string add = "{";
         for (int i = 0; i < prefabId.Length; i++) {
@@ -177,7 +181,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         Debug.Log("Print out prefab for create : " + add);
         Debug.Log("Prefab length for create : " + prefabId.Length);
 
-        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotation, id, isQuiet);
+        return CreatePrefab(ByteToPrefabKey[prefabId], position, rotationZ, id, isQuiet);
     }
 
 #if UNITY_EDITOR
@@ -229,6 +233,7 @@ public class SaveablePrefabManager : MonoBehaviour {
         StringToPrefabKey.Add(SCROMBOLO_BOMBOLO_NAME, SCROMBOLO_BOMBOLO_PREFAB);
 
         NetworkIdsPrefabs = new Dictionary<uint, GameObject>();
+        NetworkIdsSaveInfoCache = new Dictionary<uint, PrefabSaveInfo>();
     }
     void Awake()
     {

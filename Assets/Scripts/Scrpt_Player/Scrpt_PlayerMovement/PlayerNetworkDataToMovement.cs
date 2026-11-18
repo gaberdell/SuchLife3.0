@@ -2,7 +2,6 @@ using System.Linq;
 using UnityEngine;
 
 public class PlayerNetworkDataToMovement : AbstractPlayerMovementGetter {
-    // TODO : Figure out what protocal for us is needed get player movement and apply it
     void Start()
     {
         MovementInput = Vector2.zero;
@@ -17,4 +16,9 @@ public class PlayerNetworkDataToMovement : AbstractPlayerMovementGetter {
         PlayerIntendedRotation = rot;
         Debug.Log(PlayerIntendedRotation);
     }
+    public void SetPlayerControlValues(float xValue, float yValue, float rot) {
+        MovementInput = new Vector2(xValue, yValue);
+        PlayerIntendedRotation = rot;
+    }
+
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class ConvertToByteArray
@@ -56,6 +57,9 @@ public class ConvertToByteArray
             //Tested it is in fact 16!
             return ((Guid)value).ToByteArray();
         }
+        else if (value.GetType() == typeof(string)) {
+            return Encoding.UTF8.GetBytes((string)value).Concat(new byte[1] {0}).ToArray();
+        }
 
         Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
         return null;
@@ -75,21 +79,47 @@ public class ConvertToByteArray
         return returnArray;
     }
 
-    public static object ConvertBytesToValue(Type wantedType, byte[] value, out int bytesUsed) {
+    //Oof two switch statements back to back :sob: could break this out
+    //into seperate abstract classes prob will
+    public static int GetSizeOfValue(Type wantedType, byte[] value) {
         if (wantedType == typeof(int)) {
-            bytesUsed = sizeof(int);
+            return sizeof(int);
+        }
+        else if (wantedType == typeof(uint)) {
+            return sizeof(uint);
+        }
+        else if (wantedType == typeof(float)) {
+            return sizeof(float);
+        }
+        else if (wantedType == typeof(double)) {
+            return sizeof(double);
+        }
+        else if (wantedType == typeof(Vector3)) {
+            return 3 * sizeof(float);
+        }
+        else if (wantedType == typeof(Guid)) {
+            return 16;
+        }
+        else if (wantedType == typeof(string)) {
+            return Array.IndexOf(value, 0) + 1;
+        }
+
+        return -1;
+    }
+
+    public static object ConvertBytesToValue(Type wantedType, byte[] value, out int bytesUsed) {
+        bytesUsed = GetSizeOfValue(wantedType, value);
+
+        if (wantedType == typeof(int)) {
             return BitConverter.ToInt32(value);
         }
         else if (wantedType == typeof(uint)) {
-            bytesUsed = sizeof(uint);
             return BitConverter.ToUInt32(value);
         }
         else if (wantedType == typeof(float)) {
-            bytesUsed = sizeof(float);
             return BitConverter.ToSingle(value);
         }
         else if (wantedType == typeof(double)) {
-            bytesUsed = sizeof(double);
             return BitConverter.ToDouble(value);
         }
         else if (wantedType == typeof(Vector3)) {
@@ -107,20 +137,18 @@ public class ConvertToByteArray
                 zBytes[i] = value[i + 2 * sizeof(float)];
             }
 
-            bytesUsed = 3*sizeof(float);
-
             return new Vector3(BitConverter.ToSingle(xBytes), BitConverter.ToSingle(yBytes),
                                BitConverter.ToSingle(zBytes));
         }
         else if (wantedType == typeof(Guid)) {
-            //TODO: Big assumtion that the GUID will always be 16 bytes
-            bytesUsed = 16;
             return new Guid(value.Take(16).ToArray());
+        }
+        else if (wantedType == typeof(string)) {
+            string returnValue = Encoding.UTF8.GetString(value,0,bytesUsed-1);
         }
 
 
-            Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
-        bytesUsed = 0;
+        Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
         return null;
     }
 }

@@ -39,16 +39,21 @@ public class DataService {
     const string BASIC_SAVE_NAME = "Basic.json";
     const string WORLD_DATA_SAVE_NAME = "WorldData.save";
     const string ENTITY_SAVE_NAME = "Entity.save";
+    const string PLAYER_AVATAR_DATA = "PlayerGlobalData.save";
 
     const string SERVER_SAVES_FOLDER_NAME = "ServerSaves";
 
     private static string WORLD_SCENE_NAME = "MainGameplayScene";
+
+    private static string GLOBAL_SAVE_VARIABLES = "GlobalSaves";
 
     const uint currentSaveVersion = 0; //idk deal with 
 
     private static string savePath = Application.persistentDataPath + "/" + SAVES_FOLDER_NAME + "/";
 
     private static string serverSavePath = Application.persistentDataPath + "/" + SERVER_SAVES_FOLDER_NAME + "/";
+
+    private static string globalSavePath = Application.persistentDataPath + "/" + GLOBAL_SAVE_VARIABLES + "/";
 
     private static string saveName = null; // name of the current world's save file
     private static string worldName = null; // name of the current world
@@ -162,12 +167,6 @@ public class DataService {
         saveName = EnsureUniqueName(savePath, saveName);
 
         saveFolder = saveName;
-
-        //saveName += ".json";
-
-        //bool success = SaveCurr();
-        //if (!success)
-        //    return SAVEINFO_NULL; // returns blank save info
 
         string almostFinishedPath = savePath + saveFolder + "/";
         Directory.CreateDirectory(almostFinishedPath);
@@ -294,15 +293,23 @@ public class DataService {
 
 
     public static byte[] LoadEntitySaveData() {
-        return File.ReadAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME);
+        return File.ReadAllBytes(currentSavePath + ENTITY_SAVE_NAME);
     }
 
     public static void SaveEntitySaveData(byte[] saveData) {
-        File.WriteAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME, saveData);
+        File.WriteAllBytes(currentSavePath + ENTITY_SAVE_NAME, saveData);
     }
 
-  // saves current scene into savePath + name, returns success through a boolean
-  // NOTE: as of 2025-04-04, TestScene is what is saved
+    public static void SaveGlobalPlayerAvatarData(string playerUsername) {
+        File.WriteAllText(globalSavePath + PLAYER_AVATAR_DATA, playerUsername);
+    }
+
+    public static string LoadGlobalPlayerAvatarData() {
+        return File.ReadAllText(globalSavePath + PLAYER_AVATAR_DATA);
+    }
+
+    // saves current scene into savePath + name, returns success through a boolean
+    // NOTE: as of 2025-04-04, TestScene is what is saved
     public static bool SaveCurr() {
         Directory.CreateDirectory(savePath);
 

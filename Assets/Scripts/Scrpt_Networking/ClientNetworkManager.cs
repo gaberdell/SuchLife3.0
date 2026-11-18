@@ -8,6 +8,12 @@ using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
+NOTE These are only for the scripts that send it over
+    so this script won't have the bytes it recieves on it
+
+Note Protocols are specified inside of BaseNetwork send packet
+ */
 
 public class ClientNetworkManager : MonoBehaviour
 {
@@ -29,7 +35,7 @@ public class ClientNetworkManager : MonoBehaviour
 
     private uint localPlayerPrefabNetworkId;
 
-    private ConcurrentQueue<NetworkMainThreadStruct> ExecuteOtherThreadRequestQueue;
+    private ConcurrentQueue<BaseNetworkSendPacket> ExecuteOtherThreadRequestQueue;
 
     private float lastTimeUpdatedPlayerPos = 0;
 
@@ -55,7 +61,8 @@ public class ClientNetworkManager : MonoBehaviour
                 }
             }
 
-            sendDataWithTcp(DataService.localPlayerUUID.ToByteArray());
+            
+            sendDataWithTcp(new PlayerAddPacket(DataService.localPlayerUUID, DataService.LoadGlobalPlayerAvatarData()).GetPacketBytes());
         }
         catch (Exception e) {
             Debug.LogError(e.Message);
@@ -90,7 +97,7 @@ public class ClientNetworkManager : MonoBehaviour
     void Start()
     {
         if (!DataService.IsLocalSave && DataService.IsMultiplayer) {
-            ExecuteOtherThreadRequestQueue = new ConcurrentQueue<NetworkMainThreadStruct>();
+            ExecuteOtherThreadRequestQueue = new ConcurrentQueue<BaseNetworkSendPacket>();
             initialWorldSetup = FindAnyObjectByType<InitialWorldSetup>();
             if (!Uri.TryCreate(DataService.IpOfServer, UriKind.Absolute, out Uri urlWithIpAndPort)) {
                 Debug.Log("Try with http?");
@@ -115,7 +122,7 @@ public class ClientNetworkManager : MonoBehaviour
     }
 
     private void onRecieveDataTcp(IAsyncResult result) {
-        //try {
+        try {
             //TCP stream reads everything including multiple requests at once sometimes
             int bytesRead = tcpStream.EndRead(result);
             if (bytesRead > 0) {
@@ -127,61 +134,39 @@ public class ClientNetworkManager : MonoBehaviour
                 int bytesLeft = data.Length;
                 do {
                     using (PacketWrapper packet = new PacketWrapper(data)) {
-                            string add = "{";
-                            for (int i = 0; i < data.Length; i++) {
-                                add += data[i] + ",";
-                            }
-                            add += "}";
-
-                            Debug.Log("DATA_PRINT : " + add);
-
-
                     //TODO : Make Client processing stuff
-                    //Make me print a pretty message to da screen
                     byte[] packetBytes = packet.GetBytes();
 
-                        NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
-                        newCommand.networkOpCode = (NetworkOpCodeEnum)packetBytes[0];
+                    if (packetBytes.Count() == 0) { break; }
 
-                        uint newPrefabNetworkId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes.Skip(1).ToArray(), out int bytesForUInt);
+                    BaseNetworkSendPacket packetToSendOver = null;
+                    byte[] cBSkipOne = packetBytes.Skip(1).ToArray();
 
-                        Vector3 prefabPosition = Vector3.zero;
-                        Vector3 eulerRotation = Vector3.zero;
-                        int totalBytesUsed = 0;
+                    switch (packetBytes[0]) {
+                        case (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
+                            packetToSendOver = new AddPlayerFromNetwork(cBSkipOne, 
+                                currentSaveManager, initialWorldSetup);
+                            break;
+                        case (byte)NetworkOpCodeEnum.ADD_PREFAB:
+                            packetToSendOver = new AddNetworkGameObject(cBSkipOne, 
+                                currentSaveManager);
+                            break;
+                        case (byte)NetworkOpCodeEnum.REMOVE_PREFAB:
+                            packetToSendOver = new RemoveNetworkGameObject(cBSkipOne);
+                            break;
+                    }
 
-                        if (newCommand.networkOpCode != NetworkOpCodeEnum.REMOVE_PREFAB) {
-                            prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1+ bytesForUInt).ToArray(), out int bytesUsedForPos);
-                            eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(1 + bytesForUInt + bytesUsedForPos).ToArray(), out int rotBytesUsed);
-                            totalBytesUsed = 1 + bytesForUInt + bytesUsedForPos + rotBytesUsed;
-                        }
-                        newCommand.prefabPosition = prefabPosition;
-                        newCommand.prefabRotation = eulerRotation;
-                        newCommand.networkId = newPrefabNetworkId;
-                    
-                        if (newCommand.networkOpCode == NetworkOpCodeEnum.ADD_PREFAB) {
-                            int zeroByte = 0;
-                            for (int i = totalBytesUsed; i < packetBytes.Length; i++) {
-                                if (packetBytes[i] == 0) {
-                                    zeroByte = i;
-                                    break;
-                                }
-                            }
-
-
-                            newCommand.idOfPrefab = packetBytes.Skip(totalBytesUsed).Take(zeroByte - totalBytesUsed).ToArray();
-                            totalBytesUsed = zeroByte+1;
-                            Debug.Log("Total bytes used : " + totalBytesUsed);
-                            Debug.Log("Data Length : " + data.Length);
-                            Debug.Log("IdOfPrefabLen Length : " + newCommand.idOfPrefab.Length);
-                        }
-                        else {
-                            newCommand.idOfPrefab = null;
-                        }
-
-                        ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
-                        bytesLeft -= totalBytesUsed;
-                        data = data.Skip(totalBytesUsed).ToArray();
+                    if (packetToSendOver != null) {
+                        ExecuteOtherThreadRequestQueue.Enqueue(packetToSendOver);
+                        bytesLeft -= packetToSendOver.BytesUsed;
+                        data = data.Skip(packetToSendOver.BytesUsed).ToArray();
                         Debug.Log("Bytes left : " + bytesLeft);
+                    }
+                    else {
+                        break;
+                    }
+
+
                     }
                 } while (bytesLeft > 0);
             }
@@ -191,8 +176,8 @@ public class ClientNetworkManager : MonoBehaviour
             }
             recieveBuffer = new byte[MAX_TCP_RECIEVE_BUFFER];
             tcpStream.BeginRead(recieveBuffer, 0, recieveBuffer.Length, onRecieveDataTcp, null);
-        //}
-        /*catch (IOException) {
+        }
+        catch (IOException) {
             Debug.LogError("TCP Connection was lost.");
             StopClient();
         }
@@ -202,7 +187,7 @@ public class ClientNetworkManager : MonoBehaviour
         catch (Exception e) {
             Debug.LogError("Error reading TCP message booting from server : " + e.Message);
             StopClient();
-        }*/
+        }
     }
 
     //Maybe refactor cuz this stuff basically the same as the server code
@@ -221,23 +206,11 @@ public class ClientNetworkManager : MonoBehaviour
                 }
                 byte[] packetBytes = packet.GetBytes();
 
-                NetworkMainThreadStruct newCommand = new NetworkMainThreadStruct();
-                newCommand.networkOpCode = NetworkOpCodeEnum.UPDATE_PREFAB;
+                UpdateNetworkGameObject updatePacket = new UpdateNetworkGameObject(packetBytes, 
+                    currentSaveManager, localPlayerPrefabNetworkId, 
+                    MAX_TIME_BEFORE_WE_RESYNC_PLAYER);
 
-                uint objectUIntIdToUpdate = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packetBytes, out int skipAmount);
-
-                Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount).ToArray(), out int bytesUsed);
-                Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packetBytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
-
-                Debug.Log($"Euler rotation {eulerRotation}");
-
-                newCommand.networkId = objectUIntIdToUpdate;
-                newCommand.prefabPosition = prefabPosition;
-                newCommand.prefabRotation = eulerRotation;
-
-                newCommand.idOfPrefab = packetBytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();//Overcharged here to instead be the values to set it too
-
-                ExecuteOtherThreadRequestQueue.Enqueue(newCommand);
+                ExecuteOtherThreadRequestQueue.Enqueue(updatePacket);
             }
         }
         catch (Exception e) {
@@ -250,11 +223,8 @@ public class ClientNetworkManager : MonoBehaviour
     private void sendDataWithTcp(byte[] bytes) {
         try {
             using (PacketWrapper packet = new PacketWrapper()) {
-                Debug.Log("Inside packet wrapper");
                 packet.AddBytes(bytes);
-                Debug.Log("Added Bytes to TCP");
                 byte[] data = packet.GetBytes();
-                Debug.Log("Sending to TCP?");
                 tcpStream.Write(data, 0, data.Length);
             }
         }
@@ -279,52 +249,9 @@ public class ClientNetworkManager : MonoBehaviour
 
     void DispatchCommandsOnMainThread() {
         while (ExecuteOtherThreadRequestQueue.Count > 0) {
-            bool isNotBlocked = ExecuteOtherThreadRequestQueue.TryDequeue(out NetworkMainThreadStruct newCommand);
+            bool isNotBlocked = ExecuteOtherThreadRequestQueue.TryDequeue(out BaseNetworkSendPacket newCommand);
             if (isNotBlocked) {
-                switch (newCommand.networkOpCode) {
-                    
-                    case NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
-                        Debug.Log("Adding local player? " + newCommand.networkId);
-                        if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(newCommand.networkId)) {
-                            SaveablePrefabManager.DeletePrefab(newCommand.networkId);
-                        }
-
-                        localPlayerPrefabNetworkId = newCommand.networkId;
-                        GameObject newPlayer = SaveablePrefabManager.CreatePrefab("Player", newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), newCommand.networkId);
-                        initialWorldSetup.AddPlayerToGame(newPlayer);
-                        break;
-                    case NetworkOpCodeEnum.ADD_PREFAB:
-                        Debug.Log("Got add prefab request?");
-                        GameObject newPrefab = SaveablePrefabManager.CreatePrefab(newCommand.idOfPrefab, newCommand.prefabPosition, Quaternion.Euler(newCommand.prefabRotation), newCommand.networkId);
-                        break;
-                    case NetworkOpCodeEnum.REMOVE_PREFAB:
-                        SaveablePrefabManager.DeletePrefab(newCommand.networkId);
-                        break;
-                    case NetworkOpCodeEnum.UPDATE_PREFAB:
-                        if (SaveablePrefabManager.NetworkIdsPrefabs.TryGetValue(newCommand.networkId, out GameObject gO)) {
-
-                            if (newCommand.networkId != localPlayerPrefabNetworkId) {
-                                gO.transform.position = newCommand.prefabPosition;
-                                gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
-
-                                currentSaveManager.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[newCommand.networkId], null, newCommand.idOfPrefab, out int _);
-                            }
-                            else {
-                                if (Time.time - lastTimeUpdatedPlayerPos > MAX_TIME_BEFORE_WE_RESYNC_PLAYER) {
-                                    lastTimeUpdatedPlayerPos = Time.time;
-                                    //Debug.Log("New recieved position : " + newCommand.prefabPosition);
-                                    gO.transform.position = newCommand.prefabPosition;
-                                    //TODO : Sync rotation
-                                    //gO.transform.rotation = Quaternion.Euler(newCommand.prefabRotation);
-                                }
-                            }
-                        }
-                        else {
-                            Debug.Log("UDP Packet recieved! However this object seems to not exsist yet sorry!");
-                            return;
-                        }
-                        break;
-                }
+                newCommand.ExecuteSentBytes();
             }
         }
     }
@@ -335,11 +262,8 @@ public class ClientNetworkManager : MonoBehaviour
             float xValue = InputHandler.Instance.MoveInput.x;
             float yValue = InputHandler.Instance.MoveInput.y;
             float rot = InputHandler.Instance.GetMouseLookPos();
-            byte[] xBytes = ConvertToByteArray.ConvertValueToBytes(xValue);
-            byte[] yBytes = ConvertToByteArray.ConvertValueToBytes(yValue);
-            byte[] rotBytes = ConvertToByteArray.ConvertValueToBytes(rot);
-
-            sendDataWithUdp(xBytes.Concat(yBytes).Concat(rotBytes).ToArray());
+            
+            sendDataWithUdp(new PlayerMovementPacket(xValue, yValue, rot).GetPacketBytes());
             // sendDataWithUdp(;
             if (Input.GetKeyDown(KeyCode.X)) {
                 StopClient();

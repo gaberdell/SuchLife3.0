@@ -165,6 +165,27 @@ public class SaveObjectsManager : MonoBehaviour
         return savePrefab.ToArray();
     }
 
+    public int GetAmountOfBytesUsedInPrefab(byte[] prefabId, byte[] dataToSetTo) {
+        int readBytes = 0;
+
+        List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabId];
+
+        //Get a generic version to read through
+        GameObject prefab = SaveablePrefabManager.ByteToPrefabKey[prefabId];
+
+        for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
+            MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
+            foreach (FieldInfo field in componentType.SaveFields) {
+                int bytesUsed = ConvertToByteArray.GetSizeOfValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray());
+                if (bytesUsed == -1) { return -1; }
+                readBytes += bytesUsed;
+            }
+
+        }
+
+        return readBytes;
+    }
+
     public void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
         readBytes = 0;
 
@@ -178,17 +199,11 @@ public class SaveObjectsManager : MonoBehaviour
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
 
             MonoBehaviour component;
-            //ARE THESE SUPPOSED TO BE ZERO CHANGE IT BACK IF IM WRONG :SKULL:
-            if (saveableMonoBehaviorQuickRetriveDictionary.TryGetValue(prefab, out List<MonoBehaviour> saveableMonobehaviors)) {
-                component = saveableMonobehaviors[i];
-            }
-            else {
+            if (!saveableMonoBehaviorQuickRetriveDictionary.TryGetValue(prefab, out List<MonoBehaviour> saveableMonobehaviors)) {
                 GetAllSaveableMonoBehaviors(prefab);
-
-                component = saveableMonoBehaviorQuickRetriveDictionary[prefab][i];
             }
 
-            
+            component = saveableMonobehaviors.Find((e) => e.GetType() == componentType.MonobehaviorSaveType);
 
             foreach (FieldInfo field in componentType.SaveFields) {
                 field.SetValue(component, ConvertToByteArray.ConvertBytesToValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed));
@@ -219,9 +234,9 @@ public class SaveObjectsManager : MonoBehaviour
 
 
         Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed);
-        Vector3 eulerRotation = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes + bytesUsed).ToArray(), out int rotBytesUsed);
+        float eulerRotationZ = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes + bytesUsed).ToArray(), out int rotBytesUsed);
 
-        GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, Quaternion.Euler(eulerRotation.x, eulerRotation.y, eulerRotation.z));
+        GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, eulerRotationZ);
 
         //TODO : Player might not be id one so maybe change later?
         if (id.Length == 1 && id[0] == 1) {
@@ -238,7 +253,7 @@ public class SaveObjectsManager : MonoBehaviour
 
 
 
-    public List<byte> PrefabGetByteArray(GameObject prefab, bool addId = true) {
+    public List<byte> PrefabGetByteArray(GameObject prefab, bool addId = true, bool addRotAndPos = true) {
         PrefabSaveInfo prefabSaveInfo = prefab.GetComponent<PrefabSaveInfo>();
 
         if (prefabSaveInfo == null) {
@@ -253,11 +268,13 @@ public class SaveObjectsManager : MonoBehaviour
             returnArray.Add(0);
         }
 
-        byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
-        byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles);
-        returnArray.AddRange(prefabPosition);
-        returnArray.AddRange(prefabRotation);
-        
+        if (addRotAndPos) {
+            byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
+            byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles.z);
+            returnArray.AddRange(prefabPosition);
+            returnArray.AddRange(prefabRotation);
+        }
+
         List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabSaveInfo.PrefabId];
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
@@ -272,8 +289,6 @@ public class SaveObjectsManager : MonoBehaviour
 
                 component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
             }
-
-            //MonoBehaviour component = saveableMonoBehaviorQuickRetriveDictionary[prefab][0];
 
             foreach (FieldInfo field in componentType.SaveFields) {
                 returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
