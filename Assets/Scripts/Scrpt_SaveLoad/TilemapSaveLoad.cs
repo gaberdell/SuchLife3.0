@@ -98,12 +98,12 @@ public class TilemapSaveLoad
       return null;
     }
     Dictionary<string,byte> tileDict = new();
-    retval.Add(Convert.ToByte(allTiles.Length));
+    retval.Add((byte) allTiles.Length);
 
     for (int i = 0; i < allTiles.Length; ++i)
     {
-      tileDict.Add(allTiles[i].name, Convert.ToByte(i));
-      retval.Add(Convert.ToByte(allTiles[i].name.Length));
+      tileDict.Add(allTiles[i].name, (byte) i);
+      retval.Add((byte) allTiles[i].name.Length);
       retval.AddRange(Encoding.ASCII.GetBytes(allTiles[i].name));
     }
     retval.Add(0);
