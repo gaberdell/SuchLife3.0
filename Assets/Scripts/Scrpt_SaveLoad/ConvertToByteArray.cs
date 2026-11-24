@@ -58,6 +58,7 @@ public class ConvertToByteArray
             return ((Guid)value).ToByteArray();
         }
         else if (value.GetType() == typeof(string)) {
+            ByteArrayPrint.PrintByteArray(Encoding.UTF8.GetBytes((string)value).Concat(new byte[1] { 0 }).ToArray(), "Sending this byte array : ");
             return Encoding.UTF8.GetBytes((string)value).Concat(new byte[1] {0}).ToArray();
         }
 
@@ -101,7 +102,7 @@ public class ConvertToByteArray
             return 16;
         }
         else if (wantedType == typeof(string)) {
-            return Array.IndexOf(value, 0) + 1;
+            return Array.IndexOf(value, (byte)0) + 1;
         }
 
         return -1;
@@ -144,7 +145,9 @@ public class ConvertToByteArray
             return new Guid(value.Take(16).ToArray());
         }
         else if (wantedType == typeof(string)) {
-            string returnValue = Encoding.UTF8.GetString(value,0,bytesUsed-1);
+            ByteArrayPrint.PrintByteArray(value, "Value server to print : ");
+            Debug.Log($"Would print bytesUsed of value {bytesUsed-1}");
+            string returnValue = Encoding.UTF8.GetString(value,0,Math.Max(bytesUsed-1,0));
         }
 
 

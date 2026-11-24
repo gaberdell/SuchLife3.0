@@ -301,11 +301,18 @@ public class DataService {
     }
 
     public static void SaveGlobalPlayerAvatarData(string playerUsername) {
+        if (!Directory.Exists(globalSavePath)) {
+            Directory.CreateDirectory(globalSavePath);
+        }
+
         File.WriteAllText(globalSavePath + PLAYER_AVATAR_DATA, playerUsername);
     }
 
     public static string LoadGlobalPlayerAvatarData() {
-        return File.ReadAllText(globalSavePath + PLAYER_AVATAR_DATA);
+        if (File.Exists(globalSavePath + PLAYER_AVATAR_DATA)) {
+            return File.ReadAllText(globalSavePath + PLAYER_AVATAR_DATA);
+        }
+        return "guest";
     }
 
     // saves current scene into savePath + name, returns success through a boolean

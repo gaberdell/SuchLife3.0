@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 using Object = UnityEngine.Object;
 
 /*
@@ -54,6 +53,9 @@ public class PlayerMovementPacket : BaseNetworkSendPacket {
         ReadOnlyDictionary<int, PlayerNetworkDataToMovement> plrGODict = ServerNetworkManager.GetClientIdToPlayerGO();
 
         //Cach this
-        plrGODict[playerNetworkID].SetPlayerControlValues(playerX, playerY, playerRot);
+
+        if (plrGODict.TryGetValue(playerNetworkID, out PlayerNetworkDataToMovement value)) {
+            value.SetPlayerControlValues(playerX, playerY, playerRot);
+        }
     }
 }

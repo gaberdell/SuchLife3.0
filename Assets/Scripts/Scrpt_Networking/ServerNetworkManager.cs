@@ -122,6 +122,33 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
+
+    static void SendEachSavedGameObjectToPlayer(byte[] packetBytes, int clientID) {
+        Debug.Log("Recieved player join request");
+        bool doesPlayerAlreadyExsistInScene = false;
+
+        foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
+            BaseNetworkSendPacket packetToSend = null;
+
+            PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
+            PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
+            if (playerInfo != null && playerInfo.guid == new Guid(packetBytes.Take(16).ToArray())) {
+                packetToSend = new AddPlayerFromNetwork(saveInfo.NetworkId,
+                    saveObject.transform.position, saveObject.transform.eulerAngles.z);
+                doesPlayerAlreadyExsistInScene = true;
+            }
+            else {
+                packetToSend = addTcpBasic(saveObject);
+            }
+
+            SendToTcp(clientID, packetToSend.GetPacketBytes());
+        }
+
+        if (!doesPlayerAlreadyExsistInScene) {
+            ExecuteOtherThreadRequestQueue.Enqueue(new PlayerAddPacket(packetBytes, currentSaveManager, clientID));
+        }
+    }
+
     static void onRecieveDataTcp(IAsyncResult result) {
         TcpClientData data = (TcpClientData)result.AsyncState;
         try {
@@ -137,30 +164,14 @@ public class ServerNetworkManager : MonoBehaviour
                 }
 
                 using (PacketWrapper packet = new PacketWrapper(tcpBytes)) {
+                    
+                    if (packet.GetBytes()[0] == (byte)NetworkOpCodeEnum.DEAL_WITH_TCP_CONNECTION) {
+                        Debug.Log("Attempting to convert thing from tcp connection.");
+                        SendEachSavedGameObjectToPlayer(packet.GetBytes().Skip(1).ToArray(), data.ClientId);
+                    }
                     //TODO : Account for processing requiring me to make this like the client
                             //where it parses through the bytes each time for each new request
-                    bool doesPlayerAlreadyExsistInScene = false;
 
-                    foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
-                        BaseNetworkSendPacket packetToSend = null;
-
-                        PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
-                        PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
-                        if (playerInfo != null && playerInfo.guid == new Guid(packet.GetBytes().Take(16).ToArray())) {
-                            packetToSend = new AddPlayerFromNetwork(saveInfo.NetworkId,
-                                saveObject.transform.position, saveObject.transform.eulerAngles.z);
-                            doesPlayerAlreadyExsistInScene = true;
-                        }
-                        else {
-                            packetToSend = addTcpBasic(saveObject);
-                        }
-
-                        SendToTcp(data.ClientId, packetToSend.GetPacketBytes());
-                    }
-
-                    if (!doesPlayerAlreadyExsistInScene) {
-                        ExecuteOtherThreadRequestQueue.Enqueue(new PlayerAddPacket(packet.GetBytes(), currentSaveManager, data.ClientId));
-                    }
                 }
 
                 data.Buffer = new byte[MAX_TCP_BUFFER_ALLOCATION];
@@ -189,14 +200,11 @@ public class ServerNetworkManager : MonoBehaviour
 
             Debug.LogError("Unexpectedly lost client : " + clientEndPoint.Address + ":" + clientEndPoint.Port);
             Debug.Log("Attempting to remove client");
-            //Probably don't want to do this as we want player to persist between sessions
-            //Fix it so there's a time out so player will get auto disconnected..
-            //SaveablePrefabManager.DeletePrefab(players[data.ClientId]);
-            //players.Remove(data.ClientId);
+
             data.Client.Close();
         }
         catch (Exception e) {
-            Debug.LogError("Error when trying to do the tcp stuff " + e.Message);
+            Debug.LogError($"Error when trying to do the tcp stuff {e.Message}\n{e.StackTrace}");
         }
     }
 
@@ -305,6 +313,7 @@ public class ServerNetworkManager : MonoBehaviour
             currentSaveManager = FindAnyObjectByType<SaveObjectsManager>();
             instance = this;
             tcpClients = new Dictionary<int, TcpClientData>();
+            clientIdToPlayerMovement = new Dictionary<int, PlayerNetworkDataToMovement>();
             players = new Dictionary<Guid, GameObject>();
             ExecuteOtherThreadRequestQueue = new ConcurrentQueue<BaseNetworkSendPacket>();
             clientsLock = new object();

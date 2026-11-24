@@ -14,6 +14,6 @@ public static class ByteArrayPrint
     }
 
     public static void PrintByteArray(byte[] byteArray, string message) {
-        Debug.LogAssertion(message + ByteArrayToString(byteArray));
+        Debug.Log(message + ByteArrayToString(byteArray));
     }
 }

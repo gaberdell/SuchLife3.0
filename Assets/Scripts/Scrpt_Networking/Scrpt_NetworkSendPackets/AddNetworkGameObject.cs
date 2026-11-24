@@ -43,7 +43,7 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
 
     public AddNetworkGameObject(byte[] bytes, SaveObjectsManager sl) {
         itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int skipAmount);
-        int bytesUsedAfterIdOfPrefab = Array.IndexOf(bytes.Skip(skipAmount).ToArray(), 0) + 1;
+        int bytesUsedAfterIdOfPrefab = Array.IndexOf(bytes.Skip(skipAmount).ToArray(), (byte)0) + 1;
         prefabId = bytes.Skip(skipAmount).Take(bytesUsedAfterIdOfPrefab - skipAmount).ToArray();
         gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), bytes.Skip(bytesUsedAfterIdOfPrefab).ToArray(), out int bytesUsed);
         gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(bytesUsedAfterIdOfPrefab + bytesUsed).ToArray(), out int rotBytesUsed);

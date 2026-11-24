@@ -21,6 +21,9 @@ public class PlayerGUIDInfo : MonoBehaviour
     Vector3 textOffset;
 
     private void Start() {
+        if (username == null) {
+            username = "";
+        }
         userNameUI = Instantiate(textToCopy, transform.position+textOffset, Quaternion.identity);
         userNameUI.text = username;
     }

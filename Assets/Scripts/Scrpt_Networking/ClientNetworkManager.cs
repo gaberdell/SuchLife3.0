@@ -37,8 +37,6 @@ public class ClientNetworkManager : MonoBehaviour
 
     private ConcurrentQueue<BaseNetworkSendPacket> ExecuteOtherThreadRequestQueue;
 
-    private float lastTimeUpdatedPlayerPos = 0;
-
     public void StartClient(string ip, ushort port) {
         try {
             Debug.Log(String.Format("Joining server Ip of server : {0}, Port is {1}", ip, port));

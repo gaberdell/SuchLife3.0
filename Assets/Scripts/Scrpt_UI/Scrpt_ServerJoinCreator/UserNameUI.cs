@@ -12,10 +12,20 @@ public class UserNameUI : MonoBehaviour
 
 
     private void OnEnable() {
-        userNameUI.onSubmit.AddListener(SaveUsername);
+        userNameUI.onEndEdit.AddListener(SaveUsername);
+        userNameUI.onDeselect.AddListener(SaveUsername);
     }
 
     private void OnDisable() {
-        userNameUI.onSubmit.RemoveListener(SaveUsername);
+        userNameUI.onEndEdit.RemoveListener(SaveUsername);
+        userNameUI.onDeselect.RemoveListener(SaveUsername);
+    }
+
+    private void Start() {
+        string loadText = DataService.LoadGlobalPlayerAvatarData();
+
+        if (loadText != "guest") {
+            userNameUI.text = loadText;
+        }
     }
 }

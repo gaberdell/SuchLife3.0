@@ -1,4 +1,3 @@
-using PlasticGui.WorkspaceWindow;
 using UnityEngine;
 
 //Sorry for high documentation kind of felt like this needed it though
