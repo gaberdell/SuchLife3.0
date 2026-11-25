@@ -293,11 +293,11 @@ public class DataService {
 
 
     public static byte[] LoadEntitySaveData() {
-        return File.ReadAllBytes(currentSavePath + ENTITY_SAVE_NAME);
+        return File.ReadAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME);
     }
 
     public static void SaveEntitySaveData(byte[] saveData) {
-        File.WriteAllBytes(currentSavePath + ENTITY_SAVE_NAME, saveData);
+        File.WriteAllBytes(currentSavePath + "/" + ENTITY_SAVE_NAME, saveData);
     }
 
     public static void SaveGlobalPlayerAvatarData(string playerUsername) {

@@ -2680,8 +2680,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   username: 
-  textToCopy: {fileID: 0}
-  textOffset: {x: 0, y: 0, z: 0}
+  textToCopy: {fileID: 8967956732793786240, guid: 235e0cdadb206834c999bdd6959b8438, type: 3}
+  textOffset: {x: 0, y: 3, z: 0}
 --- !u!1 &4152069555864584868
 GameObject:
   m_ObjectHideFlags: 0

@@ -83,7 +83,7 @@ public class ClientNetworkManager : MonoBehaviour
         tcpStream?.Close();
         tcpClient?.Close();
         isActivated = false;
-        Debug.Log("Client Shut Down");
+        Debug.Log("Client Shut Down (if it was running to begin with..)");
     }
 
 

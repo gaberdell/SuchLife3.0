@@ -307,7 +307,7 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-    void Start()
+    void Awake()
     {
         if (instance == null && DataService.IsMultiplayer && DataService.IsLocalSave) {
             currentSaveManager = FindAnyObjectByType<SaveObjectsManager>();
@@ -327,6 +327,7 @@ public class ServerNetworkManager : MonoBehaviour
 
     static AddNetworkGameObject addTcpBasic(GameObject prefabToAdd) {
         PrefabSaveInfo curSaveInfo = prefabToAdd.GetComponent<PrefabSaveInfo>();
+        Debug.Log($"CurSaveInfo {curSaveInfo}\nCurSaveInfo.NetworkID {curSaveInfo?.NetworkId}\nPrefab to add {prefabToAdd}\ncurrentSaveManager {currentSaveManager}");
         AddNetworkGameObject addNewGO = new AddNetworkGameObject(curSaveInfo.NetworkId,
             curSaveInfo.PrefabId, prefabToAdd.transform.position, prefabToAdd.transform.rotation.eulerAngles.z,
              currentSaveManager.PrefabGetByteArray(prefabToAdd, false, false).ToArray());

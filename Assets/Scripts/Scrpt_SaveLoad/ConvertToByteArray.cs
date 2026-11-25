@@ -4,23 +4,39 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+/// <summary>
+/// Converts bytes to arrays and back and forth
+/// Expect nulls as byte array of {0,0,0,0}
+/// Additionally expect empty strings as {0,0,0,0}
+/// For our purposes yet we treat empty strings and nulls
+/// as identical
+/// 
+/// Four 0 value is done to make array reading easier
+/// As it means a null array easily gets read as a 0 value
+/// as arrays contain a prepended int value of four bytes
+/// detailing how long the array is
+/// 
+/// PS array count value is int cuz thats how c# does it
+/// even tho ya it should be uint but what u gonna do
+/// </summary>
 public class ConvertToByteArray
 {
-    public static byte[] ConvertValueArrayToBytes(object[] values) {
-        List<byte> byteList = new List<byte>();
-
-        byteList.AddRange(ConvertValueToBytes(values.Length));
-
-        for (int i = 0; i < values.Length; i++) {
-            byteList.AddRange(ConvertValueToBytes(values[i]));
-        }
-
-        return byteList.ToArray();
+    //Null values are represented as four bytes
+    public static byte[] GetNewNullValue() {
+        return new byte[4] { 0, 0, 0, 0 };
     }
 
     public static byte[] ConvertValueToBytes(object value) {
+        //TODO : Ensure potocols that could be nullable will easily be read if zero
+        if (value == null) {
+            //Like this since arrays can be max size of uint
+            return GetNewNullValue();
+        }
 
-        if (value.GetType() == typeof(int)) {
+        if (value.GetType() == typeof(byte)) {
+            return new byte[1] { (byte)value };
+        }
+        else if (value.GetType() == typeof(int)) {
             return BitConverter.GetBytes((int)value);
         }
         else if (value.GetType() == typeof(uint)) {
@@ -58,26 +74,27 @@ public class ConvertToByteArray
             return ((Guid)value).ToByteArray();
         }
         else if (value.GetType() == typeof(string)) {
-            ByteArrayPrint.PrintByteArray(Encoding.UTF8.GetBytes((string)value).Concat(new byte[1] { 0 }).ToArray(), "Sending this byte array : ");
+            if (((string)value).Length == 0) {
+                return GetNewNullValue();
+            }
+
             return Encoding.UTF8.GetBytes((string)value).Concat(new byte[1] {0}).ToArray();
         }
+        else if (value.GetType().IsArray) {
+            object[] valueAsAnArray = (object[])value;
+            IEnumerable<byte> arrayBytesToAdd = new List<byte>();
 
-        Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
-        return null;
-    }
+            arrayBytesToAdd = arrayBytesToAdd.Concat(ConvertValueToBytes(valueAsAnArray.Length));
 
+            for (int i = 0; i < valueAsAnArray.Length; i++) {
+                arrayBytesToAdd = arrayBytesToAdd.Concat(ConvertValueToBytes(valueAsAnArray[i]));
+            }
 
-    public static object[] ConvertBytesToValueArray(Type wantedType, byte[] value, out int bytesUsed) {
-        int lengthOfArray = (int) ConvertBytesToValue(typeof(int), value, out int newBytesUsed);
-        object[] returnArray = new object[lengthOfArray];
-        bytesUsed = newBytesUsed;
-
-        for (int i = 0; i < lengthOfArray; i++) {
-            returnArray[i] = ConvertBytesToValue(wantedType, value.Skip(bytesUsed).ToArray(), out newBytesUsed);
-            bytesUsed += newBytesUsed;
+            return arrayBytesToAdd.ToArray();
         }
 
-        return returnArray;
+            Debug.LogError("Bytes serailized with unsupported type : " + value.GetType());
+        return null;
     }
 
     //Oof two switch statements back to back :sob: could break this out
@@ -102,10 +119,26 @@ public class ConvertToByteArray
             return 16;
         }
         else if (wantedType == typeof(string)) {
-            return Array.IndexOf(value, (byte)0) + 1;
+            int indexOfString = Array.IndexOf(value, (byte)0);
+            if (indexOfString == 0) {
+                return 4; //Assume it uses four byte null value
+            }
+
+            return indexOfString + 1;
+        }
+        else if (wantedType.IsArray) {
+            int countOfArray = (int)ConvertBytesToValue(typeof(int), value, out int totalSize);
+
+            Type elementType = wantedType.GetElementType();
+
+            for (int i = 0; i < countOfArray; i++) {
+                int newBytesUsed = GetSizeOfValue(elementType, value.Skip(totalSize).ToArray());
+                totalSize += newBytesUsed;
+            }
+            return totalSize;
         }
 
-        return -1;
+            return -1;
     }
 
     public static object ConvertBytesToValue(Type wantedType, byte[] value, out int bytesUsed) {
@@ -145,9 +178,28 @@ public class ConvertToByteArray
             return new Guid(value.Take(16).ToArray());
         }
         else if (wantedType == typeof(string)) {
-            ByteArrayPrint.PrintByteArray(value, "Value server to print : ");
-            Debug.Log($"Would print bytesUsed of value {bytesUsed-1}");
-            string returnValue = Encoding.UTF8.GetString(value,0,Math.Max(bytesUsed-1,0));
+            if (bytesUsed == 4) {
+                if (Array.FindAll(value.Take(4).ToArray(), (byteVal) => byteVal == (byte)0).Count() == 4) {
+                    return "";
+                }
+            }
+
+            return Encoding.UTF8.GetString(value,0,Math.Max(bytesUsed-1,0));
+        }
+        else if (wantedType.IsArray) {
+            int countOfArray = (int)ConvertBytesToValue(typeof(int), value, out int totalSize);
+
+            object[] returnArray = new object[countOfArray];
+
+            Type elementType = wantedType.GetElementType();
+
+            for (int i = 0; i < countOfArray; i++) {
+                returnArray[i] = ConvertBytesToValue(elementType, 
+                                                    value.Skip(totalSize).ToArray(), out int newBytesUsed);
+                totalSize += newBytesUsed;
+            }
+
+            return returnArray;
         }
 
 

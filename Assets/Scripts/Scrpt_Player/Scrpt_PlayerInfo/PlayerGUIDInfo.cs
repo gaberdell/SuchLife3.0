@@ -11,22 +11,28 @@ public class PlayerGUIDInfo : MonoBehaviour
     [Saveable("Player Username As Bytes")]
     public string username;
 
-#if UNITY_STANDALONE
-    TextMeshPro userNameUI;
-
     [SerializeField]
     TextMeshPro textToCopy;
 
     [SerializeField]
     Vector3 textOffset;
 
+#if UNITY_STANDALONE
+    TextMeshPro userNameUI;
+#endif
+
     private void Start() {
         if (username == null) {
             username = "";
         }
-        userNameUI = Instantiate(textToCopy, transform.position+textOffset, Quaternion.identity);
+
+#if UNITY_STANDALONE
+        userNameUI = Instantiate(textToCopy, transform.position + textOffset, Quaternion.identity, transform.parent);
         userNameUI.text = username;
+#endif
     }
+
+#if UNITY_STANDALONE
     private void Update() {
         //TODO : Fix this so we don't have to do it like this :skull:
         userNameUI.text = username;

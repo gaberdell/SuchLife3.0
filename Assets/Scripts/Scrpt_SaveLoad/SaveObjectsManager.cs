@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -52,13 +51,7 @@ public class SaveObjectsManager : MonoBehaviour
         //Lets get loading!
         if (DataService.IsLocalSave) {
 #if UNITY_EDITOR
-            byte[] localSaveData = DataService.LoadEntitySaveData();
-            string printString = "Loaded Byte index of total length " + localSaveData.Length.ToString() + " : { ";
-            for (int i = 0; i < localSaveData.Length; i++) {
-                printString += localSaveData[i].ToString() + ", ";
-            }
-            printString += "}";
-            Debug.Log(printString);
+            ByteArrayPrint.PrintByteArray(DataService.LoadEntitySaveData(), "Loaded Byte index of total length : ");
 #endif
 
             LoadAllEntityDataToPrefabs(DataService.LoadEntitySaveData());
@@ -93,6 +86,10 @@ public class SaveObjectsManager : MonoBehaviour
 
 
     void GetAllSaveableMonoBehaviors(GameObject prefabAdded) {
+        if (saveableMonoBehaviorQuickRetriveDictionary.ContainsKey(prefabAdded)) {
+            return;
+        }
+
         PrefabSaveInfo prefabSaveInfo = prefabAdded.GetComponent<PrefabSaveInfo>();
         List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabSaveInfo.PrefabId];
 
@@ -122,15 +119,6 @@ public class SaveObjectsManager : MonoBehaviour
 
     void LoadAllEntityDataToPrefabs(byte[] byteData) {
 
-#if UNITY_EDITOR
-        string printString = "Loaded Byte index of total to prefab length " + byteData.Length.ToString() + " : { ";
-        for (int i = 0; i < byteData.Length; i++) {
-            printString += byteData[i].ToString() + ", ";
-        }
-        printString += "}";
-        Debug.Log(printString);
-#endif
-
         while (byteData.Length > 0) {
             PrefabCreateFromByteArray(byteData, out int readBytes);
             byteData = byteData.Skip(readBytes).ToArray();
@@ -150,12 +138,7 @@ public class SaveObjectsManager : MonoBehaviour
             DataService.SaveEntitySaveData(saveData);
 
 #if UNITY_EDITOR
-            string printString = "Loaded Byte index of total length " + saveData.Length.ToString() + " : { ";
-            for (int i = 0; i < saveData.Length; i++) {
-                printString += saveData[i].ToString() + ", ";
-            }
-            printString += "}";
-            Debug.Log(printString);
+            ByteArrayPrint.PrintByteArray(saveData, "Loaded Byte index of total length : ");
 #endif
         }
     }
@@ -224,11 +207,12 @@ public class SaveObjectsManager : MonoBehaviour
     GameObject PrefabCreateFromByteArray(byte[] dataToSetTo, out int readBytes) {
         readBytes = 0;
 
-        for (; readBytes < dataToSetTo.Length; readBytes++) {
+        readBytes = Array.IndexOf(dataToSetTo, (byte)0);
+        /*for (; readBytes < dataToSetTo.Length; readBytes++) {
             if (dataToSetTo[readBytes] == 0) {
                 break;
             }
-        }
+        }*/
 
         byte[] id = dataToSetTo.Take(readBytes).ToArray();
 
@@ -240,6 +224,8 @@ public class SaveObjectsManager : MonoBehaviour
 
         readBytes++;
 
+
+        ByteArrayPrint.PrintByteArray(dataToSetTo.Skip(readBytes).ToArray(), "Array Loaded before checking pos : ");
 
         Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed);
         float eulerRotationZ = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes + bytesUsed).ToArray(), out int rotBytesUsed);
@@ -291,14 +277,14 @@ public class SaveObjectsManager : MonoBehaviour
             saveableMonobehaviors = saveableMonoBehaviorQuickRetriveDictionary[prefab];
         }
 
-        Debug.Log($"MonoBehaviorTypeAndOrder.count {monoBehaviorAndTypeOrder.Count}\nsaveableMonobehaviors.Count {saveableMonobehaviors.Count}");
+        //Debug.Log($"MonoBehaviorTypeAndOrder.count {monoBehaviorAndTypeOrder.Count}\nsaveableMonobehaviors.Count {saveableMonobehaviors.Count}");
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
             MonoBehaviour component = saveableMonobehaviors[i];
 
 
             foreach (FieldInfo field in componentType.SaveFields) {
-                Debug.Log($"What is component?35 {component}\nField name {field.Name}\nField value {field.GetValue(component)}");
+                //Debug.Log($"What is component?35 {component}\nField name {field.Name}\nField value {field.GetValue(component)}");
                 returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
             }
         }
