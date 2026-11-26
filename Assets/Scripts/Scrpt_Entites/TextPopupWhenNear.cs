@@ -17,6 +17,27 @@ public class TextPopupWhenNear : MonoBehaviour
         textToDisplay.text = "";
     }
 
+    //method to call text display from outside this script; used to sync sprites in dungeon entrance for instance.
+    public void playerEnter()
+    {
+        nearbyPlayerCount++;
+        if (!isActive)
+        {
+            StartCoroutine(animateTextDisplay());
+            isActive = true;
+        }
+    }
+    
+    public void playerExit()
+    {
+        nearbyPlayerCount--;
+        if (nearbyPlayerCount <= 0)
+        {
+            isActive = false;
+            textToDisplay.text = "";
+        }
+    }
+
     private IEnumerator animateTextDisplay()
     {
         //display one letter at a time 
@@ -34,13 +55,7 @@ public class TextPopupWhenNear : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            nearbyPlayerCount++;
-            if (!isActive)
-            {
-                Debug.Log("display message");
-                StartCoroutine(animateTextDisplay());
-                isActive = true;
-            }
+            playerEnter();
         }
     }
 
@@ -48,12 +63,7 @@ public class TextPopupWhenNear : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            nearbyPlayerCount--;
-            if(nearbyPlayerCount <= 0)
-            {
-                isActive = false;
-                textToDisplay.text = "";
-            }
+            playerExit();
         }
     }
 }

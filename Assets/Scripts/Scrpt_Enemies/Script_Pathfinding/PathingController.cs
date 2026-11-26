@@ -69,7 +69,7 @@ public class PathingController
     //method is called every frame by the mob's update method
     public void moveAlongPath(float speed)
     {
-        if (isActive && currentPath.Count > 0)
+        if (isActive && currentPath != null && currentPath.Count > 0)
         {
             //step towards the next world pos in the path
             Vector3 nextPos = pgrid.getWorldPos(currentPath[0]);
@@ -83,8 +83,7 @@ public class PathingController
             float nextAngle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
             controlled.rotation = Quaternion.Slerp(controlled.rotation, Quaternion.Euler(0, 0, nextAngle + 90), step);
 
-            //make sure walking animation is playing
-            if (animator) animator.SetBool("Walk", true);  
+              
 
             if (Vector3.Distance(controlled.position, nextPos) < 0.2f)
             {
@@ -173,9 +172,12 @@ public class PathingController
     public void setTarget(Vector3 t)
     {
         target = t;
+        //check if target is outside of bounds
+        //make sure walking animation is playing
+        if (animator) animator.SetBool("Walk", true);
         //assign startcell and endcell
         findPath();
-        Debug.Log("setting new target");
+        //Debug.Log("setting new target");
     }
 
     public Vector3 getTarget()
