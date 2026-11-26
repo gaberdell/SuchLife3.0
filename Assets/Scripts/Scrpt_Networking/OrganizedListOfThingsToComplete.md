@@ -11,8 +11,7 @@
 
 Check and fix all Bugs on my branch
 
-* Check if player can join server
-
+* Check if player can join server :white_check_mark:
   * Check if player can see player addition
   * Check if player can see player prefab addition
 * Check if players can move in parallel

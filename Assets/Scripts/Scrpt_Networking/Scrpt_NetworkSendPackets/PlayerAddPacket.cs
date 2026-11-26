@@ -55,15 +55,34 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
 
     //A lot of jank to work around not being able to grab stuff directly
     public override void ExecuteSentBytes() {
-        Debug.Log("Attemping player add stuff");
-        PlayerGUIDInfo[] allPlayerGUIDs = Resources.FindObjectsOfTypeAll<PlayerGUIDInfo>();
-        foreach (PlayerGUIDInfo guidInfo in allPlayerGUIDs) {
-            if (guidInfo.guid == playerGUID) {
-                ServerNetworkManager.AddPlayer(playerGUID, guidInfo.gameObject);
-                ServerNetworkManager.AddClientIDToPlayer(playerNetworkID, guidInfo.gameObject.GetComponent<PlayerNetworkDataToMovement>());
+        //Send over added gameobjects to new player
+        bool isPlayerAlreadyInGame = false;
+        foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
+            BaseNetworkSendPacket packetToSend = null;
+
+            PlayerGUIDInfo isOurPlayer = saveObject.GetComponent<PlayerGUIDInfo>();
+            PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
+            if (isOurPlayer != null && isOurPlayer.guid == playerGUID) {
+                isPlayerAlreadyInGame = true;
+
+                packetToSend = new AddPlayerFromNetwork(saveInfo.NetworkId,
+                    saveObject.transform.position, saveObject.transform.eulerAngles.z);
+
+                //Tell server our player info
+                ServerNetworkManager.AddPlayer(playerGUID, saveObject);
+                ServerNetworkManager.AddClientIDToPlayer(playerNetworkID, saveObject.GetComponent<PlayerNetworkDataToMovement>());
                 Debug.Log("Exiting Early due to player already exsisting");
-                return;
             }
+            else {
+                packetToSend = new AddNetworkGameObject(saveInfo.NetworkId,
+            saveInfo.PrefabId, saveObject.transform.position, saveObject.transform.rotation.eulerAngles.z,
+             saveLoad.PrefabGetByteArray(saveObject, false, false).ToArray());
+            }
+            ServerNetworkManager.SendToTcp(playerNetworkID, packetToSend.GetPacketBytes());
+        }
+
+        if (isPlayerAlreadyInGame) {
+            return;
         }
         
         GameObject newPlayer = SaveablePrefabManager.CreatePrefab("ServerPlayer", Vector3.zero, 0f, null, true);
@@ -78,7 +97,6 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
             BaseNetworkSendPacket packetToSendOver;
             if (clientPair.Key == playerNetworkID) {
                 packetToSendOver = new AddPlayerFromNetwork(prefabSaveInfo.NetworkId, Vector3.zero, 0f);
-
             }
             else {
                 packetToSendOver = new AddNetworkGameObject(prefabSaveInfo.NetworkId, prefabSaveInfo.PrefabId, Vector3.zero, 0f, null);

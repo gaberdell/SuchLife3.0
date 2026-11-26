@@ -122,33 +122,6 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
-
-    static void SendEachSavedGameObjectToPlayer(byte[] packetBytes, int clientID) {
-        Debug.Log("Recieved player join request");
-        bool doesPlayerAlreadyExsistInScene = false;
-
-        foreach (GameObject saveObject in SaveablePrefabManager.SaveablePrefabs) {
-            BaseNetworkSendPacket packetToSend = null;
-
-            PlayerGUIDInfo playerInfo = saveObject.GetComponent<PlayerGUIDInfo>();
-            PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
-            if (playerInfo != null && playerInfo.guid == new Guid(packetBytes.Take(16).ToArray())) {
-                packetToSend = new AddPlayerFromNetwork(saveInfo.NetworkId,
-                    saveObject.transform.position, saveObject.transform.eulerAngles.z);
-                doesPlayerAlreadyExsistInScene = true;
-            }
-            else {
-                packetToSend = addTcpBasic(saveObject);
-            }
-
-            SendToTcp(clientID, packetToSend.GetPacketBytes());
-        }
-
-        if (!doesPlayerAlreadyExsistInScene) {
-            ExecuteOtherThreadRequestQueue.Enqueue(new PlayerAddPacket(packetBytes, currentSaveManager, clientID));
-        }
-    }
-
     static void onRecieveDataTcp(IAsyncResult result) {
         TcpClientData data = (TcpClientData)result.AsyncState;
         try {
@@ -167,7 +140,8 @@ public class ServerNetworkManager : MonoBehaviour
                     
                     if (packet.GetBytes()[0] == (byte)NetworkOpCodeEnum.DEAL_WITH_TCP_CONNECTION) {
                         Debug.Log("Attempting to convert thing from tcp connection.");
-                        SendEachSavedGameObjectToPlayer(packet.GetBytes().Skip(1).ToArray(), data.ClientId);
+                        //Todo change so this dealt with in main thread
+                        ExecuteOtherThreadRequestQueue.Enqueue(new PlayerAddPacket(packet.GetBytes().Skip(1).ToArray(), currentSaveManager, data.ClientId));
                     }
                     //TODO : Account for processing requiring me to make this like the client
                             //where it parses through the bytes each time for each new request
@@ -249,24 +223,22 @@ public class ServerNetworkManager : MonoBehaviour
         }
     }
 
+
+    public static void SendToTcp(NetworkStream tcpStream, byte[] bytesToSend) {
+        ByteArrayPrint.PrintByteArray(bytesToSend, "Bytes send to tcp stream : ");
+        tcpStream.Write(bytesToSend, 0, bytesToSend.Length);
+    }
+
     //Dont like exposing this but oh well
-    public static void SendToTcp(int client, byte[] bytesToAdd) {
-        using (PacketWrapper packet = new PacketWrapper()) {
-            packet.AddBytes(bytesToAdd);
-            byte[] data = packet.GetBytes();
-            tcpClients[client].Stream.Write(data, 0, data.Length);
-        }
+    public static void SendToTcp(int client, byte[] bytesToSend) {
+        SendToTcp(tcpClients[client].Stream, bytesToSend);
     }
 
 
-    static void SendToAllWithTcp(byte[] bytesToAdd) {
-        using (PacketWrapper packet = new PacketWrapper()) {
-            packet.AddBytes(bytesToAdd);
-            byte[] data = packet.GetBytes();
-            if (tcpClients != null) {
-                foreach (var client in tcpClients.Values) {
-                    client.Stream.Write(data, 0, data.Length);
-                }
+    public static void SendToAllWithTcp(byte[] bytesToSend) {
+        if (tcpClients != null) {
+            foreach (TcpClientData client in tcpClients.Values) {
+                SendToTcp(client.Stream, bytesToSend);
             }
         }
     }

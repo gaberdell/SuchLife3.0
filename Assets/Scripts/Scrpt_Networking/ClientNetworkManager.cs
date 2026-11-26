@@ -183,7 +183,7 @@ public class ClientNetworkManager : MonoBehaviour
             Debug.Log("Just means it was closed during read this");
         }
         catch (Exception e) {
-            Debug.LogError("Error reading TCP message booting from server : " + e.Message);
+            Debug.LogError($"Error reading TCP message booting from server : {e.Message}\nStacktrace equals : {e.StackTrace}");
             StopClient();
         }
     }
@@ -204,15 +204,19 @@ public class ClientNetworkManager : MonoBehaviour
                 }
                 byte[] packetBytes = packet.GetBytes();
 
+
                 UpdateNetworkGameObject updatePacket = new UpdateNetworkGameObject(packetBytes, 
                     currentSaveManager, localPlayerPrefabNetworkId, 
                     MAX_TIME_BEFORE_WE_RESYNC_PLAYER);
 
-                ExecuteOtherThreadRequestQueue.Enqueue(updatePacket);
+                //Tests if we actually have the packet to update
+                if (updatePacket.ActuallyUsable) {
+                    ExecuteOtherThreadRequestQueue.Enqueue(updatePacket);
+                }
             }
         }
         catch (Exception e) {
-            Debug.LogError(e.Message);
+            Debug.LogError($"UDP exception : {e.Message}\nUDP stacktrace : {e.StackTrace}");
         }
 
         udpClient.BeginReceive(onRecieveDataUdp, null);

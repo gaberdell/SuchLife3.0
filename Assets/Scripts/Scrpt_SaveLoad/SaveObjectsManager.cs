@@ -167,6 +167,7 @@ public class SaveObjectsManager : MonoBehaviour
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
             foreach (FieldInfo field in componentType.SaveFields) {
+                if (readBytes > dataToSetTo.Length) { return -1; }
                 int bytesUsed = ConvertToByteArray.GetSizeOfValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray());
                 if (bytesUsed == -1) { return -1; }
                 readBytes += bytesUsed;
@@ -175,6 +176,22 @@ public class SaveObjectsManager : MonoBehaviour
         }
 
         return readBytes;
+    }
+
+    public void SetAllBytesInAPrefabSafe(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
+        if (prefabId == null) {
+            prefabId = prefab.GetComponent<PrefabSaveInfo>().PrefabId;
+        }
+
+        int bytesUsedForPrefabSave = GetAmountOfBytesUsedInPrefab(prefabId, dataToSetTo);
+
+        if (bytesUsedForPrefabSave > 0) {
+            SetAllBytesInAPrefab(prefab, prefabId, dataToSetTo, out readBytes);
+        }
+        else {
+            readBytes = 0;
+        }
+
     }
 
     public void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {

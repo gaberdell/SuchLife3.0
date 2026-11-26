@@ -32,6 +32,8 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
     private static float lastUpdatedPlayer; //OMEGA jank but no ref types in this version of C#
     private float maxTimeBeforeResyncPlayer;
 
+    public bool ActuallyUsable { get; private set; }
+
     public UpdateNetworkGameObject(SaveObjectsManager sl, uint iI, GameObject goTS) {
         saveLoad = sl;
         itemId = iI;
@@ -44,6 +46,15 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
         gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
 
         specificBytes = bytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();
+
+        if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(itemId)) {
+            ActuallyUsable = true;
+        }
+        else {
+            ActuallyUsable = false;
+            return;
+        }
+
         gameObjectToSend = SaveablePrefabManager.NetworkIdsPrefabs[itemId];
         goPrefabSaveInfo = SaveablePrefabManager.NetworkIdsSaveInfoCache[itemId];
         BytesUsed = skipAmount + bytesUsed + rotBytesUsed + sl.GetAmountOfBytesUsedInPrefab(goPrefabSaveInfo.PrefabId,specificBytes); //Disregared extra bytes till better solution found to process them
@@ -68,8 +79,9 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
                                                             gO.transform.rotation.y,
                                                             gameObjectRotation);
 
-                saveLoad.SetAllBytesInAPrefab(gameObjectToSend, goPrefabSaveInfo.PrefabId,
-                                                        specificBytes, out int _);
+
+                saveLoad.SetAllBytesInAPrefabSafe(gameObjectToSend, goPrefabSaveInfo.PrefabId, 
+                                                       specificBytes, out int _);
             }
             else {
                 //Constantly redoing players update causes jitter so do it like this

@@ -44,11 +44,15 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
     public AddNetworkGameObject(byte[] bytes, SaveObjectsManager sl) {
         itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int skipAmount);
         int bytesUsedAfterIdOfPrefab = Array.IndexOf(bytes.Skip(skipAmount).ToArray(), (byte)0) + 1;
-        prefabId = bytes.Skip(skipAmount).Take(bytesUsedAfterIdOfPrefab - skipAmount).ToArray();
+        prefabId = bytes.Skip(skipAmount).Take(bytesUsedAfterIdOfPrefab-1).ToArray();
         gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), bytes.Skip(bytesUsedAfterIdOfPrefab).ToArray(), out int bytesUsed);
         gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(bytesUsedAfterIdOfPrefab + bytesUsed).ToArray(), out int rotBytesUsed);
 
         specificBytes = bytes.Skip(bytesUsedAfterIdOfPrefab + bytesUsed + rotBytesUsed).ToArray();//Overcharged here to instead be the values to set it too
+
+        ByteArrayPrint.PrintByteArray(bytes, "Network Add Game object equals : ");
+        Debug.Log($"{bytesUsedAfterIdOfPrefab}");
+        ByteArrayPrint.PrintByteArray(prefabId, "Network Add Game object equals : ");
 
         BytesUsed = skipAmount + bytesUsed + rotBytesUsed + sl.GetAmountOfBytesUsedInPrefab(prefabId, specificBytes); //Disregared extra bytes till better solution found to process them
         saveLoad = sl;
@@ -67,7 +71,8 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
 
     public override void ExecuteSentBytes() {
         GameObject newPrefab = SaveablePrefabManager.CreatePrefab(prefabId, gameObjectPos, gameObjectRotation, itemId);
-        saveLoad.SetAllBytesInAPrefab(SaveablePrefabManager.NetworkIdsPrefabs[itemId], null,
-                                                specificBytes, out int _);
+        //Not totally accurate but gives us a good guestimate
+
+        saveLoad.SetAllBytesInAPrefabSafe(newPrefab, prefabId, specificBytes, out int _);
     }
 }
