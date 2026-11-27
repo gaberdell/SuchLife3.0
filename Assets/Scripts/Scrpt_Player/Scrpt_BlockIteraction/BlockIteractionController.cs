@@ -111,8 +111,11 @@ namespace BlockIteraction
                         //placeTileMap.SetTile(drawWhereHit, null);
                         //create block item object to pick up (slap in fix for demo; would use a droppable item class in the future)
                         //check if a block was actually destroyed
-                        if (ChunkManager.GetTile(drawWhereHit, true) != null)
+                        TileBase targetTile = ChunkManager.GetTile(drawWhereHit, true);
+                        if (targetTile != null)
                         {
+                            //get tile that was destroyed
+                            Debug.Log(targetTile.name);
                             Instantiate(droppedBlockItem, drawWhereHit + new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity);
                         }
                         ChunkManager.SetTile(drawWhereHit, null, true);

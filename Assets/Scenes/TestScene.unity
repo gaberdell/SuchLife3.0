@@ -586,7 +586,19 @@ PrefabInstance:
     - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
       propertyPath: wallTile
       value: 
-      objectReference: {fileID: 11400000, guid: fa56c7c51fb9406488034b0951da08ea, type: 2}
+      objectReference: {fileID: 11400000, guid: 50d3c7622c33de94c8ee84e43e5f50d9, type: 2}
+    - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
+      propertyPath: grassTile
+      value: 
+      objectReference: {fileID: 11400000, guid: a424b25343dc9dd4183036aa8dee5bbb, type: 2}
+    - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
+      propertyPath: groundTiles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
+      propertyPath: 'groundTiles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: a424b25343dc9dd4183036aa8dee5bbb, type: 2}
     - target: {fileID: 2526710830121249785, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
