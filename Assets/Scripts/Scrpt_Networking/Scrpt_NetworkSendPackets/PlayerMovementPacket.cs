@@ -22,6 +22,13 @@ public class PlayerMovementPacket : BaseNetworkSendPacket {
     private float playerY;
     private float playerRot;
 
+    public override int RequiredBytesToUse { get; protected set; } = 12;
+
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        return pP.Packet.Length >= RequiredBytesToUse;
+    }
+
+    public PlayerMovementPacket() { }
 
     public PlayerMovementPacket(float pX, float pY, float pRot) {
         playerX = pX;
@@ -29,12 +36,12 @@ public class PlayerMovementPacket : BaseNetworkSendPacket {
         playerRot = pRot;
     }
 
-    public PlayerMovementPacket(byte[] plrBytes, int plrNetworkId) {
-        playerNetworkID = plrNetworkId;
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        playerNetworkID = pP.PlayerClientID;
 
-        playerX = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), plrBytes, out int bytesUsedX);
-        playerY = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), plrBytes.Skip(bytesUsedX).ToArray(), out int bytesUsedY);
-        playerRot = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), plrBytes.Skip(bytesUsedX).ToArray(), out int bytesUsedRot);
+        playerX = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet, out int bytesUsedX);
+        playerY = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(bytesUsedX).ToArray(), out int bytesUsedY);
+        playerRot = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(bytesUsedX+bytesUsedY).ToArray(), out int bytesUsedRot);
         BytesUsed = bytesUsedX + bytesUsedY + bytesUsedRot;
     }
 

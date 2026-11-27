@@ -15,8 +15,8 @@ NOTE These are only for the scripts that send it over
 Note Protocols are specified inside of BaseNetwork send packet
  */
 
-public class ClientNetworkManager : MonoBehaviour
-{
+public class ClientNetworkManager : NetworkManager {
+
     private static int MAX_TCP_RECIEVE_BUFFER = 4096;
 
     private float MAX_TIME_BEFORE_WE_RESYNC_PLAYER = 0.0f;
@@ -35,7 +35,8 @@ public class ClientNetworkManager : MonoBehaviour
 
     private uint localPlayerPrefabNetworkId;
 
-    private ConcurrentQueue<BaseNetworkSendPacket> ExecuteOtherThreadRequestQueue;
+    private static NetworkSenderFactory udpPacketFactory;
+    private static NetworkSenderFactory tcpPacketFactory;
 
     public void StartClient(string ip, ushort port) {
         try {
@@ -97,6 +98,14 @@ public class ClientNetworkManager : MonoBehaviour
         if (!DataService.IsLocalSave && DataService.IsMultiplayer) {
             ExecuteOtherThreadRequestQueue = new ConcurrentQueue<BaseNetworkSendPacket>();
             initialWorldSetup = FindAnyObjectByType<InitialWorldSetup>();
+
+            BaseNetworkSendPacket[] udpPacketTypes = { new UpdateNetworkGameObject() };
+            udpPacketFactory = new NetworkSenderFactory(udpPacketTypes);
+
+            BaseNetworkSendPacket[] tcpPacketTypes = { new AddPlayerFromNetwork(), 
+                                                new AddNetworkGameObject(), new RemoveNetworkGameObject()};
+            tcpPacketFactory = new NetworkSenderFactory(tcpPacketTypes);
+
             if (!Uri.TryCreate(DataService.IpOfServer, UriKind.Absolute, out Uri urlWithIpAndPort)) {
                 Debug.Log("Try with http?");
                 Debug.Log("http://" + DataService.IpOfServer);
@@ -120,58 +129,22 @@ public class ClientNetworkManager : MonoBehaviour
     }
 
     private void onRecieveDataTcp(IAsyncResult result) {
+        TcpClientData data = (TcpClientData)result.AsyncState;
         try {
             //TCP stream reads everything including multiple requests at once sometimes
             int bytesRead = tcpStream.EndRead(result);
             if (bytesRead > 0) {
-                byte[] data = new byte[bytesRead];
-                for (int i = 0; i < bytesRead; i++) {
-                    data[i] = recieveBuffer[i];
-                    //Debug.Log(String.Format("Packet index i {0} : {1}", i, data[i]));
-                }
-                int bytesLeft = data.Length;
-                do {
-                    using (PacketWrapper packet = new PacketWrapper(data)) {
-                    //TODO : Make Client processing stuff
-                    byte[] packetBytes = packet.GetBytes();
+                byte[] tcpBytes = data.Buffer.Take(bytesRead).ToArray();
 
-                    if (packetBytes.Count() == 0) { break; }
+                ProcessThroughByteStream(tcpBytes, tcpPacketFactory,
+                    new SetValuesInPacketParams(null, currentSaveManager, initialWorldSetup));
 
-                    BaseNetworkSendPacket packetToSendOver = null;
-                    byte[] cBSkipOne = packetBytes.Skip(1).ToArray();
-
-                    switch (packetBytes[0]) {
-                        case (byte)NetworkOpCodeEnum.ADD_LOCAL_PLAYER:
-                            packetToSendOver = new AddPlayerFromNetwork(cBSkipOne, 
-                                currentSaveManager, initialWorldSetup);
-                            break;
-                        case (byte)NetworkOpCodeEnum.ADD_PREFAB:
-                            packetToSendOver = new AddNetworkGameObject(cBSkipOne, 
-                                currentSaveManager);
-                            break;
-                        case (byte)NetworkOpCodeEnum.REMOVE_PREFAB:
-                            packetToSendOver = new RemoveNetworkGameObject(cBSkipOne);
-                            break;
-                    }
-
-                    if (packetToSendOver != null) {
-                        ExecuteOtherThreadRequestQueue.Enqueue(packetToSendOver);
-                        bytesLeft -= packetToSendOver.BytesUsed;
-                        data = data.Skip(packetToSendOver.BytesUsed).ToArray();
-                        Debug.Log("Bytes left : " + bytesLeft);
-                    }
-                    else {
-                        break;
-                    }
-
-
-                    }
-                } while (bytesLeft > 0);
             }
             else {
                 Debug.Log("TCP connection ended");
                 StopClient();
             }
+
             recieveBuffer = new byte[MAX_TCP_RECIEVE_BUFFER];
             tcpStream.BeginRead(recieveBuffer, 0, recieveBuffer.Length, onRecieveDataTcp, null);
         }
@@ -195,25 +168,9 @@ public class ClientNetworkManager : MonoBehaviour
 
             byte[] recievedData = udpClient.EndReceive(result, ref udpEndPoint);
 
-            using (PacketWrapper packet = new PacketWrapper(recievedData)) {
-                //TODO : Text processing suff ig
-                //Make me print a pretty message to da screen
-                if (packet.GetBytes() == null || packet.GetBytes().Length == 0) {
-                    Debug.Log("Something bad has happened in the Data recieve UDP as we have a udp of zero byte!?");
-                    return;
-                }
-                byte[] packetBytes = packet.GetBytes();
+            ProcessThroughByteStream(recievedData, udpPacketFactory,
+                new SetValuesInPacketParams(null, currentSaveManager, initialWorldSetup, 0, localPlayerPrefabNetworkId, MAX_TIME_BEFORE_WE_RESYNC_PLAYER));
 
-
-                UpdateNetworkGameObject updatePacket = new UpdateNetworkGameObject(packetBytes, 
-                    currentSaveManager, localPlayerPrefabNetworkId, 
-                    MAX_TIME_BEFORE_WE_RESYNC_PLAYER);
-
-                //Tests if we actually have the packet to update
-                if (updatePacket.ActuallyUsable) {
-                    ExecuteOtherThreadRequestQueue.Enqueue(updatePacket);
-                }
-            }
         }
         catch (Exception e) {
             Debug.LogError($"UDP exception : {e.Message}\nUDP stacktrace : {e.StackTrace}");

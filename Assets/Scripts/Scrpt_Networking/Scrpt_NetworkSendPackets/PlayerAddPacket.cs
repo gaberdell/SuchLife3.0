@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.XR;
 using Object = UnityEngine.Object;
 
 /*
@@ -25,23 +26,32 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
     private Guid playerGUID;
     private string playerUsername;
 
-    private int playerNetworkID;
+    private int playerClientID;
 
     private SaveObjectsManager saveLoad;
+
+    public override int RequiredBytesToUse { get; protected set; } = 19;
+
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        return BasicCompatibleChecker(pP.Packet, NetworkOpCodeEnum.DEAL_WITH_TCP_CONNECTION);
+    }
+
+    public PlayerAddPacket() { }
 
     public PlayerAddPacket(Guid plrGUID, string userName) {
         playerGUID = plrGUID;
         playerUsername = userName;
     }
 
-    public PlayerAddPacket(byte[] plrBytes, SaveObjectsManager sl, int plrNwID) {
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        byte[] plrBytes = pP.Packet.Skip(1).ToArray();
         playerGUID = (Guid)ConvertToByteArray.ConvertBytesToValue(typeof(Guid), plrBytes, out int bytesUsed);
         playerUsername = (string)ConvertToByteArray.ConvertBytesToValue(typeof(string), 
                                                         plrBytes.Skip(bytesUsed).ToArray(), out int stringLen);
         BytesUsed = bytesUsed + stringLen;
 
-        saveLoad = sl;
-        playerNetworkID = plrNwID;
+        saveLoad = pP.SaveLoad;
+        playerClientID = pP.PlayerClientID;
     }
 
     public override bool IsTcp => true;
@@ -70,7 +80,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
 
                 //Tell server our player info
                 ServerNetworkManager.AddPlayer(playerGUID, saveObject);
-                ServerNetworkManager.AddClientIDToPlayer(playerNetworkID, saveObject.GetComponent<PlayerNetworkDataToMovement>());
+                ServerNetworkManager.AddClientIDToPlayer(playerClientID, saveObject.GetComponent<PlayerNetworkDataToMovement>());
                 Debug.Log("Exiting Early due to player already exsisting");
             }
             else {
@@ -78,7 +88,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
             saveInfo.PrefabId, saveObject.transform.position, saveObject.transform.rotation.eulerAngles.z,
              saveLoad.PrefabGetByteArray(saveObject, false, false).ToArray());
             }
-            ServerNetworkManager.SendToTcp(playerNetworkID, packetToSend.GetPacketBytes());
+            ServerNetworkManager.SendToTcp(playerClientID, packetToSend.GetPacketBytes());
         }
 
         if (isPlayerAlreadyInGame) {
@@ -87,7 +97,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
         
         GameObject newPlayer = SaveablePrefabManager.CreatePrefab("ServerPlayer", Vector3.zero, 0f, null, true);
         ServerNetworkManager.AddPlayer(playerGUID, newPlayer);
-        ServerNetworkManager.AddClientIDToPlayer(playerNetworkID, newPlayer.GetComponent<PlayerNetworkDataToMovement>());
+        ServerNetworkManager.AddClientIDToPlayer(playerClientID, newPlayer.GetComponent<PlayerNetworkDataToMovement>());
         PlayerGUIDInfo playerInfo = newPlayer.GetComponent<PlayerGUIDInfo>();
         playerInfo.guid = playerGUID;
         playerInfo.username = playerUsername;
@@ -95,7 +105,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
 
         foreach (var clientPair in ServerNetworkManager.GetTcpClientData()) {
             BaseNetworkSendPacket packetToSendOver;
-            if (clientPair.Key == playerNetworkID) {
+            if (clientPair.Key == playerClientID) {
                 packetToSendOver = new AddPlayerFromNetwork(prefabSaveInfo.NetworkId, Vector3.zero, 0f);
             }
             else {

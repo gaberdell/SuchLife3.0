@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.XR;
 
 /*
 Sent from Server to Clients
@@ -26,6 +27,13 @@ public class AddPlayerFromNetwork : BaseNetworkSendPacket {
     //Vars needed by reciever
     private InitialWorldSetup initWorldSetup;
 
+    public override int RequiredBytesToUse { get; protected set; } = 21;
+
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        return BasicCompatibleChecker(pP.Packet, NetworkOpCodeEnum.ADD_LOCAL_PLAYER);
+    }
+
+    public AddPlayerFromNetwork() { }
 
     public AddPlayerFromNetwork(uint iI, Vector3 goPos, float rot) {
         itemId = iI;
@@ -33,8 +41,10 @@ public class AddPlayerFromNetwork : BaseNetworkSendPacket {
         gameObjectRotation = rot;
     }
 
-    public AddPlayerFromNetwork(byte[] bytes, SaveObjectsManager sl, InitialWorldSetup iws) {
-        initWorldSetup = iws;
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        byte[] bytes = pP.Packet.Skip(1).ToArray();
+        initWorldSetup = pP.InitWorldSetup;
+        ByteArrayPrint.PrintByteArray(bytes, "Printing bytes from network saying its us : ");
         itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int skipAmount);
         gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), bytes.Skip(skipAmount).ToArray(), out int bytesUsed);
         gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);

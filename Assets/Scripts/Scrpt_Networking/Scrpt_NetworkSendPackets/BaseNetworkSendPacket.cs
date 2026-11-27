@@ -12,13 +12,26 @@ using UnityEngine;
 /// </summary>
 public abstract class BaseNetworkSendPacket
 {
+
     public virtual bool IsTcp { get; protected set; }
+
+    public abstract int RequiredBytesToUse { get; protected set; }
 
     /// <summary>
     /// Bytes used when the constructor with bytes[] is called
     /// for processing a class in that constructor
     /// </summary>
     public int BytesUsed { get; protected set; } = -1;
+
+
+    /// <summary>
+    /// Classic C++ style big ol' setter func used to
+    /// set all values while also allowing for unused ones
+    /// to be properly discarded made to be easily used by
+    /// a factory class
+    /// </summary>
+    /// <param name="pP">Packet parameters record</param>
+    public abstract void SetValuesInPacket(SetValuesInPacketParams pP);
 
     /// <summary>
     /// Processes the given data from the child classes constructor
@@ -46,6 +59,14 @@ public abstract class BaseNetworkSendPacket
     public abstract byte[] GetPacketBytes();
 
     /// <summary>
+    /// Checks if the function is compatible if so returns it
+    /// For example most bytes check for an op code will check if it has it
+    /// alongside meeting length requirements
+    /// </summary>
+    /// <returns>Is the current byte compatible and stuff</returns>
+    public abstract bool IsCompatible(SetValuesInPacketParams pP);
+
+    /// <summary>
     /// Execute the command associated with the network packet
     /// </summary>
     public abstract void ExecuteSentBytes();
@@ -60,4 +81,12 @@ public abstract class BaseNetworkSendPacket
     /// <returns>Returns true if the given bytes were
     /// intended to be processed by this false if not.</returns>
     //public abstract bool ProcessSentBytes(byte[] sentBytes);
+
+
+    protected bool BasicCompatibleChecker(byte[] bytesToCheck, NetworkOpCodeEnum opCodeToCheckAgainst) {
+        if (bytesToCheck.Length >= RequiredBytesToUse) {
+            return bytesToCheck[0] == (byte)opCodeToCheckAgainst;
+        }
+        return false;
+    }
 }

@@ -19,14 +19,20 @@ public class RemoveNetworkGameObject : BaseNetworkSendPacket {
     //Vars needed to send over
 
     //Vars needed for send back
-    
-    
+
+    public override int RequiredBytesToUse { get; protected set; } = 5;
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        return BasicCompatibleChecker(pP.Packet, NetworkOpCodeEnum.REMOVE_PREFAB);
+    }
+
+    public RemoveNetworkGameObject() { }
 
     public RemoveNetworkGameObject(uint iI) {
         itemId = iI;
     }
 
-    public RemoveNetworkGameObject(byte[] bytes) {
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        byte[] bytes = pP.Packet.Skip(1).ToArray();
         itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int bytesUsed);
         BytesUsed = bytesUsed;
     }

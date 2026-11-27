@@ -1,28 +1,37 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PacketWrapper : IDisposable
 {
     private List<byte> packetBytes;
-    private int readPos;
+    private int readIndex;
     private bool disposed;
 
     public PacketWrapper() {
         packetBytes = new List<byte>();
-        readPos = 0;
+        readIndex = 0;
         disposed = false;
     }
 
     public PacketWrapper(byte[] bytes) {
         packetBytes = new List<byte>();
-        readPos = 0;
+        readIndex = 0;
         disposed = false;
         AddBytes(bytes);
     }
 
     public byte[] GetBytes() {
-        return packetBytes.ToArray();
+        return packetBytes.Skip(readIndex).ToArray();
+    }
+
+    public void AdvanceReadPos(int amount) {
+        readIndex += amount;
+    }
+
+    public int BytesLeftToRead() {
+        return packetBytes.Count - (readIndex + 1);
     }
 
     public void AddBytes(byte[] bytes) {
@@ -34,17 +43,17 @@ public class PacketWrapper : IDisposable
             if (disposing) {
                 packetBytes.Clear();
                 packetBytes = null;
-                readPos = 0;
+                readIndex = 0;
             }
             disposed = true;
         }
     }
 
     public byte[] ReadBytes(int length, bool moveCounter = true) {
-        if (packetBytes.Count > readPos) {
-            byte[] bytes = packetBytes.GetRange(readPos, length).ToArray();
+        if (packetBytes.Count > readIndex) {
+            byte[] bytes = packetBytes.GetRange(readIndex, length).ToArray();
             if (moveCounter) {
-                readPos += length;
+                readIndex += length;
             }
             return bytes;
         }

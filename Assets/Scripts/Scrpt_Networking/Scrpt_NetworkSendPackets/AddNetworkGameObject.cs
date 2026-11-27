@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.XR;
 
 /*
 Sent from Server to Clients
@@ -29,8 +30,14 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
     //Vars needed to send over
 
     //Vars needed for send back
-    
-    
+
+    public override int RequiredBytesToUse { get; protected set; } = 23;
+
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        return BasicCompatibleChecker(pP.Packet, NetworkOpCodeEnum.ADD_PREFAB);
+    }
+
+    public AddNetworkGameObject() { }
 
     public AddNetworkGameObject(uint iI, byte[] pId, 
                                 Vector3 goPos, float rot, byte[] extraInfoBytes) {
@@ -41,21 +48,23 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
         specificBytes = extraInfoBytes;
     }
 
-    public AddNetworkGameObject(byte[] bytes, SaveObjectsManager sl) {
-        itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int skipAmount);
-        int bytesUsedAfterIdOfPrefab = Array.IndexOf(bytes.Skip(skipAmount).ToArray(), (byte)0) + 1;
-        prefabId = bytes.Skip(skipAmount).Take(bytesUsedAfterIdOfPrefab-1).ToArray();
-        gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), bytes.Skip(bytesUsedAfterIdOfPrefab).ToArray(), out int bytesUsed);
-        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(bytesUsedAfterIdOfPrefab + bytesUsed).ToArray(), out int rotBytesUsed);
 
-        specificBytes = bytes.Skip(bytesUsedAfterIdOfPrefab + bytesUsed + rotBytesUsed).ToArray();//Overcharged here to instead be the values to set it too
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        byte[] packet = pP.Packet.Skip(1).ToArray();
+        itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), packet, out int skipAmount);
+        int bytesUsedAfterIdOfPrefab = Array.IndexOf(packet.Skip(skipAmount).ToArray(), (byte)0) + 1;
+        prefabId = packet.Skip(skipAmount).Take(bytesUsedAfterIdOfPrefab - 1).ToArray();
+        gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), packet.Skip(bytesUsedAfterIdOfPrefab).ToArray(), out int bytesUsed);
+        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), packet.Skip(bytesUsedAfterIdOfPrefab + bytesUsed).ToArray(), out int rotBytesUsed);
 
-        ByteArrayPrint.PrintByteArray(bytes, "Network Add Game object equals : ");
+        specificBytes = packet.Skip(bytesUsedAfterIdOfPrefab + bytesUsed + rotBytesUsed).ToArray();//Overcharged here to instead be the values to set it too
+
+        ByteArrayPrint.PrintByteArray(packet, "Network Add Game object equals : ");
         Debug.Log($"{bytesUsedAfterIdOfPrefab}");
         ByteArrayPrint.PrintByteArray(prefabId, "Network Add Game object equals : ");
 
-        BytesUsed = skipAmount + bytesUsed + rotBytesUsed + sl.GetAmountOfBytesUsedInPrefab(prefabId, specificBytes); //Disregared extra bytes till better solution found to process them
-        saveLoad = sl;
+        BytesUsed = skipAmount + bytesUsed + rotBytesUsed + pP.SaveLoad.GetAmountOfBytesUsedInPrefab(prefabId, specificBytes); //Disregared extra bytes till better solution found to process them
+        saveLoad = pP.SaveLoad;
     }
 
     public override bool IsTcp => true;

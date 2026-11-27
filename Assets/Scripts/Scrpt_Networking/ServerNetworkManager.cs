@@ -15,8 +15,7 @@ NOTE These are only for the scripts that send it over
 Note Protocols are specified inside of BaseNetwork send packet
  */
 
-public class ServerNetworkManager : MonoBehaviour
-{
+public class ServerNetworkManager : NetworkManager {
 
     private static int MAX_TCP_BUFFER_ALLOCATION = 4096;
 
@@ -37,7 +36,9 @@ public class ServerNetworkManager : MonoBehaviour
     //TODO : Decouple this from the other thing but for rn just getting it working
     private static SaveObjectsManager currentSaveManager;
 
-    private static ConcurrentQueue<BaseNetworkSendPacket> ExecuteOtherThreadRequestQueue;
+
+    private static NetworkSenderFactory udpPacketFactory;
+    private static NetworkSenderFactory tcpPacketFactory;
 
     public static void AddClientIDToPlayer(int clientId, PlayerNetworkDataToMovement playerMov) {
         clientIdToPlayerMovement.Add(clientId, playerMov);
@@ -131,22 +132,10 @@ public class ServerNetworkManager : MonoBehaviour
 
             if (bytesRead > 0) {
                 //Clip data to bytes we want
-                byte[] tcpBytes = new byte[bytesRead];
-                for (int i = 0; i < bytesRead; i++) {
-                    tcpBytes[i] = data.Buffer[i];
-                }
+                byte[] tcpBytes = data.Buffer.Take(bytesRead).ToArray();
 
-                using (PacketWrapper packet = new PacketWrapper(tcpBytes)) {
-                    
-                    if (packet.GetBytes()[0] == (byte)NetworkOpCodeEnum.DEAL_WITH_TCP_CONNECTION) {
-                        Debug.Log("Attempting to convert thing from tcp connection.");
-                        //Todo change so this dealt with in main thread
-                        ExecuteOtherThreadRequestQueue.Enqueue(new PlayerAddPacket(packet.GetBytes().Skip(1).ToArray(), currentSaveManager, data.ClientId));
-                    }
-                    //TODO : Account for processing requiring me to make this like the client
-                            //where it parses through the bytes each time for each new request
-
-                }
+                ProcessThroughByteStream(tcpBytes, tcpPacketFactory,
+                                    new SetValuesInPacketParams(null, currentSaveManager, null, data.ClientId));
 
                 data.Buffer = new byte[MAX_TCP_BUFFER_ALLOCATION];
                 data.Stream.BeginRead(data.Buffer, 0, MAX_TCP_BUFFER_ALLOCATION, onRecieveDataTcp, data);
@@ -202,13 +191,8 @@ public class ServerNetworkManager : MonoBehaviour
                 }
             }
 
-            using (PacketWrapper packet = new PacketWrapper(recievedData)) {
-
-            byte[] packetBytes = packet.GetBytes();
-
-            ExecuteOtherThreadRequestQueue.Enqueue(new PlayerMovementPacket(packetBytes, clientData.ClientId));
-            }
-
+            ProcessThroughByteStream(recievedData, udpPacketFactory,
+                                new SetValuesInPacketParams(null, null, null, clientData.ClientId));
         }
         catch (ObjectDisposedException) {
             //Object gone ig
@@ -289,6 +273,14 @@ public class ServerNetworkManager : MonoBehaviour
             players = new Dictionary<Guid, GameObject>();
             ExecuteOtherThreadRequestQueue = new ConcurrentQueue<BaseNetworkSendPacket>();
             clientsLock = new object();
+
+            BaseNetworkSendPacket[] udpPacketTypes = { new PlayerMovementPacket() };
+
+            udpPacketFactory = new NetworkSenderFactory(udpPacketTypes);
+
+            BaseNetworkSendPacket[] tcpPacketTypes = { new PlayerAddPacket() };
+
+            tcpPacketFactory = new NetworkSenderFactory(tcpPacketTypes);
 
             StartServer(DataService.PortOfServerWeAreHosting);
         }

@@ -32,7 +32,19 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
     private static float lastUpdatedPlayer; //OMEGA jank but no ref types in this version of C#
     private float maxTimeBeforeResyncPlayer;
 
-    public bool ActuallyUsable { get; private set; }
+    private int skipAmount;
+
+    public override int RequiredBytesToUse { get; protected set; } = 20;
+
+    public override bool IsCompatible(SetValuesInPacketParams pP) {
+        if (pP.Packet.Length >= RequiredBytesToUse) {
+            itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), pP.Packet, out skipAmount);
+            return SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(itemId);
+        }
+        return false;
+    }
+
+    public UpdateNetworkGameObject() { }
 
     public UpdateNetworkGameObject(SaveObjectsManager sl, uint iI, GameObject goTS) {
         saveLoad = sl;
@@ -40,26 +52,18 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
         gameObjectToSend = goTS;
     }
 
-    public UpdateNetworkGameObject(byte[] bytes, SaveObjectsManager sl, uint pID, float plrResync) {
-        itemId = (uint)ConvertToByteArray.ConvertBytesToValue(typeof(uint), bytes, out int skipAmount);
-        gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), bytes.Skip(skipAmount).ToArray(), out int bytesUsed);
-        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), bytes.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
+    public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        //Item ID is already gonna be called by now cuz of skip ID
+        gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), pP.Packet.Skip(skipAmount).ToArray(), out int bytesUsed);
+        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
 
-        specificBytes = bytes.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();
-
-        if (SaveablePrefabManager.NetworkIdsPrefabs.ContainsKey(itemId)) {
-            ActuallyUsable = true;
-        }
-        else {
-            ActuallyUsable = false;
-            return;
-        }
+        specificBytes = pP.Packet.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();
 
         gameObjectToSend = SaveablePrefabManager.NetworkIdsPrefabs[itemId];
         goPrefabSaveInfo = SaveablePrefabManager.NetworkIdsSaveInfoCache[itemId];
-        BytesUsed = skipAmount + bytesUsed + rotBytesUsed + sl.GetAmountOfBytesUsedInPrefab(goPrefabSaveInfo.PrefabId,specificBytes); //Disregared extra bytes till better solution found to process them
-        playerID = pID;
-        maxTimeBeforeResyncPlayer = plrResync;
+        BytesUsed = skipAmount + bytesUsed + rotBytesUsed + pP.SaveLoad.GetAmountOfBytesUsedInPrefab(goPrefabSaveInfo.PrefabId,specificBytes); //Disregared extra bytes till better solution found to process them
+        playerID = pP.NetworkID;
+        maxTimeBeforeResyncPlayer = pP.PlayerResyncTime;
     }
 
     public override bool IsTcp => false;
@@ -71,6 +75,7 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
     }
 
     public override void ExecuteSentBytes() {
+
         if (SaveablePrefabManager.NetworkIdsPrefabs.TryGetValue(itemId, out GameObject gO)) {
 
             if (itemId != playerID) {
