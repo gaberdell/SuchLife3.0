@@ -46,9 +46,9 @@ public class PlayerInventory : MonoBehaviour
     //used to detect the moment a number key goes down
     private readonly bool[] hotKeyWasDown = new bool[10];
  
-    private static readonly Color32 hotbarDefaultColor = new Color32(255, 255, 225, 100);
-    private static readonly Color32 leftHandColor = new Color32(50, 255, 225, 100);   //teal
-    private static readonly Color32 rightHandColor = new Color32(255, 160, 50, 100);  //orange
+    private static readonly Color32 hotbarDefaultColor = new Color32(255, 255, 225, 255);
+    private static readonly Color32 leftHandColor = new Color32(50, 255, 225, 255);   //teal
+    private static readonly Color32 rightHandColor = new Color32(255, 160, 50, 255);  //orange
  
     int inventorySize = 40; 
  
@@ -164,29 +164,29 @@ public class PlayerInventory : MonoBehaviour
         //     if (InputHandler.Instance.IsInventoryKey[i]) // Check if a number key is pressed
         //     {
 
-                if(selectedItem != -1){ //if selectedItem has changed before, we need to turn that selection off.
-                    //hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
-                    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxDefault;
+                //if(selectedItem != -1){ //if selectedItem has changed before, we need to turn that selection off.
+                //    //hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
+                //    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxDefault;
 
                 
-                    //i-1 to account for 0 being 10.
-                    selectedItem = i - 1;
-                    playerInfo.HeldItem = inventory[selectedItem].item;
-                    playerInfo.heldItemIndex = selectedItem;
-                    //if selecting a blank slot
-                    if (inventory[selectedItem].isEmpty)
-                    {
-                        InputHandler.setSelectedContext(0); //0 = None
-                    }
-                    else
-                    {
-                        InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
-                    }
-                    //set box sprite
-                    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxSelected;
-                    //hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+                //    //i-1 to account for 0 being 10.
+                //    selectedItem = i - 1;
+                //    playerInfo.HeldItem = inventory[selectedItem].item;
+                //    playerInfo.heldItemIndex = selectedItem;
+                //    //if selecting a blank slot
+                //    if (inventory[selectedItem].isEmpty)
+                //    {
+                //        InputHandler.setSelectedContext(0); //0 = None
+                //    }
+                //    else
+                //    {
+                //        InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
+                //    }
+                //    //set box sprite
+                //    hotbar[selectedItem].GetComponent<Image>().sprite = hotbarBoxSelected;
+                //    //hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
 
-                }
+                //}
              
 
 
@@ -358,7 +358,7 @@ public class PlayerInventory : MonoBehaviour
     private void HandleConsumableUse()
     {
         //don't drink anything while a menu is open
-        if ((fullInventory != null && fullInventory.activeSelf) || (CraftingUI != null && CraftingUI.activeSelf))
+        if ((CraftingUI != null && CraftingUI.activeSelf))
         {
             return;
         }

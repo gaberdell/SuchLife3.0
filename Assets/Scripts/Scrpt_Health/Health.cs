@@ -11,7 +11,7 @@ public class Health : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    public bool showHealthText = false;
+    private bool showHealthText = false;
     private TextMesh healthTextMesh;
 
     public UnityEvent onDeath;

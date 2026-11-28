@@ -220,7 +220,7 @@ public class PathingController
         int c = 0;
         while ((current != startCell) && (c < 100))
         {
-            current.printCell();
+            //current.printCell();
             path.Add(current);
             current = current.parent;
             c++;
