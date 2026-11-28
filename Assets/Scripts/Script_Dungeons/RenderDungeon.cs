@@ -22,9 +22,13 @@ public class RenderDungeon : MonoBehaviour
     [SerializeField] Tile bonusTile;
     [SerializeField] GameObject dungeonExit;
     [SerializeField] GameObject bombEnemy;
+    [SerializeField] GameObject foxEnemy;
+    [SerializeField] GameObject albinoFoxEnemy;
+    [SerializeField] GameObject crateObject;
     [SerializeField] Tile[] groundTiles;
     RoomContainer rooms;
-    Tilemap dungeonTilemap; //deprecated; replace with ground tilemap and wall tilemap instead
+    
+    //Tilemap dungeonTilemap; <- deprecated; replace with ground tilemap and wall tilemap instead
     EventManager eventManager;
     DungeonOptions opts;
     
@@ -246,6 +250,27 @@ public class RenderDungeon : MonoBehaviour
                 //Bomb newEntity = new Bomb(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 ChunkManager.addEntityToChunk(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
                 //Instantiate(bombEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "Fox")
+            {
+                //Fox newEntity = new Fox(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "AlbinoFox")
+            {
+                //Fox newEntity = new Fox(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(albinoFoxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(foxEnemy, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
+            }
+
+            if (entity.entityName == "Crate")
+            {
+                //Crate newEntity = new Crate(new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                ChunkManager.addEntityToChunk(crateObject, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0));
+                //Instantiate(crateObject, new Vector3Int(roomNode.drawXPos + entity.relativeX + dungeonOffsetX, roomNode.drawYPos + entity.relativeY + dungeonOffsetY, 0), Quaternion.identity);
             }
         }
 
@@ -510,44 +535,4 @@ public class RenderDungeon : MonoBehaviour
         //    //if (tile4 == null) { drawHallway(width, height, startX, startY - height, type); return; }
         //}
     }
-
-    // DEPRECATED
-    /*
-    public Tilemap getDungeonTilemap() { return dungeonTilemap; }
-
-    public string Save() {
-        int x_min = dungeonTilemap.cellBounds.min.x;
-        int x_max = dungeonTilemap.cellBounds.max.x;
-        int y_min = dungeonTilemap.cellBounds.min.y;
-        int y_max = dungeonTilemap.cellBounds.max.y;
-
-        string json = "";
-        for (int x = x_min; x < x_max; x++) {
-            for (int y = y_min; y < y_max; y++) {
-                Tile tile = (Tile)dungeonTilemap.GetTile(new Vector3Int(x, y, 0));
-
-                if (tile != null) {
-                    TileCache tileCache = new TileCache(tile.sprite.name, x, y); // saving tile data in a temporary object
-
-                    string spriteName = tileCache.spriteName;
-                    if (spriteName.Equals(GRASS_SPRITE_NAME) || spriteName.Equals(WALL_SPRITE_NAME))
-                    json += tileCache.Save() + "\n";
-                }
-            }
-        }
-
-        return json;
-    }
-
-    public void Load(string json) {
-        TileCache tileCache = new TileCache();
-        tileCache.Load(json);
-
-        if (tileCache.spriteName.Equals(GRASS_SPRITE_NAME)) // 
-            dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), grassTile);
-        if (tileCache.spriteName.Equals(WALL_SPRITE_NAME))
-            dungeonTilemap.SetTile(new Vector3Int(tileCache.x, tileCache.y, 0), wallTile);
-    }
-    */
-
 }

@@ -57,7 +57,13 @@ public class PlayerInventory : MonoBehaviour
     private EffectsDict effectDict;
  
     private bool isConnectedWithUI = false;
- 
+
+    private float nextScrollTime = 0f; 
+    // This stores the next time inventory slot is allowed to change when scrolling
+
+    private float scrollCoolDown = 0.025f;
+    // Delay when scrolling
+
     void Start(){
  
         inventory = new List<InventorySlot>();
@@ -144,6 +150,98 @@ public class PlayerInventory : MonoBehaviour
         if (!isConnectedWithUI) {
             return;
         }
+
+        // scroll code; will  need to be adopted to the double-hand implementation
+        // for (int i = 0; i < hotbarSize+1; i++)
+        // {
+   
+            
+        //     if (InputHandler.Instance.IsInventoryKey[i]) // Check if a number key is pressed
+        //     {
+
+        //         if(selectedItem != -1){ //if selectedItem has changed before, we need to turn that selection off.
+        //             hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
+
+        //         }
+        //         //we have to check 0 first because 0 is 10, not 0.
+        //         //if (i == 0)
+        //         //{
+        //         //    selectedItem = hotbarSize-1;
+
+        //         //    hotbar[hotbarSize-1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+
+        //         //}
+        //         //else
+        //         {
+        //             //i-1 to account for 0 being 10.
+        //             selectedItem = i - 1;
+        //             playerInfo.HeldItem = inventory[selectedItem].item;
+        //             playerInfo.heldItemIndex = selectedItem;
+        //             //if selecting a blank slot
+        //             if (inventory[selectedItem].isEmpty)
+        //             {
+        //                 InputHandler.setSelectedContext(0); //0 = None
+        //             }
+        //             else
+        //             {
+        //                 InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
+        //             }
+
+        //             hotbar[i - 1].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+
+        //         }
+             
+
+
+        //     }
+        // }
+
+        // if (InputHandler.Instance.GetMouseScroll().y != 0f && Time.time >= nextScrollTime) // Check if Mouse is scrolled and has been late enough
+        //     {
+        //         if(selectedItem != -1){ //if selectedItem has changed before, we need to turn that selection off.
+        //             hotbar[selectedItem].GetComponent<Image>().color = new Color32(255,255,225,100);
+
+        //         }
+        //         if(InputHandler.Instance.GetMouseScroll().y > 0f)
+        //         {
+        //             // Handdles if would go over upper bounds
+        //             if (selectedItem+1 > hotbarSize-1)
+        //             {
+        //                 selectedItem = 0;
+        //             }
+        //             else
+        //             {
+        //                 selectedItem++;
+        //             }
+        //         }
+        //         else if (InputHandler.Instance.GetMouseScroll().y < 0f)
+        //         {
+        //             // Handles if would go out of lower bounds
+        //             if (selectedItem-1 < 0)
+        //             {
+        //                 selectedItem = hotbarSize-1;
+        //             }
+        //             else
+        //             {
+        //                 selectedItem--;
+        //             }
+        //         }
+        //         nextScrollTime = Time.time + scrollCoolDown;
+        //         playerInfo.HeldItem = inventory[selectedItem].item;
+        //         playerInfo.heldItemIndex = selectedItem;
+        //         //if selecting a blank slot
+        //         if (inventory[selectedItem].isEmpty)
+        //         {
+        //             InputHandler.setSelectedContext(0); //0 = None
+        //         }
+        //         else
+        //         {
+        //             InputHandler.setSelectedContext(inventory[selectedItem].item.useFlag);
+        //         }
+        //         hotbar[selectedItem].GetComponent<Image>().color = new Color32(50, 255, 225, 100);
+        //     }
+
+
  
         HandleHotbarKeys();
  
@@ -151,6 +249,7 @@ public class PlayerInventory : MonoBehaviour
         //into a selected slot, and a held stack running out)
         RefreshHeldItems();
  
+
         //Let's assume E is Inventory button, because it usually is.... //setting to P for testing as E is the interact key so it conflicts
  
         if (InputHandler.Instance.InventoryOpenTriggered)

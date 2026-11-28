@@ -83,7 +83,8 @@ public class InputHandler : MonoBehaviour
     public bool CraftingTriggered { get; private set; }
     public bool[] IsInventoryKey { get; private set; }
     public static InputHandler Instance { get; private set; }
- 
+
+
     //handling for context-sensitive use; checked against in scripts that perform use-actions with the attack key (or other)
     public bool IsShiftHeld { get { return Keyboard.current != null && Keyboard.current.shiftKey.isPressed; }}
     
@@ -280,7 +281,12 @@ public class InputHandler : MonoBehaviour
     {
         return Mouse.current.position.ReadValue();
     }
- 
+
+    public Vector2 GetMouseScroll()
+    {
+        return Mouse.current.scroll.ReadValue();
+    }
+
     //Re register things if a PlayerInput was deleted
     private void regenerateActions(Scene current)
     {

@@ -14,20 +14,13 @@ public class Fox : Mob
 
     private Transform target;
     [SerializeField] private float aggroDistance;
-    [SerializeField] private float explodeAtDistance;
-    [SerializeField] private float explosionRadius;
-    [SerializeField] private float explosionDelay;
     [SerializeField] private int damage;
     //private AIDestinationSetter pathSetter;
 
     private float distance;
-    private bool isExploding = false;
 
     [SerializeField] private Tilemap blockTilemap;
     [SerializeField] private string tileMapName = "PlaceableTileMap"; //Done by goat Kcrushel
-    // public delegate void OnExplode(Collider2D explosionCollider);
-    // public static event OnExplode onExplode;
-
 
     //public Bomb(Vector3 pos)
     //{
@@ -75,12 +68,6 @@ public class Fox : Mob
         if (path.desiredVelocity.magnitude > 0) {
             animator.SetBool("Walk", true);
         }*/
-
-        if (distance <= explodeAtDistance && !isExploding)
-        {
-            isExploding = true;  
-            //StartCoroutine(Explode());
-        }
     }
 
     
