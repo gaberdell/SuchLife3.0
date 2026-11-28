@@ -13,8 +13,11 @@ public class Saveable : Attribute
 {
     public string SaveName { get; private set; }
 
-    public Saveable(string name) {
+    public bool HiddenOverNetwork { get; private set; }
+
+    public Saveable(string name, bool hidden = false) {
         SaveName = name;
+        HiddenOverNetwork = hidden;
     }
 
 }

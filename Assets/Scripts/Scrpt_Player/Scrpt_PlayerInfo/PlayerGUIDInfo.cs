@@ -5,11 +5,11 @@ using TMPro;
 [SaveableComponent("Player GUID Info")]
 public class PlayerGUIDInfo : MonoBehaviour
 {
-    [Saveable("GUID As bytes")]
-    public Guid guid;
+    [Saveable("GUID As bytes", true)]
+    public Guid PlayerGUID;
 
     [Saveable("Player Username As Bytes")]
-    public string username;
+    public string PlayerUsername;
 
     [SerializeField]
     TextMeshPro textToCopy;
@@ -22,20 +22,20 @@ public class PlayerGUIDInfo : MonoBehaviour
 #endif
 
     private void Start() {
-        if (username == null) {
-            username = "";
+        if (PlayerUsername == null) {
+            PlayerUsername = "";
         }
 
 #if UNITY_STANDALONE
         userNameUI = Instantiate(textToCopy, transform.position + textOffset, Quaternion.identity, transform.parent);
-        userNameUI.text = username;
+        userNameUI.text = PlayerUsername;
 #endif
     }
 
 #if UNITY_STANDALONE
     private void Update() {
         //TODO : Fix this so we don't have to do it like this :skull:
-        userNameUI.text = username;
+        userNameUI.text = PlayerUsername;
         userNameUI.transform.position = transform.position + textOffset;
     }
 #endif

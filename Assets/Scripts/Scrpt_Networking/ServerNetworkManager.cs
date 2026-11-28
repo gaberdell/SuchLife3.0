@@ -40,12 +40,12 @@ public class ServerNetworkManager : NetworkManager {
     private static NetworkSenderFactory udpPacketFactory;
     private static NetworkSenderFactory tcpPacketFactory;
 
-    public static void AddClientIDToPlayer(int clientId, PlayerNetworkDataToMovement playerMov) {
-        clientIdToPlayerMovement.Add(clientId, playerMov);
+    public static bool AddClientIDToPlayer(int clientId, PlayerNetworkDataToMovement playerMov) {
+        return clientIdToPlayerMovement.TryAdd(clientId, playerMov);
     }
 
-    public static void AddPlayer(Guid playerGUID, GameObject player) {
-        players.Add(playerGUID, player);
+    public static bool AddPlayer(Guid playerGUID, GameObject player) {
+        return players.TryAdd(playerGUID, player);
     }
 
     public static void EnqueMainThreadRequest(BaseNetworkSendPacket bNSP) {
@@ -294,7 +294,7 @@ public class ServerNetworkManager : NetworkManager {
         Debug.Log($"CurSaveInfo {curSaveInfo}\nCurSaveInfo.NetworkID {curSaveInfo?.NetworkId}\nPrefab to add {prefabToAdd}\ncurrentSaveManager {currentSaveManager}");
         AddNetworkGameObject addNewGO = new AddNetworkGameObject(curSaveInfo.NetworkId,
             curSaveInfo.PrefabId, prefabToAdd.transform.position, prefabToAdd.transform.rotation.eulerAngles.z,
-             currentSaveManager.PrefabGetByteArray(prefabToAdd, false, false).ToArray());
+             currentSaveManager.PrefabGetByteArray(prefabToAdd, false, false, true).ToArray());
         return addNewGO;
     }
 

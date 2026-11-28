@@ -4,18 +4,44 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+
+//Smaller helper record to encapsulate stuff
+public record SaveFieldData {
+
+    public FieldInfo SaveField { get; set; }
+    public Saveable SaveAttribute { get; set; }
+
+    public SaveFieldData(FieldInfo Field, Saveable Attribute) {
+        SaveField = Field;
+        SaveAttribute = Attribute;
+    }
+}
+
 //Small helper class to encapsualte stuff
 public class MonoBehaviourSaveFields {
 
     public MonoBehaviourSaveFields(Type saveType) {
         MonobehaviorSaveType = saveType;
-        SaveFields = new List<FieldInfo> ();
+        SaveFields = new List<SaveFieldData>();
     }
 
 
     public Type MonobehaviorSaveType;
-    public List<FieldInfo> SaveFields;
+    public List<SaveFieldData> SaveFields;
 }
+
+
+/*
+Jist of a save object
+ 0      7 8     15 16    23 24    31 32    39 40    47 48    55 56    63
++--------+--------+--------+--------+--------+--------+--------+--------+
+|             NETWORK_ID            |          ITEM_POS_X_FLOAT         |
++--------+--------+--------+--------+--------+--------+--------+--------+
+|          ITEM_POS_Y_FLOAT         |          ITEM_ROT_Z_FLOAT         |
++--------+--------+--------+--------+--------+--------+--------+--------+
+|      REST_OF_SERIALIZED_DATA 
++--------+--------+--------+--------+-- . .  .
+*/
 
 //Thx for this for how to use the OnApplicationQuit and stuff
 //https://gamedev.stackexchange.com/questions/191550/saving-settings-when-exiting-the-application
@@ -156,7 +182,7 @@ public class SaveObjectsManager : MonoBehaviour
         return savePrefab.ToArray();
     }
 
-    public int GetAmountOfBytesUsedInPrefab(byte[] prefabId, byte[] dataToSetTo) {
+    public int GetAmountOfBytesUsedInPrefab(byte[] prefabId, byte[] dataToSetTo, bool isHidden = false) {
         int readBytes = 0;
 
         List<MonoBehaviourSaveFields> monoBehaviorAndTypeOrder = PrefabToMonoBehaviorFieldOrder[prefabId];
@@ -166,9 +192,12 @@ public class SaveObjectsManager : MonoBehaviour
 
         for (int i = 0; i < monoBehaviorAndTypeOrder.Count; i++) {
             MonoBehaviourSaveFields componentType = monoBehaviorAndTypeOrder[i];
-            foreach (FieldInfo field in componentType.SaveFields) {
+            foreach (SaveFieldData field in componentType.SaveFields) {
                 if (readBytes > dataToSetTo.Length) { return -1; }
-                int bytesUsed = ConvertToByteArray.GetSizeOfValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray());
+                if (isHidden && field.SaveAttribute.HiddenOverNetwork) {continue;}
+
+
+                int bytesUsed = ConvertToByteArray.GetSizeOfValue(field.SaveField.FieldType, dataToSetTo.Skip(readBytes).ToArray());
                 if (bytesUsed == -1) { return -1; }
                 readBytes += bytesUsed;
             }
@@ -178,15 +207,15 @@ public class SaveObjectsManager : MonoBehaviour
         return readBytes;
     }
 
-    public void SetAllBytesInAPrefabSafe(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
+    public void SetAllBytesInAPrefabSafe(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes, bool isHidden = false) {
         if (prefabId == null) {
             prefabId = prefab.GetComponent<PrefabSaveInfo>().PrefabId;
         }
 
-        int bytesUsedForPrefabSave = GetAmountOfBytesUsedInPrefab(prefabId, dataToSetTo);
+        int bytesUsedForPrefabSave = GetAmountOfBytesUsedInPrefab(prefabId, dataToSetTo, isHidden);
 
         if (bytesUsedForPrefabSave > 0) {
-            SetAllBytesInAPrefab(prefab, prefabId, dataToSetTo, out readBytes);
+            SetAllBytesInAPrefab(prefab, prefabId, dataToSetTo, out readBytes, isHidden);
         }
         else {
             readBytes = 0;
@@ -194,7 +223,7 @@ public class SaveObjectsManager : MonoBehaviour
 
     }
 
-    public void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes) {
+    public void SetAllBytesInAPrefab(GameObject prefab, byte[] prefabId, byte[] dataToSetTo, out int readBytes, bool isHidden = false) {
         readBytes = 0;
 
         if (prefabId == null) {
@@ -213,9 +242,11 @@ public class SaveObjectsManager : MonoBehaviour
 
             component = saveableMonobehaviors.Find((e) => e.GetType() == componentType.MonobehaviorSaveType);
 
-            foreach (FieldInfo field in componentType.SaveFields) {
-                field.SetValue(component, ConvertToByteArray.ConvertBytesToValue(field.FieldType, dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed));
-                readBytes += bytesUsed;
+            foreach (SaveFieldData field in componentType.SaveFields) {
+                if (!isHidden || !field.SaveAttribute.HiddenOverNetwork) {
+                    field.SaveField.SetValue(component, ConvertToByteArray.ConvertBytesToValue(field.SaveField.FieldType, dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed));
+                    readBytes += bytesUsed;
+                }
             }
 
         }
@@ -244,17 +275,19 @@ public class SaveObjectsManager : MonoBehaviour
 
         ByteArrayPrint.PrintByteArray(dataToSetTo.Skip(readBytes).ToArray(), "Array Loaded before checking pos : ");
 
-        Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed);
-        float eulerRotationZ = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes + bytesUsed).ToArray(), out int rotBytesUsed);
+        //Vector3 prefabPosition = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsed);
+        float prefabPosX = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes).ToArray(), out int bytesUsedX);
+        float prefabPosY = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes + bytesUsedX).ToArray(), out int bytesUsedY);
+        float eulerRotationZ = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), dataToSetTo.Skip(readBytes + bytesUsedX + bytesUsedY).ToArray(), out int rotBytesUsed);
 
-        GameObject prefab = SaveablePrefabManager.CreatePrefab(id, prefabPosition, eulerRotationZ);
+        GameObject prefab = SaveablePrefabManager.CreatePrefab(id, new Vector2(prefabPosX, prefabPosY), eulerRotationZ);
 
         //TODO : Player might not be id one so maybe change later?
         if (id.Length == 1 && id[0] == 1) {
             LocalPlayerFromSaveData = prefab;
         }
         //newStartPos += idDelinatorPosition; Idk this makes more sense to me idk tho
-        readBytes += bytesUsed + rotBytesUsed;
+        readBytes += bytesUsedX + bytesUsedY + rotBytesUsed;
 
         SetAllBytesInAPrefab(prefab, id, dataToSetTo.Skip(readBytes).ToArray(), out int newBytesUsed);
         readBytes += newBytesUsed;
@@ -264,7 +297,7 @@ public class SaveObjectsManager : MonoBehaviour
 
 
 
-    public List<byte> PrefabGetByteArray(GameObject prefab, bool addId = true, bool addRotAndPos = true) {
+    public List<byte> PrefabGetByteArray(GameObject prefab, bool addId = true, bool addRotAndPos = true, bool isHidden = false) {
         PrefabSaveInfo prefabSaveInfo = prefab.GetComponent<PrefabSaveInfo>();
 
         if (prefabSaveInfo == null) {
@@ -280,9 +313,11 @@ public class SaveObjectsManager : MonoBehaviour
         }
 
         if (addRotAndPos) {
-            byte[] prefabPosition = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position);
+            byte[] prefabPositionX = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position.x);
+            byte[] prefabPositionY = ConvertToByteArray.ConvertValueToBytes(prefab.transform.position.y);
             byte[] prefabRotation = ConvertToByteArray.ConvertValueToBytes(prefab.transform.rotation.eulerAngles.z);
-            returnArray.AddRange(prefabPosition);
+            returnArray.AddRange(prefabPositionX);
+            returnArray.AddRange(prefabPositionY);
             returnArray.AddRange(prefabRotation);
         }
 
@@ -300,9 +335,11 @@ public class SaveObjectsManager : MonoBehaviour
             MonoBehaviour component = saveableMonobehaviors[i];
 
 
-            foreach (FieldInfo field in componentType.SaveFields) {
+            foreach (SaveFieldData field in componentType.SaveFields) {
                 //Debug.Log($"What is component?35 {component}\nField name {field.Name}\nField value {field.GetValue(component)}");
-                returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.GetValue(component)));
+                if (!isHidden || !field.SaveAttribute.HiddenOverNetwork) {
+                    returnArray.AddRange(ConvertToByteArray.ConvertValueToBytes(field.SaveField.GetValue(component)));
+                }
             }
         }
 
@@ -334,13 +371,13 @@ public class SaveObjectsManager : MonoBehaviour
 
                 Saveable newSavableAttribute = (Saveable)Attribute.GetCustomAttribute(fieldToCheck, typeof(Saveable));
                 if (newSavableAttribute != null) {
-                    newSaveField.SaveFields.Add(fieldToCheck);
+                    newSaveField.SaveFields.Add(new SaveFieldData(fieldToCheck, newSavableAttribute));
                 }
 
             }
 
             if (newSaveField.SaveFields.Count > 0) {
-                IOrderedEnumerable<FieldInfo> orderedField = newSaveField.SaveFields.OrderBy(fieldInfo => ((Saveable)Attribute.GetCustomAttribute(fieldInfo, typeof(Saveable))).SaveName);
+                IOrderedEnumerable<SaveFieldData> orderedField = newSaveField.SaveFields.OrderBy(saveFieldData => saveFieldData.SaveAttribute.SaveName);
                 newSaveField.SaveFields = orderedField.ToList();
                 monoToSort.Add(newSaveField);
             }

@@ -82,6 +82,6 @@ public class AddNetworkGameObject : BaseNetworkSendPacket {
         GameObject newPrefab = SaveablePrefabManager.CreatePrefab(prefabId, gameObjectPos, gameObjectRotation, itemId);
         //Not totally accurate but gives us a good guestimate
 
-        saveLoad.SetAllBytesInAPrefabSafe(newPrefab, prefabId, specificBytes, out int _);
+        saveLoad.SetAllBytesInAPrefabSafe(newPrefab, prefabId, specificBytes, out int _, true);
     }
 }

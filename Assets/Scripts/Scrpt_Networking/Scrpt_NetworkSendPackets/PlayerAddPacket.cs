@@ -72,7 +72,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
 
             PlayerGUIDInfo isOurPlayer = saveObject.GetComponent<PlayerGUIDInfo>();
             PrefabSaveInfo saveInfo = saveObject.GetComponent<PrefabSaveInfo>();
-            if (isOurPlayer != null && isOurPlayer.guid == playerGUID) {
+            if (isOurPlayer != null && isOurPlayer.PlayerGUID == playerGUID) {
                 isPlayerAlreadyInGame = true;
 
                 packetToSend = new AddPlayerFromNetwork(saveInfo.NetworkId,
@@ -86,7 +86,7 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
             else {
                 packetToSend = new AddNetworkGameObject(saveInfo.NetworkId,
             saveInfo.PrefabId, saveObject.transform.position, saveObject.transform.rotation.eulerAngles.z,
-             saveLoad.PrefabGetByteArray(saveObject, false, false).ToArray());
+             saveLoad.PrefabGetByteArray(saveObject, false, false, true).ToArray());
             }
             ServerNetworkManager.SendToTcp(playerClientID, packetToSend.GetPacketBytes());
         }
@@ -99,8 +99,8 @@ public class PlayerAddPacket : BaseNetworkSendPacket {
         ServerNetworkManager.AddPlayer(playerGUID, newPlayer);
         ServerNetworkManager.AddClientIDToPlayer(playerClientID, newPlayer.GetComponent<PlayerNetworkDataToMovement>());
         PlayerGUIDInfo playerInfo = newPlayer.GetComponent<PlayerGUIDInfo>();
-        playerInfo.guid = playerGUID;
-        playerInfo.username = playerUsername;
+        playerInfo.PlayerGUID = playerGUID;
+        playerInfo.PlayerUsername = playerUsername;
         PrefabSaveInfo prefabSaveInfo = newPlayer.GetComponent<PrefabSaveInfo>();
 
         foreach (var clientPair in ServerNetworkManager.GetTcpClientData()) {

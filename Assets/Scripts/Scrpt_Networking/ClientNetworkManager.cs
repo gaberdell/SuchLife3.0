@@ -129,12 +129,12 @@ public class ClientNetworkManager : NetworkManager {
     }
 
     private void onRecieveDataTcp(IAsyncResult result) {
-        TcpClientData data = (TcpClientData)result.AsyncState;
         try {
             //TCP stream reads everything including multiple requests at once sometimes
             int bytesRead = tcpStream.EndRead(result);
+
             if (bytesRead > 0) {
-                byte[] tcpBytes = data.Buffer.Take(bytesRead).ToArray();
+                byte[] tcpBytes = recieveBuffer.Take(bytesRead).ToArray();
 
                 ProcessThroughByteStream(tcpBytes, tcpPacketFactory,
                     new SetValuesInPacketParams(null, currentSaveManager, initialWorldSetup));
@@ -165,12 +165,20 @@ public class ClientNetworkManager : NetworkManager {
     private void onRecieveDataUdp(IAsyncResult result) {
         try {
             IPEndPoint udpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-
+            
             byte[] recievedData = udpClient.EndReceive(result, ref udpEndPoint);
 
             ProcessThroughByteStream(recievedData, udpPacketFactory,
                 new SetValuesInPacketParams(null, currentSaveManager, initialWorldSetup, 0, localPlayerPrefabNetworkId, MAX_TIME_BEFORE_WE_RESYNC_PLAYER));
 
+        }
+        catch (ObjectDisposedException e) {
+            Debug.Log($"Server UDP is closed and we tried to call it (this is best way to deal with this btw) : {e.Message}");
+            return;
+        }
+        catch (SocketException e) {
+            Debug.Log($"Server UDP socket is closed and we tried to call it (this is best way to deal with this btw) : {e.Message}");
+            return;
         }
         catch (Exception e) {
             Debug.LogError($"UDP exception : {e.Message}\nUDP stacktrace : {e.StackTrace}");

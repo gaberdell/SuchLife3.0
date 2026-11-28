@@ -9,10 +9,10 @@ UDP : Send over item update
 +--------+--------+--------+--------+--------+--------+--------+--------+
 |             NETWORK_ID            |          ITEM_POS_X_FLOAT         |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|          ITEM_POS_Y_FLOAT         |          ITEM_POS_Z_FLOAT         |
+|          ITEM_POS_Y_FLOAT         |          ITEM_ROT_Z_FLOAT         |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|          ITEM_ROT_Z_FLOAT         |      REST_OF_SERIALIZED_DATA      
-+--------+--------+--------+--------+--------+--------+--------+-- . .  .
+|      REST_OF_SERIALIZED_DATA 
++--------+--------+--------+--------+-- . .  .
 */
 
 public class UpdateNetworkGameObject : BaseNetworkSendPacket {
@@ -25,7 +25,8 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
     private PrefabSaveInfo goPrefabSaveInfo;
 
     //Vars needed by reciever
-    private Vector3 gameObjectPos;
+    private float gameObjectPosX;
+    private float gameObjectPosY;
     private float gameObjectRotation;
     private byte[] specificBytes;
     private uint playerID;
@@ -54,14 +55,15 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
 
     public override void SetValuesInPacket(SetValuesInPacketParams pP) {
         //Item ID is already gonna be called by now cuz of skip ID
-        gameObjectPos = (Vector3)ConvertToByteArray.ConvertBytesToValue(typeof(Vector3), pP.Packet.Skip(skipAmount).ToArray(), out int bytesUsed);
-        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(skipAmount + bytesUsed).ToArray(), out int rotBytesUsed);
+        gameObjectPosX = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(skipAmount).ToArray(), out int bytesUsedX);
+        gameObjectPosY = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(skipAmount + bytesUsedX).ToArray(), out int bytesUsedY);
+        gameObjectRotation = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet.Skip(skipAmount + bytesUsedX + bytesUsedY).ToArray(), out int rotBytesUsed);
 
-        specificBytes = pP.Packet.Skip(skipAmount + bytesUsed + rotBytesUsed).ToArray();
+        specificBytes = pP.Packet.Skip(skipAmount + bytesUsedX + bytesUsedY + rotBytesUsed).ToArray();
 
         gameObjectToSend = SaveablePrefabManager.NetworkIdsPrefabs[itemId];
         goPrefabSaveInfo = SaveablePrefabManager.NetworkIdsSaveInfoCache[itemId];
-        BytesUsed = skipAmount + bytesUsed + rotBytesUsed + pP.SaveLoad.GetAmountOfBytesUsedInPrefab(goPrefabSaveInfo.PrefabId,specificBytes); //Disregared extra bytes till better solution found to process them
+        BytesUsed = skipAmount + bytesUsedX + bytesUsedY + rotBytesUsed + pP.SaveLoad.GetAmountOfBytesUsedInPrefab(goPrefabSaveInfo.PrefabId,specificBytes); //Disregared extra bytes till better solution found to process them
         playerID = pP.NetworkID;
         maxTimeBeforeResyncPlayer = pP.PlayerResyncTime;
     }
@@ -69,7 +71,7 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
     public override bool IsTcp => false;
 
     public override byte[] GetPacketBytes() {
-        List<byte> serializedData = saveLoad.PrefabGetByteArray(gameObjectToSend, false);
+        List<byte> serializedData = saveLoad.PrefabGetByteArray(gameObjectToSend, false, true, true);
         byte[] uintByte = ConvertToByteArray.ConvertValueToBytes(itemId);
         return uintByte.Concat(serializedData).ToArray();
     }
@@ -79,20 +81,20 @@ public class UpdateNetworkGameObject : BaseNetworkSendPacket {
         if (SaveablePrefabManager.NetworkIdsPrefabs.TryGetValue(itemId, out GameObject gO)) {
 
             if (itemId != playerID) {
-                gO.transform.position = gameObjectPos;
+                gO.transform.position = new Vector3(gameObjectPosX, gameObjectPosY, gO.transform.position.z);
                 gO.transform.rotation = Quaternion.Euler(gO.transform.rotation.x, 
                                                             gO.transform.rotation.y,
                                                             gameObjectRotation);
 
 
                 saveLoad.SetAllBytesInAPrefabSafe(gameObjectToSend, goPrefabSaveInfo.PrefabId, 
-                                                       specificBytes, out int _);
+                                                       specificBytes, out int _, true);
             }
             else {
                 //Constantly redoing players update causes jitter so do it like this
                 if (Time.time - lastUpdatedPlayer > maxTimeBeforeResyncPlayer) {
                     lastUpdatedPlayer = Time.time;
-                    gO.transform.position = gameObjectPos;
+                    gO.transform.position = new Vector3(gameObjectPosX, gameObjectPosY, gO.transform.position.z);
                     gO.transform.rotation = Quaternion.Euler(gO.transform.rotation.x,
                                                                 gO.transform.rotation.y,
                                                                 gameObjectRotation);

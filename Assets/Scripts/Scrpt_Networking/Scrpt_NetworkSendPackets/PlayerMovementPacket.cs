@@ -37,6 +37,8 @@ public class PlayerMovementPacket : BaseNetworkSendPacket {
     }
 
     public override void SetValuesInPacket(SetValuesInPacketParams pP) {
+        ByteArrayPrint.PrintByteArray(pP.Packet, "Movement packet to print : ");
+
         playerNetworkID = pP.PlayerClientID;
 
         playerX = (float)ConvertToByteArray.ConvertBytesToValue(typeof(float), pP.Packet, out int bytesUsedX);
