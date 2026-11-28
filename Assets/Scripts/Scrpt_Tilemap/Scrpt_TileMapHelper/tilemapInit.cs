@@ -6,6 +6,11 @@ public class tilemapInit : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (DataService.LoadTilemapData().Length > 0)
+        {
+            Debug.Log("Save detected! Loading tilemap...");
+            TilemapSaveLoad.LoadGrid(DataService.LoadTilemapData());
+        }
         Tilemap groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
         Tilemap wallTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
         //when tilemap is initialized, load all of it into the chunk manager; allows player to interact with the hardcoded tilemap

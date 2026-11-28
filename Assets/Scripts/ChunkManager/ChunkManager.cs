@@ -40,6 +40,11 @@ public static class ChunkManager
         //0th 0th chunk starts at bottom left corner? top left?
         //input is the position on the tilemap
 
+
+        wallTilemap = GameObject.Find("PlaceableTileMap").GetComponent<Tilemap>();
+        groundTilemap = GameObject.Find("GroundTilemap").GetComponent<Tilemap>();
+
+        
         Vector2 cPos = getChunkPosFromWorld(tilePos);
         int chunkX = (int)cPos.x;
         int chunkY = (int)cPos.y;
@@ -162,10 +167,10 @@ public static class ChunkManager
     static public void updateEntityPos(Vector2 prevChunk, Vector2 currChunk, GameObject entity)
     {
         //Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
-        Debug.Log("H: " + chunkGrid.Count + " W: " + chunkGrid[(int)currChunk.x].Count);
-        Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
+        // Debug.Log("H: " + chunkGrid.Count + " W: " + chunkGrid[(int)currChunk.x].Count);
+        // Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
         chunkGrid[(int)prevChunk.y][(int)prevChunk.x].removeEntity(entity);
-        Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
+        // Debug.Log("updating enemy position prev: " + prevChunk + " to current: " + currChunk);
         chunkGrid[(int)currChunk.y][(int)currChunk.x].addEntity(entity);
 
     }

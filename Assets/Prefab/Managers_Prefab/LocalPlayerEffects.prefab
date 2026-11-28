@@ -19450,6 +19450,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ae0290551022344aaff9d768c237d7d, type: 2}
   - {fileID: 11400000, guid: 9abdfe27c8753c943a9766614e9af4e5, type: 2}
   - {fileID: 11400000, guid: 03c0178361dc123449e77aec13e18d50, type: 2}
+  - {fileID: 11400000, guid: 65310953a1dff054c81e49c0d89506bd, type: 2}
+  - {fileID: 11400000, guid: 7af9ac620635d1447b47af4131d9e09d, type: 2}
   resultbox: {fileID: 6799610660635738328}
   resultRecipe: {fileID: 0}
   itemInCursorObj: {fileID: 5237190762290245406}
