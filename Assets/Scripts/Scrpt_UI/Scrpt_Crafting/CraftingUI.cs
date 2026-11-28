@@ -261,31 +261,31 @@ public class CraftingUI : MonoBehaviour
     //only update recipe result when a change is detected on the crafting grid
     public void updateRecipeResult()
     {
-        //assume no result found by default
-        bool resultFound = false;
+        //read straight from the real slots
+        List<Item> grid = new List<Item>();
+        for (int i = 0; i < 9; i++)
+            grid.Add(crafting[i].isEmpty ? null : crafting[i].item);
+
+        resultRecipe = null;
         GameObject PanelItem = resultbox.transform.Find("PanelItem").gameObject;
         foreach (Recipe recipe in allrecipes)
         {
-            //Debug.Log(recipe);
-            if (recipe.compareRecipes(current_crafting))
-            { //IF WE'VE FOUND A MATCH
-                Debug.Log("MATCH FOUND");
-                Debug.Log(recipe.result);
-                PanelItem.GetComponent<Image>().sprite = recipe.result.icon;
-                resultRecipe = recipe;
-                resultFound = true;
-            }
-            else
+            if (recipe.compareRecipes(grid))
             {
-                if (!resultFound)
-                {
-                    //don't overwrite displayed result; stop at first match found
-                    PanelItem.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
-                }
+                resultRecipe = recipe;
+                PanelItem.GetComponent<Image>().sprite = recipe.result.icon;
+                break; //first match wins
             }
-
         }
 
+        PanelItem.GetComponent<Image>().sprite = resultRecipe != null
+            ? resultRecipe.result.icon
+            : player.GetComponent<PlayerInventory>().empty;
+        if (resultRecipe == null)
+        {
+            //don't overwrite displayed result; stop at first match found
+            PanelItem.GetComponent<Image>().sprite = player.GetComponent<PlayerInventory>().empty;
+        }
     }
 
 
@@ -426,6 +426,7 @@ public class CraftingUI : MonoBehaviour
     //This differs from AddItem in PLayerInventory, because this is adding an item to a specific slot, not just the first avaliable one. Type is if we're adding to the crafting grid or inventory grid.
     //Type and Index are the type and index of the destination.
     void AddItemInSlot(Item item, string type, int index, int quantity = 1){
+        Debug.Log("slot" + index);
 
         InventorySlot destination; 
     
@@ -454,7 +455,7 @@ public class CraftingUI : MonoBehaviour
         else{ //If destination isn't empty. 
 
             if(destination.item == item){ // will only be called if this is trye outside, but no harm in double checking.
-                destination.quantity += 1; 
+                destination.quantity += quantity; 
             }
 
         }
@@ -528,13 +529,21 @@ public class CraftingUI : MonoBehaviour
             //if they are the same items then increment the quantity of the second item
             if (target.item == itemInCursor)
             {
-                AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, itemInCursorQuantity);
-                clearSelectedItem();
-                Cursor.visible = true;
-                //reset first selected item
-                firstButtonPress.type = null;
-                firstButtonPress.index = -1;
+                int space = itemInCursor.maxStack - target.quantity;
+                int moved = Mathf.Min(space, itemInCursorQuantity);
 
+                if (moved > 0)
+                {
+                    AddItemInSlot(itemInCursor, secondButtonPress.type, secondButtonPress.index, moved);
+                    itemInCursorQuantity -= moved;
+                }
+
+                if (itemInCursorQuantity <= 0)
+                {
+                    clearSelectedItem();
+                    firstButtonPress.type = null;
+                    firstButtonPress.index = -1;
+                }
             } else
             {
                 //set sprite for cursor
@@ -578,29 +587,37 @@ public class CraftingUI : MonoBehaviour
 
     public void onCraftingResultPress()
     {
-        //check if there is an item in the panel (successful recipe found)
+        if (resultRecipe == null || resultRecipe.result == null) return;
+
         Item resultItem = resultRecipe.result;
-        if(resultItem != null)
+
+        //like Minecraft: only craft if the cursor is empty or already holding this same item
+        if (itemInCursor != null && itemInCursor != resultItem) return;
+
+        int currentInCursor = (itemInCursor == null) ? 0 : itemInCursorQuantity;
+        if (currentInCursor + resultRecipe.resultQuantity > resultItem.maxStack) return;
+
+        if (itemInCursor == null)
         {
-            //put item in cursor
             itemInCursor = resultItem;
-            itemInCursorQuantity = 1;
+            itemInCursorQuantity = resultRecipe.resultQuantity;
             itemInCursorObj.GetComponent<Image>().sprite = resultItem.icon;
-            firstButtonPress.type = "craft";
-            firstButtonPress.index = 9; //necessary?
             itemInCursorObj.GetComponent<Image>().enabled = true;
-            //clear result box
-            GameObject PanelItem = resultbox.transform.Find("PanelItem").gameObject;
-            Image PanelImage = PanelItem.GetComponent<Image>();
-            PanelImage.enabled = false;
-            PanelImage.sprite = player.GetComponent<PlayerInventory>().empty;
-            //clear grid corresponding to how many items are made
-            for (int i = 0; i < crafting.Count; i++)
-            {
-                RemoveItemInSlot("craft", i);
-            }
-            //more of the same items might still be craftable; check again 
+            Cursor.visible = false;
+            firstButtonPress.type = "craft"; //marks that the cursor is holding something
+            firstButtonPress.index = 9;
         }
+        else
+        {
+            itemInCursorQuantity += resultRecipe.resultQuantity;
+        }
+
+        //consume one of each ingredient
+        for (int i = 0; i < crafting.Count; i++)
+            RemoveItemInSlot("craft", i);
+
+        //the leftovers may still make another item
+        updateRecipeResult();
     }
     
 

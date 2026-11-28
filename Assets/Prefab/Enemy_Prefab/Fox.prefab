@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5387781739516924332}
   - component: {fileID: 7506304921644568028}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right_ear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2935917185636383443}
   - component: {fileID: 7413490870731051871}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left_eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 920476256685704053}
   - component: {fileID: 3938466017713443567}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left_ear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -286,7 +286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4494935888330928645}
   - component: {fileID: 6675174548242046100}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: front_left_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +378,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2028699143417079311}
   - component: {fileID: 5332428080054428901}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: front_right_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4334944781837541883}
   - component: {fileID: 5992782601245557043}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,7 +562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1615120743864498125}
   - component: {fileID: 3355953678302761261}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: back_left_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -654,7 +654,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1892823232268289982}
   - component: {fileID: 7872766979294126573}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right_eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -746,7 +746,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7285643805408237636}
   - component: {fileID: 1796477154464395334}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -838,7 +838,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1167981674340480023}
   - component: {fileID: 3132034391942146547}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: back_right_leg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -937,9 +937,9 @@ GameObject:
   - component: {fileID: -7989358428985003040}
   - component: {fileID: 4918295311520404457}
   - component: {fileID: -7407428555158405315}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fox
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

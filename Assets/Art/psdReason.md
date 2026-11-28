@@ -1,0 +1,1 @@
+Some art sub sub folders contains the psd files (for use in Adobe Photoshop) of several assets should someone want to continue working off/ using them.

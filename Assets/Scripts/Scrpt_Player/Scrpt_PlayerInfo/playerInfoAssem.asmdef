@@ -2,7 +2,8 @@
     "name": "PlayerInfoAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:6504a31fc89c6d041aecc3d7be8ea4af"
+        "GUID:6504a31fc89c6d041aecc3d7be8ea4af",
+        "GUID:901f156a7e49141448ae6554e11efa7d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

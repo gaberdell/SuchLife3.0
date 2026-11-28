@@ -1,0 +1,21 @@
+{
+    "name": "PlayerMiscAssem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ee2ce899962f8af4e98552079f3352c2",
+        "GUID:193207f790613f042b1dda4d3a59de09",
+        "GUID:f58aa23d71e72b14bab58999d573ff5d",
+        "GUID:2a049e55224a3424f8808782c8ef48fe",
+        "GUID:6504a31fc89c6d041aecc3d7be8ea4af",
+        "GUID:901f156a7e49141448ae6554e11efa7d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

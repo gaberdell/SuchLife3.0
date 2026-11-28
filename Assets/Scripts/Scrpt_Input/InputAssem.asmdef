@@ -2,7 +2,8 @@
     "name": "InputAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:901f156a7e49141448ae6554e11efa7d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

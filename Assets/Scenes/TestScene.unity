@@ -189,7 +189,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1290426967446841388, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.9729595
+      value: 9.97296
       objectReference: {fileID: 0}
     - target: {fileID: 1290426967446841388, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -310,12 +310,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5149180284610993495, guid: a57604d93d37313408e9ee99e5e419e6, type: 3}
     - target: {fileID: 6258266300033474545, guid: f897f59d5838c684387751f01542054d, type: 3}
+      propertyPath: dropItems.Array.data[1].dropChance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6258266300033474545, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: dropItems.Array.data[0].maxQuantity
-      value: 4
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6258266300033474545, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: dropItems.Array.data[0].minQuantity
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7263654935195719020, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: m_Name
@@ -365,6 +369,8 @@ Transform:
   - {fileID: 177451664}
   - {fileID: 1138311255}
   - {fileID: 376214953}
+  - {fileID: 1718008520}
+  - {fileID: 1638573327}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &282013558
@@ -515,7 +521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1290426967446841388, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.9729595
+      value: 9.97296
       objectReference: {fileID: 0}
     - target: {fileID: 1290426967446841388, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -554,6 +560,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5149180284610993495, guid: 2643171e8d838964ea31eeb4ba7bde81, type: 3}
     - target: {fileID: 6258266300033474545, guid: f897f59d5838c684387751f01542054d, type: 3}
+      propertyPath: dropItems.Array.data[1].itemPrefab
+      value: 
+      objectReference: {fileID: 7840616202947656859, guid: e4d5d600c5fe1af4e9f16870d4abc6ba, type: 3}
+    - target: {fileID: 6258266300033474545, guid: f897f59d5838c684387751f01542054d, type: 3}
       propertyPath: dropItems.Array.data[0].maxQuantity
       value: 1
       objectReference: {fileID: 0}
@@ -583,6 +593,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
+      propertyPath: foxEnemy
+      value: 
+      objectReference: {fileID: 8959371218710664441, guid: 07957e7449e4355459f132500973dcd9, type: 3}
     - target: {fileID: 435139195407733329, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
       propertyPath: wallTile
       value: 

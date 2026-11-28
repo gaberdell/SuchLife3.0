@@ -6,16 +6,13 @@
 ### Use
 Script used to generate the initial dungeon. Will probably be reworked into some kind of event call later. Just initializes a graph and renders the nodes and edges on the tilemap based on their x and y positions.
 ### How it works
-- Doesnt do much at the moment, renders the graph by looping through every node and edge and drawing a tile at their positions
-
+Renders graph one node (room) at a time starting from the start node (room player enters in).
+Draws the room, another room, and then a hallway between, then adds a new room to queue.
+Room layouts are biased to ones not already generated. 
+Repeats until all nodes (rooms) and edges (hallways) are created.
 
 #### Future Plans
-- Render graph one node at a time starting from the start node
-- will draw the room, draw a neighboring node at a random distance away (set in opts), and draw a hallway connecting them (and add the new node to a queue)
-- Rooms are read from static files and chosen randomly, with bias on room layouts not already existing
-- Repeat for every edge remaining on the current node, and then move on to the next node in the queue
-- If neighboring node already exists on the map then just draw a hallway between
-- Randomize position of hallway on the sides
+- Randomize where hallways start and end.
 
 ##### Future Future Plans
 - Add more randomization to hallway generation
