@@ -8,6 +8,10 @@ public class HandleDungeonEntrance : MonoBehaviour
     bool rendered;
     GameObject dungeonGrid;
     [SerializeField] TextAsset optionsFile;
+    [SerializeField] Sprite openSprite;
+    [SerializeField] Sprite closeSprite;
+    TextPopupWhenNear text;
+    SpriteRenderer thisSprite;
     DungeonOptions opts;
     GameObject grid;
     GameObject nearbyPlayer;
@@ -19,6 +23,8 @@ public class HandleDungeonEntrance : MonoBehaviour
         opts = JsonUtility.FromJson<DungeonOptions>(optionsFile.text);
         rendered = false;
         grid = GameObject.FindGameObjectWithTag("Grid");
+        thisSprite = this.gameObject.GetComponent<SpriteRenderer>();
+        text = GetComponentInChildren<TextPopupWhenNear>();
 
     }
     private void Update()
@@ -61,6 +67,8 @@ public class HandleDungeonEntrance : MonoBehaviour
         if(collision.gameObject.tag == "Player")
         {
             nearbyPlayer = collision.gameObject;
+            thisSprite.sprite = openSprite;
+            text.playerEnter();
         }
        
     }
@@ -69,6 +77,8 @@ public class HandleDungeonEntrance : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             nearbyPlayer = null;
+            thisSprite.sprite = closeSprite;
+            text.playerExit();
         }
     }
 

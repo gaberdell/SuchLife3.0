@@ -39,6 +39,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7095863417949096696
 SpriteRenderer:
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -57,6 +58,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -78,9 +81,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 981590623623466488, guid: bc9160402d396e846947555ef67935d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -90,8 +95,8 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!50 &3788989466777534190
 Rigidbody2D:
   serializedVersion: 5
@@ -154,8 +159,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropItems:
   - itemPrefab: {fileID: 5149180284610993495, guid: a4d599302b37f05498de34354bf0b028, type: 3}
+    minQuantity: 1
+    maxQuantity: 1
     dropChance: 1
   - itemPrefab: {fileID: 5149180284610993495, guid: a4d599302b37f05498de34354bf0b028, type: 3}
+    minQuantity: 1
+    maxQuantity: 1
     dropChance: 1
 --- !u!58 &5192534863560351196
 CircleCollider2D:
@@ -205,3 +214,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec07dd65eaefc824b9eddf7ff4c2872a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Atype: 3
+  aggroDistance: 1
+  enemyCollider: {fileID: 0}
+  damage: 10
+  animator: {fileID: 0}
+  particles: {fileID: 0}

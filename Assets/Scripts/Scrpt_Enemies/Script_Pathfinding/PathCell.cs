@@ -1,0 +1,49 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PathCell 
+{
+    //Utility Cell data structure for pathfinding algo
+    //public cause i cant be bothered otherwise
+
+    public int gCost = 1000; 
+    public int hCost = 0;
+    public int tileX = -1, tileY = -1; //corresponds to position on tilemap;
+    public int pathX = -1, pathY = -1;
+    public bool walkable;
+    public List<PathCell> neighbors; //for finding the path
+    public PathCell parent = null; //for path purposes
+
+
+    public PathCell(int tx, int ty, int px, int py, bool isWall)
+    {
+        tileX = tx; 
+        tileY = ty;
+        pathX = px;
+        pathY = py;
+        walkable = !isWall;
+    }
+
+    public int fCost()
+    {
+        return gCost + hCost;
+    }
+
+    public void printCell()
+    {
+        //print cell as a string
+        Debug.Log("Cell: Tile (" + tileX + ", " + tileY + ") | Path (" + pathX + ", " + pathY + ") | Walkable: " + walkable + " | fgh(" + fCost() + ", " + gCost + ", " + hCost + ")");
+    }
+
+    public void printNeighbors()
+    {
+        Debug.Log("Printing Neighbors");
+        foreach (PathCell neighbor in neighbors)
+        {
+            neighbor.printCell();
+        }
+    }
+
+
+}

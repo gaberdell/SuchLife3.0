@@ -50,7 +50,7 @@ public class HandleTileCollisions : MonoBehaviour
                     if (effectTiles.ContainsKey(t))
                     {
                         //Debug.Log(groundTilemap.GetAnimationFrame(cellp));
-                        if (t.name == "FloorSpike" && groundTilemap.GetAnimationFrame(cellp) == 1) return; //dont hurt on spikes that are retracted 
+                        if (t.name == "FloorSpike" && groundTilemap.GetAnimationFrame(cellp) != 3) return; //dont hurt on spikes that are retracted 
                         //Debug.Log("player made contact with interactive tile " + t.name + ". Applying associated effect " );
                         effectTiles[t].ApplyEffects(Player);
                     }

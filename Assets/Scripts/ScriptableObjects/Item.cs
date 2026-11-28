@@ -10,6 +10,7 @@ public class Item : ScriptableObject
     public string itemName;
     public int useFlag = 0; //corresponds to inputhandler enum; 0 = None, 1 = Tool, 2 = Block, 3 = Consumable, 4 = Weapon
     public Sprite icon;
+    public Sprite heldInHand; //for items (such as weapons) that use a different sprite to display when held in the player's hand
     public TileBase tileThisPlaces;
     public int maxStack = 99;
 

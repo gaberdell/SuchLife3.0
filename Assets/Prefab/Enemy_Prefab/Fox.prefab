@@ -1059,11 +1059,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8959371218710664441}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 50
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -1090,16 +1090,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea08822da28060f4c85b4c5c5d5d5f65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyCollider: {fileID: 0}
-  animator: {fileID: 0}
-  particles: {fileID: 0}
+  Atype: 1
   aggroDistance: 0
-  explodeAtDistance: 0
-  explosionRadius: 0
-  explosionDelay: 0
-  damage: 0
-  blockTilemap: {fileID: 0}
-  tileMapName: PlaceableTileMap
+  enemyCollider: {fileID: 1380031502883434819}
+  damage: 10
+  animator: {fileID: 4277385478655517277}
+  particles: {fileID: 0}
+  speed: 0.02
 --- !u!58 &1380031502883434819
 CircleCollider2D:
   m_ObjectHideFlags: 0
