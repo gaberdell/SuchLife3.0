@@ -1,0 +1,228 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using System.Text;
+using System.Buffers.Binary;
+
+/**
+
+Format
+______
+
+
+             1 byte 
+          +-----------+
+          |     0     |
+          +-----------+
+
+
+--------------------- <TILE NAME DICTIONARY> ---------------------
+
+                     1 byte
+          +---------------------------+
+          |  Dictionary Length < 255  |
+          +---------------------------+
+
+                1 byte              string       
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +-----------------+---------------------+
+          |   Name Length   |   Tile Name ASCII   |
+          +---------------- ...
+
+--------------------- </TILE NAME DICTIONARY> --------------------
+
+
+             1 byte
+          +-----------+
+          |     0     |
+          +-----------+
+
+
+----------------------------------- <TILEMAP> -----------------------------------
+
+                1 byte               string                 4 bytes
+          +-----------------+----------------------+-----------------------+
+          |   Name Length   |  Tilemap Name ASCII  |  Tilemap Byte Length  |
+          +-----------------+----------------------+-----------------------+
+
+                       1 byte                 4 bytes          4 bytes
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +------------------------------+----------------+----------------+
+          |  Tile Name Dictionary Index  |   Tile X Pos   |   Tile Y Pos   |
+          +----------------------------- ...
+
+             1 byte
+          +-----------+
+          |    255    |
+          +-----------+
+
+----------------------------------- </TILEMAP> ----------------------------------
+
+                      REPEAT <TILEMAP> FOR EACH SAVED TILEMAP
+
+
+*/
+
+public class TilemapSaveLoad
+{
+  // Converts data in the back/foreground tilemaps into byte array
+  public static byte[] SaveGrid() {
+
+    // Getting game objects and initializing List of Tilemaps
+    GameObject[] allobjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+    List<Tilemap> tilemaps = new();
+
+    // Getting tilemaps
+    foreach (GameObject i in allobjs)
+    {
+      Tilemap[] maps = i.GetComponentsInChildren<Tilemap>(true);
+      tilemaps.AddRange(maps);
+    }
+
+    // Our byte List with which we will store information (starts with 255 for verification)
+    List<byte> retval = new() {0};
+
+    // Start with dictionary of Tiles (Assumes there are <255 tiles whose names are <255 characters)
+    TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
+    if (allTiles.Length >= 255)
+    {
+      Debug.LogError("SaveGrid: Too many Tiles!");
+      return null;
+    }
+    Dictionary<string,byte> tileDict = new();
+    retval.Add(Convert.ToByte(allTiles.Length));
+
+    for (int i = 0; i < allTiles.Length; ++i)
+    {
+      tileDict.Add(allTiles[i].name, Convert.ToByte(i));
+      retval.Add(Convert.ToByte(allTiles[i].name.Length));
+      retval.AddRange(Encoding.ASCII.GetBytes(allTiles[i].name));
+    }
+    retval.Add(0);
+
+    // Saving Tilemaps into byte List
+    foreach (Tilemap map in tilemaps)
+    {
+      int x_min = map.cellBounds.min.x;
+      int x_max = map.cellBounds.max.x;
+      int y_min = map.cellBounds.min.y;
+      int y_max = map.cellBounds.max.y;
+
+      string name = map.name;
+      Debug.Log($"SaveGrid: Processing {name} tilemap...");
+
+      // Add length of Tilemap name, then name itself
+      retval.Add( (byte) name.Length);
+      retval.AddRange(Encoding.ASCII.GetBytes(name));
+
+      // Add total length of Tilemap encoding
+      byte[] myInt = new byte[4];
+      BinaryPrimitives.WriteInt32LittleEndian(myInt,9*(x_max-x_min)*(y_max-y_min));
+      retval.AddRange(myInt);
+
+      // Add the Tiles in the Tilemap into the byte List
+      for (int x = x_min; x < x_max; x++) {
+        for (int y = y_min; y < y_max; y++) {
+          Vector3Int loc = new(x, y, 0);
+          TileBase tile = map.GetTile<TileBase>(loc);
+          if (tile != null) {
+            string tileName = tile.name;
+            retval.Add(tileDict[tileName]); // 1 byte
+            BinaryPrimitives.WriteInt32LittleEndian(myInt,x);
+            retval.AddRange(myInt); // 4 bytes
+            BinaryPrimitives.WriteInt32LittleEndian(myInt,y);
+            retval.AddRange(myInt); // 4 bytes
+          }
+        }
+      }
+      retval.Add(255);
+    }
+    
+    return retval.ToArray();
+  }
+
+  // Loads tilemap from byte array
+  public static void LoadGrid(byte[] gridData) {
+    // Check parameter is good
+    if (gridData.Length == 0) { return;}
+    if (gridData[0] != 0)
+    {
+      Debug.LogError("LoadGrid: Bad tile load byte array 0!");
+      return;
+    }
+
+    // Load tiles and create corresponding string Dictionary
+    TileBase[] allTiles = Resources.LoadAll<TileBase>("Tilemaps");
+    Dictionary<string,TileBase> tileDict = allTiles.ToDictionary(x => x.name, x => x);
+
+    // Begin loading
+    int index = 1;
+
+    // Start by creating array of TileBase names
+    string[] tileNames = new string[gridData[index++]];
+    for (int newIndex = 0; index < gridData.Length; ++newIndex)
+    {
+      if (newIndex == tileNames.Length)
+      {
+        Debug.LogError("LoadGrid: Bad tile load byte array! 1");
+        return;
+      }
+      int strlen = gridData[index++];
+      tileNames[newIndex] = Encoding.ASCII.GetString(gridData,index,strlen);
+      index += strlen;
+      if (gridData[index] == 0)
+      {
+        ++index;
+        break;
+      }
+    }
+    Debug.Log(index);
+    // Load tilemap
+    for (; index < gridData.Length; )
+    {
+      Debug.Log(index);
+      int tilemapNameLen = gridData[index++];
+      string tilemapName = Encoding.ASCII.GetString(gridData,index,tilemapNameLen);
+      index += tilemapNameLen;
+      int totalBytes = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
+      index += 4;
+      Debug.Log(tilemapName);
+      Tilemap map = GameObject.Find(tilemapName).GetComponent<Tilemap>();
+      if (map == null)
+      {
+        Debug.Log("uh oh");
+        index += totalBytes+1;
+        continue;
+      }
+      map.ClearAllTiles();
+      int totalTiles = totalBytes/9;
+
+      for (int i = 0; i < totalTiles; ++i)
+      {
+        if (gridData[index] == 255) { break;}
+        string tilestr = tileNames[gridData[index++]];
+        int x = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
+        index += 4;
+        int y = BinaryPrimitives.ReadInt32LittleEndian(gridData[index..]);
+        index += 4;
+        map.SetTile(new Vector3Int(x,y,0), tileDict[tilestr]);
+      }
+
+      if (gridData[index++] != 255)
+      {
+        Debug.LogError("LoadGrid: Bad tile load byte array! 3");
+        return;
+      }
+
+    }
+    
+  }
+}

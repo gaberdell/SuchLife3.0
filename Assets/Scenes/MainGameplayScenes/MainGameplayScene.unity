@@ -285,6 +285,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BasicGrid
       objectReference: {fileID: 0}
+    - target: {fileID: 6777599244404224004, guid: 4ccf3e971f870cc4fa57afcca5010b1d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

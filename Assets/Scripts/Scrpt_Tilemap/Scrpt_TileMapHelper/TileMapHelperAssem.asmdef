@@ -2,7 +2,8 @@
     "name": "TileMapHelperAssem",
     "rootNamespace": "",
     "references": [
-        "GUID:3d2f7f4ef350e4445b7e73ef5a8ef2c1"
+        "GUID:3d2f7f4ef350e4445b7e73ef5a8ef2c1",
+        "GUID:c103825ea3e47ae4985e226a520ff731"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
